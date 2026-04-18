@@ -26,7 +26,6 @@
   <link rel="stylesheet" href="{{ asset('public/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ asset('public/admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css') }}">
   <link rel="stylesheet" href="{{ asset('public/admin/css/mycustomstyle.css') }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/css/fontawesome-iconpicker.min.css">
   @yield('styles')
 </head>
 <body class="hold-transition sidebar-mini">
@@ -246,25 +245,75 @@
 </footer>
 </div>
 
+@include('admin.partials.icon-picker-modal')
+
 <script src="{{ asset('public/admin/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('public/admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('public/admin/dist/js/adminlte.min.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/js/fontawesome-iconpicker.min.js"></script>
 <script>
-  $(function () {
-    $('.icon-picker').iconpicker({
-      placement: 'bottomRight',
-      hideOnSelect: true
-    });
+  /**
+   * اختيار أيقونة الخدمة: نافذة منبثقة متوافقة مع Bootstrap 4 وFont Awesome المضمّن في لوحة التحكم.
+   * يستبدل fontawesome-iconpicker القديم الذي كان يتعارض مع هيكل input-group واتجاه RTL.
+   */
+  (function ($) {
+    var $modal = $('#adminIconPickerModal');
+    var $activeInput = null;
 
-    $(document).on('iconpickerSelected change', '.icon-picker', function (e) {
-      var val = $(this).val();
-      var $icon = $(this).closest('.input-group').find('.input-group-text i');
+    function syncPreview($input) {
+      var val = ($input.val() || '').trim();
+      var $wrap = $input.closest('.icon-picker-wrap');
+      var $icon = $wrap.find('.icon-picker-preview i');
       if ($icon.length) {
         $icon.attr('class', val || 'fas fa-icons');
       }
+    }
+
+    var $iconSearch = $('#adminIconPickerSearch');
+
+    function adminFilterIconGrid(query) {
+      var q = (query || '').toLowerCase().trim();
+      $('#adminIconPickerGrid .admin-icon-grid-cell').each(function () {
+        var hay = ($(this).attr('data-icon-filter') || '');
+        $(this).toggle(q === '' || hay.indexOf(q) !== -1);
+      });
+    }
+
+    $modal.on('shown.bs.modal', function () {
+      if ($iconSearch.length) {
+        $iconSearch.val('');
+      }
+      adminFilterIconGrid('');
     });
-  });
+
+    $iconSearch.on('input', function () {
+      adminFilterIconGrid($(this).val());
+    });
+
+    $(document).on('click', '.btn-icon-picker-open', function (e) {
+      e.preventDefault();
+      $activeInput = $(this).closest('.icon-picker-wrap').find('.icon-picker');
+      if ($modal.length) {
+        $modal.modal('show');
+      }
+    });
+
+    $modal.on('click', '.admin-icon-pick-btn', function () {
+      var cls = $(this).data('icon-class');
+      if ($activeInput && $activeInput.length && cls) {
+        $activeInput.val(cls);
+        syncPreview($activeInput);
+      }
+      $modal.modal('hide');
+    });
+
+    $(document).on('input change', '.icon-picker', function () {
+      syncPreview($(this));
+    });
+
+    $('.icon-picker').each(function () {
+      syncPreview($(this));
+    });
+  })(jQuery);
 </script>
 @yield('scripts')
 </body>

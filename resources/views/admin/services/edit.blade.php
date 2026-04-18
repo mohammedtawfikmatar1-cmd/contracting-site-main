@@ -75,12 +75,16 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>الأيقونة</label>
-                        <div class="input-group">
-                            <input type="text" name="icon" class="form-control icon-picker" value="{{ old('icon', $service->icon) }}" placeholder="اختر أيقونة">
+                        <div class="input-group icon-picker-wrap">
+                            <input type="text" name="icon" class="form-control icon-picker" value="{{ old('icon', $service->icon) }}" placeholder="مثال: fas fa-tools" autocomplete="off">
                             <div class="input-group-append">
-                                <span class="input-group-text"><i class="{{ old('icon', $service->icon) ?: 'fas fa-icons' }}"></i></span>
+                                <button type="button" class="btn btn-outline-secondary btn-icon-picker-open" title="فتح قائمة الأيقونات">
+                                    <i class="fas fa-palette"></i>
+                                </button>
+                                <span class="input-group-text icon-picker-preview"><i class="{{ old('icon', $service->icon) ?: 'fas fa-icons' }}"></i></span>
                             </div>
                         </div>
+                        <small class="text-muted d-block mt-1">استخدم زر لوحة الألوان لفتح النافذة، أو اكتب صنف الأيقونة يدوياً.</small>
                     </div>
                 </div>
                 <div class="col-md-6">
