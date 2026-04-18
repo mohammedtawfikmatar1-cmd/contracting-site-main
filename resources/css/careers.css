@@ -1,0 +1,369 @@
+/* ── CAREERS PAGE ──────────────────────────────────────── */
+
+/* HERO SECTION */
+.careers-hero {
+    background: linear-gradient(135deg, var(--d800), var(--d700));
+    padding: clamp(80px, 12vw, 160px) 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.careers-hero::before {
+    background: radial-gradient(circle at 80% 20%, rgba(255, 122, 26, 0.15), transparent 50%);
+    content: "";
+    inset: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.careers-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.hero-content h1 {
+    font-size: var(--t-3xl);
+    font-weight: 900;
+    color: var(--tw);
+    margin: var(--s5) 0 var(--s6);
+    line-height: 1.2;
+}
+
+.hero-content p {
+    font-size: var(--t-md);
+    color: var(--ts);
+    margin-bottom: var(--s8);
+}
+
+/* CULTURE SECTION */
+.culture {
+    background: var(--sf2);
+}
+
+.culture .sec-head h2 {
+    color: var(--d800);
+}
+
+.culture .sec-head p {
+    color: var(--ink-s);
+}
+
+.culture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: clamp(20px, 3vw, 32px);
+}
+
+.culture-card {
+    background: var(--sf1);
+    border: 1px solid rgba(13, 15, 20, 0.08);
+    border-radius: var(--r-xl);
+    padding: clamp(28px, 4vw, 40px);
+    text-align: center;
+    transition: transform var(--tb), box-shadow var(--tb), border-color var(--tb);
+}
+
+.culture-card:hover {
+    border-color: rgba(255, 122, 26, 0.22);
+    box-shadow: var(--sh-lg);
+    transform: translateY(-8px);
+}
+
+.cc-icon {
+    background: linear-gradient(135deg, rgba(255, 122, 26, 0.15), rgba(255, 122, 26, 0.05));
+    border: 1px solid rgba(255, 122, 26, 0.18);
+    border-radius: 16px;
+    display: grid;
+    height: 56px;
+    margin: 0 auto var(--s5);
+    place-items: center;
+    width: 56px;
+    transition: transform var(--tb), box-shadow var(--tb);
+}
+
+.culture-card:hover .cc-icon {
+    box-shadow: 0 8px 24px var(--orange-glow);
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.cc-icon i {
+    color: var(--orange);
+    font-size: 24px;
+}
+
+.culture-card h3 {
+    font-size: var(--t-md);
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: var(--s4);
+}
+
+.culture-card p {
+    color: var(--ink-s);
+    font-size: var(--t-sm);
+    line-height: 1.6;
+}
+
+/* OPENINGS SECTION */
+.openings {
+    background: var(--d800);
+}
+
+.openings .sec-head h2 {
+    color: var(--tw);
+}
+
+.openings .sec-head p {
+    color: var(--ts);
+}
+
+.jobs-list {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 3vw, 32px);
+}
+
+.job-card {
+    background: linear-gradient(160deg, var(--d600), var(--d700));
+    border: 1px solid rgba(255, 122, 26, 0.15);
+    border-radius: var(--r-2xl);
+    padding: clamp(28px, 4vw, 40px);
+    transition: transform var(--tb), box-shadow var(--tb), border-color var(--tb);
+}
+
+.job-card:hover {
+    border-color: rgba(255, 122, 26, 0.35);
+    box-shadow: 0 20px 56px rgba(255, 122, 26, 0.15);
+    transform: translateY(-4px);
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--s6);
+    gap: var(--s5);
+}
+
+.job-header h3 {
+    font-size: var(--t-lg);
+    font-weight: 800;
+    color: var(--tw);
+    margin-bottom: var(--s3);
+}
+
+.job-location {
+    color: var(--ts);
+    font-size: var(--t-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+}
+
+.job-type {
+    background: rgba(255, 122, 26, 0.15);
+    border: 1px solid rgba(255, 122, 26, 0.3);
+    border-radius: var(--r-pill);
+    color: var(--orange);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    padding: 6px 14px;
+    white-space: nowrap;
+}
+
+.job-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s5);
+    margin-bottom: var(--s6);
+    padding-bottom: var(--s6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+}
+
+.detail-label {
+    color: var(--ts);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.detail-item span:last-child {
+    color: var(--tw);
+    font-size: var(--t-sm);
+}
+
+.job-desc {
+    color: var(--tm);
+    font-size: var(--t-sm);
+    line-height: 1.7;
+    margin-bottom: var(--s5);
+}
+
+.job-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s3);
+    margin-bottom: var(--s6);
+}
+
+.skill {
+    background: rgba(255, 122, 26, 0.1);
+    border: 1px solid rgba(255, 122, 26, 0.2);
+    border-radius: var(--r-pill);
+    color: var(--orange);
+    font-size: var(--t-xs);
+    font-weight: 600;
+    padding: 6px 12px;
+}
+
+.job-apply {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s4);
+    background: linear-gradient(135deg, var(--orange-light), var(--orange-dark));
+    border-radius: var(--r-lg);
+    color: #fff;
+    font-weight: 800;
+    font-size: var(--t-sm);
+    padding: 12px 20px;
+    transition: transform var(--tb), box-shadow var(--tb);
+    box-shadow: 0 8px 24px var(--orange-glow);
+}
+
+.job-apply:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(255, 122, 26, 0.35);
+}
+
+/* BENEFITS SECTION */
+.benefits {
+    background: var(--sf2);
+}
+
+.benefits .sec-head h2 {
+    color: var(--d800);
+}
+
+.benefits .sec-head p {
+    color: var(--ink-s);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(20px, 3vw, 28px);
+}
+
+.benefit-card {
+    background: var(--sf1);
+    border: 1px solid rgba(13, 15, 20, 0.08);
+    border-radius: var(--r-xl);
+    padding: clamp(28px, 3.5vw, 36px);
+    text-align: center;
+    transition: transform var(--tb), box-shadow var(--tb);
+}
+
+.benefit-card:hover {
+    box-shadow: var(--sh-lg);
+    transform: translateY(-6px);
+}
+
+.bc-icon {
+    background: linear-gradient(135deg, rgba(255, 122, 26, 0.12), rgba(255, 122, 26, 0.04));
+    border: 1px solid rgba(255, 122, 26, 0.15);
+    border-radius: 14px;
+    display: grid;
+    height: 52px;
+    margin: 0 auto var(--s5);
+    place-items: center;
+    width: 52px;
+}
+
+.bc-icon i {
+    color: var(--orange);
+    font-size: 22px;
+}
+
+.benefit-card h3 {
+    font-size: var(--t-md);
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: var(--s3);
+}
+
+.benefit-card p {
+    color: var(--ink-s);
+    font-size: var(--t-sm);
+    line-height: 1.6;
+}
+
+/* CTA SECTION */
+.careers-cta {
+    background: linear-gradient(135deg, var(--d800), var(--d700));
+    position: relative;
+    overflow: hidden;
+}
+
+.careers-cta::before {
+    background: radial-gradient(circle at 20% 80%, rgba(255, 122, 26, 0.12), transparent 50%);
+    content: "";
+    inset: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.cta-content h2 {
+    font-size: var(--t-2xl);
+    font-weight: 900;
+    color: var(--tw);
+    margin-bottom: var(--s5);
+}
+
+.cta-content p {
+    font-size: var(--t-md);
+    color: var(--ts);
+    margin-bottom: var(--s8);
+}
+
+.cta-lg {
+    padding: 16px 32px !important;
+    font-size: var(--t-md) !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .job-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .job-details {
+        grid-template-columns: 1fr;
+    }
+
+    .culture-grid,
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,130 @@
+/* ── SERVICES ──────────────────────────────────── */
+.services {
+    background: var(--sf2);
+}
+.services .sec-head h2 {
+    color: var(--d800);
+}
+.services .sec-head p {
+    color: var(--ink-s);
+}
+.svc-grid {
+    display: grid;
+    gap: clamp(14px,2vw,22px);
+    grid-template-columns: repeat(3,1fr);
+}
+.svc-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--sf1);
+    border: 1px solid rgba(13,15,20,.08);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    padding: clamp(28px,3.5vw,44px) clamp(20px,2.5vw,32px);
+    position: relative;
+    transition: transform var(--tb), box-shadow var(--tb), border-color var(--tb);
+    will-change: transform;
+}
+.svc-card::before {
+    background: linear-gradient(145deg,rgba(255,122,26,.07),transparent 55%);
+    content: "";
+    inset: 0;
+    opacity: 0;
+    position: absolute;
+    transition: opacity var(--tb);
+}
+.svc-card:hover {
+    border-color: rgba(255,122,26,.22);
+    box-shadow: var(--sh-lg);
+    transform: translateY(-8px);
+}
+.svc-card:hover::before {
+    opacity: 1;
+}
+.svc-num {
+    color: rgba(255,122,26,.1);
+    font-size: clamp(36px,4vw,52px);
+    font-weight: 900;
+    inset-inline-end: clamp(16px,2.5vw,28px);
+    letter-spacing: -.04em;
+    line-height: 1;
+    position: absolute;
+    top: clamp(14px,2vw,22px);
+    transition: color var(--tb);
+}
+.svc-card:hover .svc-num {
+    color: rgba(255,122,26,.2);
+}
+.svc-icon {
+    background: linear-gradient(135deg,rgba(255,122,26,.15),rgba(255,122,26,.05));
+    border: 1px solid rgba(255,122,26,.18);
+    border-radius: 18px;
+    display: grid;
+    height: 62px;
+    margin-bottom: var(--s6);
+    place-items: center;
+    transition: transform var(--tb), box-shadow var(--tb);
+    width: 62px;
+}
+.svc-card:hover .svc-icon {
+    box-shadow: 0 8px 24px var(--orange-glow);
+    transform: scale(1.1) rotate(-5deg);
+}
+.svc-icon i {
+    color: var(--orange);
+    font-size: 26px;
+}
+.svc-card h3 {
+    color: var(--ink);
+    font-size: var(--t-md);
+    font-weight: 800;
+    margin-bottom: var(--s4);
+    position: relative;
+}
+.svc-card>p {
+    color: var(--ink-s);
+    font-size: var(--t-sm);
+    position: relative;
+}
+.svc-line {
+    background: linear-gradient(90deg,var(--orange),transparent);
+    bottom: 0;
+    height: 3px;
+    inset-inline-start: 0;
+    position: absolute;
+    transition: width .5s var(--e-out);
+    width: 0;
+}
+.svc-card:hover .svc-line {
+    width: 100%;
+}
+.svc-cta {
+    align-items: flex-start;
+    background: linear-gradient(145deg,var(--d700),var(--d600));
+    border-color: rgba(255,122,26,.2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s4);
+    justify-content: center;
+}
+.svc-cta::before {
+    display: none;
+}
+.svc-cta p {
+    color: var(--ts);
+    font-size: var(--t-sm);
+    font-weight: 600;
+}
+.svc-cta h3 {
+    color: var(--tw);
+    font-size: var(--t-lg);
+    font-weight: 900;
+}
+
+/* ── RESPONSIVE FOR SERVICES ────────────────────── */
+@media(max-width:768px) {
+    .svc-grid {
+        grid-template-columns: 1fr;
+    }
+}

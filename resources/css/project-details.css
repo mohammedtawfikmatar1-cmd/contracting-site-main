@@ -1,0 +1,93 @@
+/* ── PROJECT DETAILS ──────────────────────────────────── */
+.project-details-page {
+    background: var(--d800);
+    color: var(--tw);
+}
+
+.project-hero {
+    height: 60vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background:
+        linear-gradient(rgba(7, 8, 11, 0.6), rgba(7, 8, 11, 0.9)),
+        var(--hero-bg-image, url('https://images.unsplash.com/photo-1503387762-592dee58c460?auto=format&fit=crop&q=80&w=2070')) center/cover;
+}
+
+.project-hero h1 {
+    font-size: var(--t-3xl);
+    font-weight: 900;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.project-meta-bar {
+    background: var(--d700);
+    padding: var(--s5);
+    border-radius: var(--r-lg);
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: var(--s5);
+    margin-top: -40px;
+    position: relative;
+    z-index: 10;
+    border: 1px solid var(--d600);
+}
+
+.meta-item {
+    text-align: center;
+}
+
+.meta-item span {
+    display: block;
+    font-size: var(--t-xs);
+    color: var(--orange);
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.meta-item strong {
+    font-size: var(--t-md);
+    color: #fff;
+}
+
+.challenge-solution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s7);
+    margin-block: var(--s9);
+}
+
+.cs-card {
+    padding: var(--s7);
+    border-radius: var(--r-xl);
+    height: 100%;
+}
+
+.challenge-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.solution-card {
+    background: var(--orange-subtle);
+    border: 1px solid var(--orange);
+}
+
+.cs-card h3 {
+    margin-bottom: var(--s4);
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+}
+
+.challenge-card h3 { color: #ff4444; }
+.solution-card h3 { color: var(--orange); }
+
+@media (max-width: 768px) {
+    .challenge-solution-grid {
+        grid-template-columns: 1fr;
+    }
+}
