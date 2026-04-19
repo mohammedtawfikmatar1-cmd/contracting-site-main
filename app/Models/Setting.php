@@ -111,7 +111,8 @@ class Setting extends Model
             case 'integer':
                 return (int) $this->value;
             case 'image':
-                return $this->value ? asset('storage/' . $this->value) : null;
+                // توحيد رابط الوسائط عبر مسار /media لضمان عمل الصور حتى بدون storage:link.
+                return $this->value ? route('media.file', ['path' => ltrim((string) $this->value, '/')]) : null;
             default:
                 return $this->value;
         }

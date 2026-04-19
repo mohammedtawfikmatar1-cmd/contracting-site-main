@@ -49,6 +49,21 @@ class Job extends Model
         'closing_date' => 'date',
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Job $job): void {
+            $job->news()->delete();
+        });
+    }
+
+    /**
+     * أخبار تلقائية مرتبطة بهذه الوظيفة (مزامنة من لوحة التحكم).
+     */
+    public function news()
+    {
+        return $this->morphMany(News::class, 'newsable');
+    }
+
     /**
      * إرجاع الوظائف المفعلة والتي لم ينته تاريخ التقديم عليها.
      */

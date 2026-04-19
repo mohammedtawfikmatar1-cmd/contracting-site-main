@@ -23,16 +23,18 @@
             <!-- بداية حلقة الأخبار: $news قادمة من SiteController@news (مُدارة من لوحة التحكم: الأخبار) -->
             @forelse($news as $item)
                 <article class="news-card reveal">
-                    <div class="news-image">
-                        <img src="{{ $item->image_url ?: asset('imag/m1.jpg') }}" alt="{{ $item->title }}">
-                        <span class="news-date">{{ optional($item->published_at)->format('Y-m-d') }}</span>
-                    </div>
+                    <a class="news-card__media" href="{{ route('news.details', $item->slug) }}" aria-hidden="true" tabindex="-1">
+                        <div class="news-image">
+                            <img src="{{ $item->image_url ?: asset('imag/m1.jpg') }}" alt="" loading="lazy">
+                            <span class="news-date">{{ optional($item->published_at)->format('Y-m-d') }}</span>
+                        </div>
+                    </a>
                     <div class="news-content">
                         <div class="news-meta">
                             <span class="news-category">{{ $item->category ?: 'أخبار' }}</span>
                         </div>
-                        <h3>{{ $item->title }}</h3>
-                        <p>{{ $item->getExcerpt(140) }}</p>
+                        <h3><a href="{{ route('news.details', $item->slug) }}">{{ $item->title }}</a></h3>
+                        <p class="news-excerpt">{{ $item->getExcerpt(140) }}</p>
                         <a href="{{ route('news.details', $item->slug) }}" class="news-link"><span>اقرأ المزيد</span></a>
                     </div>
                 </article>

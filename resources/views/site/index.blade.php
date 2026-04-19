@@ -3,8 +3,7 @@
 @section('title', 'شركة مقاولات - الصفحة الرئيسية')
 
 @section('styles')
-@vite(['resources/css/index.css'])
-@vite(['resources/css/services.css'])
+@vite(['resources/css/index.css', 'resources/css/services.css', 'resources/css/news.css'])
     {{-- <link rel="stylesheet" href="{{ asset('css/index.css') }}" /> --}}
     {{-- <link rel="stylesheet" href="{{ asset('css/services.css') }}" /> --}}
 @endsection
@@ -19,7 +18,10 @@
         <img src="{{ $siteSettings['home_hero_image'] ?? asset('imag/m1.jpg') }}" alt="">
     </div>
     <div class="container hero-body">
-        <!-- نصوص الهيرو: مصدرها إعدادات لوحة التحكم (home_hero_* ) -->
+        <!--
+            نصوص الهيرو: تُدار من لوحة التحكم > الهوية البصرية
+            (home_hero_badge، home_hero_title، home_hero_description) وتُحفظ في جدول settings.
+        -->
         <div class="hero-badge reveal-up">{{ $siteSettings['home_hero_badge'] ?? ($isAdminPreview ? 'بيان توضيحي: أضف شارة تعريفية للشركة من لوحة التحكم' : '') }}</div>
         <h1 class="hero-title reveal-up">{{ $siteSettings['home_hero_title'] ?? ($isAdminPreview ? 'عنوان رئيسي توضيحي: أضف رسالة الشركة هنا' : '') }}</h1>
         <p class="hero-desc reveal-up">{{ $siteSettings['home_hero_description'] ?? ($isAdminPreview ? 'وصف توضيحي: عرّف بخدمات شركتك ومجالات عملها من لوحة التحكم.' : '') }}</p>
@@ -128,14 +130,19 @@
             <!-- بداية حلقة الأخبار: $news قادمة من SiteController@home (مُدارة من لوحة التحكم: الأخبار) -->
             @forelse($news as $item)
                 <article class="news-card reveal">
-                    <div class="news-image">
-                        <img src="{{ $item->image_url ?: asset('imag/m1.jpg') }}" alt="{{ $item->title }}">
-                        <span class="news-date">{{ optional($item->published_at)->format('Y-m-d') }}</span>
-                    </div>
+                    <a class="news-card__media" href="{{ route('news.details', $item->slug) }}" aria-hidden="true" tabindex="-1">
+                        <div class="news-image">
+                            <img src="{{ $item->image_url ?: asset('imag/m1.jpg') }}" alt="" loading="lazy">
+                            <span class="news-date">{{ optional($item->published_at)->format('Y-m-d') }}</span>
+                        </div>
+                    </a>
                     <div class="news-content">
-                        <h3>{{ $item->title }}</h3>
-                        <p>{{ $item->getExcerpt(120) }}</p>
-                        <a href="{{ route('news.details', $item->slug) }}" class="news-link">اقرأ المزيد</a>
+                        <div class="news-meta">
+                            <span class="news-category">{{ $item->category ?: 'أخبار' }}</span>
+                        </div>
+                        <h3><a href="{{ route('news.details', $item->slug) }}">{{ $item->title }}</a></h3>
+                        <p class="news-excerpt">{{ $item->getExcerpt(140) }}</p>
+                        <a href="{{ route('news.details', $item->slug) }}" class="news-link"><span>اقرأ المزيد</span></a>
                     </div>
                 </article>
             @empty

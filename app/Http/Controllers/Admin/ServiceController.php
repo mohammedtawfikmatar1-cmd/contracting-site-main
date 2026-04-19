@@ -19,7 +19,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Setting;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -122,7 +121,8 @@ class ServiceController extends Controller
      */
     private function validateService(Request $request, ?int $ignoreId = null): array
     {
-        $enabled = (bool) Setting::getValue('enable_multilingual', false);
+        // إيقاف نظام الإدخال متعدد اللغة حاليا والإبقاء على العربية فقط.
+        $enabled = false;
 
         if ($enabled) {
             return $request->validate([

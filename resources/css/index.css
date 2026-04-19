@@ -6,14 +6,29 @@
     flex-direction: column;
     min-height: 100svh;
     overflow: hidden;
-    padding-top: var(--hh);
+    padding-top: var(--site-header-offset);
     position: relative;
+}
+
+/* معاينة المدير: شريط علوي إضافي فوق الهيدر */
+body.has-admin-toolbar .hero {
+    padding-top: calc(var(--site-header-offset) + var(--admin-toolbar-offset, 48px));
 }
 
 .hero-media {
     inset: 0;
     position: absolute;
     z-index: 0;
+}
+
+/* طبقة تعتيم فوق صورة الهيرو لرفع تباين النص الأبيض مع أي خلفية تصويرية */
+.hero-media::after {
+    background: linear-gradient(180deg, rgba(7, 8, 11, 0.5) 0%, rgba(7, 8, 11, 0.72) 42%, rgba(7, 8, 11, 0.9) 100%);
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
 }
 
 .hero-media img {
@@ -131,10 +146,11 @@
 .hero-badge {
     align-items: center;
     backdrop-filter: blur(8px);
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(7, 8, 11, 0.45);
+    border: 1px solid rgba(255,255,255,.2);
     border-radius: var(--r-pill);
-    color: rgba(255,255,255,.88);
+    color: rgba(255,255,255,.95);
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
     display: inline-flex;
     font-size: var(--t-xs);
     font-weight: 700;
@@ -190,11 +206,12 @@
 }
 
 .hero-desc {
+    color: rgba(255, 255, 255, 0.94);
     font-size: var(--t-md);
     line-height: 1.85;
     margin-bottom: clamp(28px,4vw,48px);
     max-width: min(560px,90%);
-    opacity: .84;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
 }
 
 .hero-actions {

@@ -65,7 +65,8 @@ class Client extends Model
 
     public function getLogoUrlAttribute(): ?string
     {
-        return $this->logo ? asset('storage/'.$this->logo) : null;
+        // توحيد عرض شعارات العملاء عبر مسار الوسائط المركزي.
+        return $this->logo ? route('media.file', ['path' => ltrim((string) $this->logo, '/')]) : null;
     }
 
     /**

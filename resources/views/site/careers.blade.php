@@ -21,7 +21,7 @@
         <div class="jobs-list">
             <!-- بداية حلقة الوظائف: $jobs قادمة من SiteController@careers (مُدارة من لوحة التحكم: الوظائف) -->
             @forelse($jobs as $job)
-                <div class="job-card reveal">
+                <div id="job-{{ $job->id }}" class="job-card reveal">
                     <div class="job-header">
                         <div>
                             <h3>{{ $job->title }}</h3>

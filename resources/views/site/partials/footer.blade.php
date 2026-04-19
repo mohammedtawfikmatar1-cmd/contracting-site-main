@@ -45,6 +45,15 @@
                     @endforeach
                     <!-- نهاية روابط سريعة -->
                 </ul>
+                @if(isset($sitePages) && $sitePages->isNotEmpty())
+                    <!-- الصفحات الثابتة من لوحة التحكم — مجموعة منفصلة بعنوان واضح كي لا تختلط مع الروابط الرئيسية -->
+                    <h4 class="footer-nav__subheading">صفحات إضافية</h4>
+                    <ul class="footer-nav__sublist" role="list">
+                        @foreach($sitePages as $page)
+                            <li><a href="{{ route('pages.show', $page->slug) }}">{{ $page->title }}</a></li>
+                        @endforeach
+                    </ul>
+                @endif
             </nav>
             <div class="footer-contact">
                 <h4>تواصل معنا</h4>

@@ -60,6 +60,8 @@
   /* Layout */
   --mw: 1240px;  /* Max width */
   --hh: 74px;    /* Header height */
+  /* إزاحة المحتوى تحت الهيدر الثابت + منطقة النوتش (آيفون وغيره) */
+  --site-header-offset: calc(var(--hh) + env(safe-area-inset-top, 0px));
   --py: clamp(60px, 8vw, 110px);  /* Section padding */
 
   /* Border Radius */
@@ -96,6 +98,8 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   min-height: 100%;
+  /* تمرير الروابط الداخلية تحت الهيدر الثابت */
+  scroll-padding-top: var(--site-header-offset);
 }
 
 body {
@@ -107,6 +111,16 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   min-height: 100%;
+}
+
+/*
+ * تباين أقوى للنصوص داخل المحتوى الرئيسي فقط (main.site-main).
+ * الهيدر والفوتر يستخدمان ألوانًا مستقلة ولا يُعاد تعريفها هنا حسب طلب التصميم.
+ */
+main.site-main {
+  --ink: #0a0d16;
+  --ink-m: #283144;
+  --ink-s: #3f4a5f;
 }
 
 a {
@@ -394,6 +408,11 @@ button {
     padding-inline: 16px;
   }
   /* Additional small screen styles */
+}
+
+/* تمرير الروابط تحت الهيدر + شريط المعاينة الإدارية عند وجوده */
+html:has(body.has-admin-toolbar) {
+  scroll-padding-top: calc(var(--site-header-offset) + var(--admin-toolbar-offset, 48px));
 }
 
 /* ── REDUCED MOTION ─────────────────────────────── */

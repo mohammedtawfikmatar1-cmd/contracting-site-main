@@ -21,7 +21,7 @@
         <div class="tenders-list">
             <!-- بداية حلقة المناقصات: $tenders قادمة من SiteController@tenders (مُدارة من لوحة التحكم: المناقصات) -->
             @forelse($tenders as $tender)
-                <div class="tender-card reveal">
+                <div id="tender-{{ $tender->id }}" class="tender-card reveal">
                     <div class="tender-header">
                         <div class="tender-info">
                             <h3>{{ $tender->title }}</h3>

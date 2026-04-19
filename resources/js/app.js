@@ -15,14 +15,68 @@ function setMenu(open) {
   overlay?.classList.toggle("active", open);
   menuBtn?.classList.toggle("active", open);
   menuBtn?.setAttribute("aria-expanded", String(open));
+  menuBtn?.setAttribute("aria-label", open ? "إغلاق القائمة" : "فتح القائمة");
+  document.body.classList.toggle("nav-drawer-open", open);
   document.body.style.overflow = open ? "hidden" : "";
+  if (overlay) {
+    overlay.setAttribute("aria-hidden", open ? "false" : "true");
+  }
 }
 
-menuBtn?.addEventListener("click", () => setMenu(!navLinks?.classList.contains("active")));
+/* ── قائمة الصفحات الثابتة (منسدلة) — تُغلق عند النقر خارجها أو Escape ── */
+const navDropdownItems = $$(".nav-item--dropdown");
+
+function closeAllNavDropdowns() {
+  navDropdownItems.forEach(li => {
+    li.classList.remove("is-open");
+    const t = li.querySelector(".nav-dropdown-toggle");
+    t?.setAttribute("aria-expanded", "false");
+  });
+}
+
+menuBtn?.addEventListener("click", () => {
+  const willOpen = !navLinks?.classList.contains("active");
+  setMenu(willOpen);
+  if (willOpen) {
+    closeAllNavDropdowns();
+  }
+});
 overlay?.addEventListener("click", () => setMenu(false));
-document.addEventListener("keydown", e => e.key === "Escape" && setMenu(false));
-$$(".nav-links a").forEach(a => a.addEventListener("click", () => setMenu(false)));
-window.matchMedia("(min-width:769px)").addEventListener("change", e => e.matches && setMenu(false));
+
+$$(".nav-dropdown-toggle").forEach(btn => {
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    const li = btn.closest(".nav-item--dropdown");
+    const willOpen = !li?.classList.contains("is-open");
+    closeAllNavDropdowns();
+    if (willOpen) {
+      li?.classList.add("is-open");
+      btn.setAttribute("aria-expanded", "true");
+    }
+  });
+});
+
+document.addEventListener("click", () => closeAllNavDropdowns());
+
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") {
+    return;
+  }
+  setMenu(false);
+  closeAllNavDropdowns();
+});
+
+$$(".nav-links a").forEach(a => a.addEventListener("click", () => {
+  setMenu(false);
+  closeAllNavDropdowns();
+}));
+/* يجب أن يطابق CSS نقطة تحول القائمة (641px) وليس 769px */
+window.matchMedia("(min-width:641px)").addEventListener("change", e => {
+  if (e.matches) {
+    setMenu(false);
+    closeAllNavDropdowns();
+  }
+});
 
 /* ── HEADER SCROLL EFFECT (فقط الشكل وليس الروابط) ─ */
 const header = $(".site-header");

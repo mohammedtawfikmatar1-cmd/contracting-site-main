@@ -12,8 +12,9 @@
  * - علاقة newsable polymorphic لربط الخبر بخدمة أو مشروع.
  *
  * خريطة تدفق البيانات:
- * مدير الموقع ينشر الأخبار من لوحة التحكم، ثم تُعرض في صفحة الأخبار
- * أو ضمن تفاصيل الخدمة/المشروع المرتبط بها.
+ * - أخبار يدوية من لوحة التحكم (newsable اختياري).
+ * - أخبار تلقائية تُنشأ عند نشر مشروع/مناقصة/وظيفة (newsable يشير إلى ذلك السجل).
+ * ثم تُعرض في الصفحة الرئيسية وصفحة الأخبار وصفحة التفاصيل.
  */
 namespace App\Models;
 
@@ -99,8 +100,8 @@ class News extends Model
      */
     public function getImageUrlAttribute()
     {
-        // إرجاع رابط الصورة الكامل لتسهيل العرض في الواجهة.
-        return $this->image ? asset('storage/' . $this->image) : null;
+        // إرجاع رابط الصورة عبر /media لتفادي مشاكل المسارات في بيئات التطوير.
+        return $this->image ? route('media.file', ['path' => ltrim((string) $this->image, '/')]) : null;
     }
 
     /**

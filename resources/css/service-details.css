@@ -6,12 +6,17 @@
 
 .service-hero {
     position: relative;
-    padding-block: var(--s10);
+    padding-top: calc(var(--site-header-offset) + var(--s8));
+    padding-bottom: var(--s10);
     background:
         linear-gradient(rgba(7, 8, 11, 0.8), rgba(7, 8, 11, 0.8)),
         var(--hero-bg-image, url('https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=2070')) center/cover;
     text-align: center;
     border-bottom: 1px solid var(--d600);
+}
+
+body.has-admin-toolbar .service-hero {
+    padding-top: calc(var(--site-header-offset) + var(--admin-toolbar-offset, 48px) + var(--s8));
 }
 
 .service-hero h1 {
@@ -66,7 +71,7 @@
 /* ── REQUEST FORM ──────────────────────────────────── */
 .request-sidebar {
     position: sticky;
-    top: calc(var(--hh) + 20px);
+    top: calc(var(--site-header-offset) + 20px);
 }
 
 .request-card {

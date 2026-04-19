@@ -17,6 +17,7 @@
  */
 namespace App\Http\Controllers\Admin;
 
+use App\Events\TenderSavedForNews;
 use App\Http\Controllers\Controller;
 use App\Models\Tender;
 use Illuminate\Http\Request;
@@ -61,7 +62,8 @@ class TenderController extends Controller
         $validated = $this->validateTender($request);
         $validated['is_published'] = $request->boolean('is_published');
 
-        Tender::create($validated);
+        $tender = Tender::create($validated);
+        event(new TenderSavedForNews($tender));
 
         return redirect()->route('admin.tenders.index')->with('success', 'تمت إضافة المناقصة بنجاح.');
     }
@@ -83,6 +85,7 @@ class TenderController extends Controller
         $validated['is_published'] = $request->boolean('is_published');
 
         $tender->update($validated);
+        event(new TenderSavedForNews($tender));
 
         return redirect()->route('admin.tenders.index')->with('success', 'تم تحديث المناقصة بنجاح.');
     }

@@ -26,6 +26,19 @@
   <link rel="stylesheet" href="{{ asset('public/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ asset('public/admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css') }}">
   <link rel="stylesheet" href="{{ asset('public/admin/css/mycustomstyle.css') }}">
+  <style>
+    @media (max-width: 520px) {
+      /* منع اختفاء أعمدة الجداول في الشاشات الصغيرة عبر تفعيل تمرير أفقي موحّد */
+      .card-body.p-0 {
+        overflow-x: auto;
+      }
+
+      .card-body.p-0 .table {
+        min-width: 620px;
+        margin-bottom: 0;
+      }
+    }
+  </style>
   @yield('styles')
 </head>
 <body class="hold-transition sidebar-mini">

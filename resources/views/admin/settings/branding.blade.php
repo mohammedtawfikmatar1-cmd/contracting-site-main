@@ -22,7 +22,8 @@
           - حفظ هذا النموذج يتم عبر Admin\SettingController@saveBranding والذي يستخدم Setting::setValue.
           - الألوان تنعكس في الواجهة ضمن site/layouts/app عبر متغيرات CSS.
           - الشعارات والفافيكون والصور تنعكس في header/footer والصفحة الرئيسية ومن نحن.
-          - site_menu ينعكس مباشرة في روابط القائمة داخل header/footer.
+          - site_menu ينعكس في روابط التنقل الرئيسية؛ الصفحات المنشورة من «إدارة المحتوى ← الصفحات» تظهر في الواجهة ضمن مجموعة «صفحات إضافية» دون إعداد إضافي هنا.
+          - حقول home_hero_* تُعرض في بانر الصفحة الرئيسية (index).
         -->
         <form action="{{ route('admin.settings.branding.save') }}" method="POST" enctype="multipart/form-data">
           @csrf
@@ -155,8 +156,41 @@
               </div>
               <textarea name="site_menu" id="site_menu" class="form-control d-none" rows="6" dir="ltr" placeholder='[{"label":"الرئيسية","url":"https://example.com/"},{"label":"من نحن","url":"https://example.com/about"}]'>{{ old('site_menu', is_array($settings['site_menu'] ?? null) ? json_encode($settings['site_menu'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '') }}</textarea>
               <small class="text-muted d-block mt-1">
-                اترك القائمة فارغة لاستخدام القائمة الافتراضية + الصفحات المنشورة تلقائيًا.
+                اترك القائمة فارغة لاستخدام القائمة الافتراضية. أما الصفحات الإضافية فتُنشأ من «إدارة المحتوى ← الصفحات» وتُعرض في الهيدر ضمن مجموعة منفصلة تلقائيًا.
               </small>
+            </div>
+
+            <hr>
+
+            <!--
+              نصوص قسم الهيرو في الصفحة الرئيسية:
+              تُحفظ في settings وتُقرأ في resources/views/site/index.blade.php عبر $siteSettings.
+            -->
+            <h5 class="mb-3">نصوص البانر (الهيرو) في الصفحة الرئيسية</h5>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>عنوان رئيسي توضيحي</label>
+                  <input type="text" name="home_hero_title" class="form-control" maxlength="500"
+                         placeholder="مثال: شريكك في التشييد والبنية التحتية"
+                         value="{{ old('home_hero_title', $settings['home_hero_title'] ?? '') }}">
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>بيان توضيحي (شارة صغيرة فوق العنوان)</label>
+                  <input type="text" name="home_hero_badge" class="form-control" maxlength="500"
+                         placeholder="مثال: مقاولات عامة — جودة وتسليم في الوقت"
+                         value="{{ old('home_hero_badge', $settings['home_hero_badge'] ?? '') }}">
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>وصف توضيحي (سطران تحت العنوان)</label>
+                  <textarea name="home_hero_description" class="form-control" rows="3" maxlength="2000"
+                            placeholder="عرّف بخدمات شركتك ومجالات عملها بجملة أو جملتين.">{{ old('home_hero_description', $settings['home_hero_description'] ?? '') }}</textarea>
+                </div>
+              </div>
             </div>
 
             <hr>

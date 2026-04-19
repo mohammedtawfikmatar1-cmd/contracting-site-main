@@ -20,7 +20,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\News;
-use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -68,6 +67,10 @@ class NewsController extends Controller
             // رفع الصورة الرئيسية للخبر لاستخدامها في البطاقات وصفحة التفاصيل.
             $validated['image'] = $request->file('image')->store('news', 'public');
         }
+
+        /* أخبار يدوية: لا ترتبط بمشروع/مناقصة/وظيفة (الأخبار التلقائية تملأ newsable من الخدمة) */
+        $validated['newsable_type'] = null;
+        $validated['newsable_id'] = null;
 
         News::create($validated);
 
@@ -124,7 +127,8 @@ class NewsController extends Controller
      */
     private function validateNews(Request $request, ?int $ignoreId = null): array
     {
-        $enabled = (bool) Setting::getValue('enable_multilingual', false);
+        // إيقاف نظام الإدخال متعدد اللغة حاليا والإبقاء على العربية فقط.
+        $enabled = false;
         if ($enabled) {
             return $request->validate([
                 'title.ar' => ['required', 'string', 'max:255'],

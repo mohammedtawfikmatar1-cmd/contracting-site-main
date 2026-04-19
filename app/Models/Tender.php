@@ -51,6 +51,21 @@ class Tender extends Model
         'is_published' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Tender $tender): void {
+            $tender->news()->delete();
+        });
+    }
+
+    /**
+     * أخبار تلقائية مرتبطة بهذه المناقصة (مزامنة من لوحة التحكم).
+     */
+    public function news()
+    {
+        return $this->morphMany(News::class, 'newsable');
+    }
+
     /**
      * Scope a query to only include published tenders.
      */

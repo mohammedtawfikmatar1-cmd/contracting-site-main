@@ -5,7 +5,8 @@
 }
 
 .project-hero {
-    height: 60vh;
+    min-height: 60vh;
+    padding-top: var(--site-header-offset);
     position: relative;
     display: flex;
     align-items: center;
@@ -14,6 +15,10 @@
     background:
         linear-gradient(rgba(7, 8, 11, 0.6), rgba(7, 8, 11, 0.9)),
         var(--hero-bg-image, url('https://images.unsplash.com/photo-1503387762-592dee58c460?auto=format&fit=crop&q=80&w=2070')) center/cover;
+}
+
+body.has-admin-toolbar .project-hero {
+    padding-top: calc(var(--site-header-offset) + var(--admin-toolbar-offset, 48px));
 }
 
 .project-hero h1 {

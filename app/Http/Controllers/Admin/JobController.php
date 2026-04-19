@@ -17,6 +17,7 @@
  */
 namespace App\Http\Controllers\Admin;
 
+use App\Events\JobSavedForNews;
 use App\Http\Controllers\Controller;
 use App\Models\Job;
 use Illuminate\Http\Request;
@@ -64,7 +65,8 @@ class JobController extends Controller
         $validated['requirements'] = $this->toArrayFromLines($request->input('requirements'));
         $validated['skills'] = $this->toArrayFromLines($request->input('skills'));
 
-        Job::create($validated);
+        $job = Job::create($validated);
+        event(new JobSavedForNews($job));
 
         return redirect()->route('admin.jobs.index')->with('success', 'تمت إضافة الوظيفة بنجاح.');
     }
@@ -88,6 +90,7 @@ class JobController extends Controller
         $validated['skills'] = $this->toArrayFromLines($request->input('skills'));
 
         $job->update($validated);
+        event(new JobSavedForNews($job));
 
         return redirect()->route('admin.jobs.index')->with('success', 'تم تحديث الوظيفة بنجاح.');
     }

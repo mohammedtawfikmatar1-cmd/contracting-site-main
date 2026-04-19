@@ -74,6 +74,13 @@ class Project extends Model
         'completion_date' => 'date',
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Project $project): void {
+            $project->news()->delete();
+        });
+    }
+
     /**
      * Scope a query to only include published projects.
      */
@@ -88,8 +95,8 @@ class Project extends Model
      */
     public function getImageUrlAttribute()
     {
-        // إرجاع المسار الكامل لصورة المشروع لتسهيل العرض في Blade.
-        return $this->image ? asset('storage/' . $this->image) : null;
+        // إرجاع رابط الصورة عبر /media حتى تعمل الصور دون إعدادات تخزين إضافية.
+        return $this->image ? route('media.file', ['path' => ltrim((string) $this->image, '/')]) : null;
     }
 
     /**

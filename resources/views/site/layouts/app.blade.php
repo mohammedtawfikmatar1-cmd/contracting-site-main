@@ -157,6 +157,18 @@
         body.has-admin-toolbar .site-header {
             top: var(--admin-toolbar-offset, 48px);
         }
+
+        @media (max-width: 640px) {
+            .admin-preview-toolbar .toolbar-inner {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .admin-preview-toolbar .toolbar-actions {
+                justify-content: center;
+            }
+        }
     </style>
     @yield('styles')
 </head>
@@ -186,7 +198,8 @@
     <!-- ═══ HEADER (يعتمد على $siteSettings و $siteMenu من لوحة التحكم) ═══ -->
     @include('site.partials.header')
 
-    <main>
+    <!-- المحتوى الرئيسي: تُطبَّق عليه معايير تباين النص في global.css دون المساس بهيدر/فوتر -->
+    <main class="site-main">
         @if($isAdminPreview && $missingBrandingKeys->isNotEmpty())
             <div class="container" style="margin-top: 14px;">
                 <div style="
@@ -252,6 +265,25 @@
 
     <!-- Scripts -->
     @vite(['resources/js/app.js'])
+    @if($isAdminPreview)
+        <script>
+            (function () {
+                // ضبط إزاحة الهيدر تلقائيا بحسب ارتفاع شريط المعاينة لتجنب التداخل على الجوال.
+                const toolbar = document.querySelector('.admin-preview-toolbar');
+                if (!toolbar) {
+                    return;
+                }
+
+                const applyOffset = function () {
+                    const height = Math.ceil(toolbar.getBoundingClientRect().height || 48);
+                    document.body.style.setProperty('--admin-toolbar-offset', height + 'px');
+                };
+
+                applyOffset();
+                window.addEventListener('resize', applyOffset);
+            })();
+        </script>
+    @endif
     @yield('scripts')
 </body>
 </html>

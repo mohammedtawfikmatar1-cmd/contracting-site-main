@@ -19,9 +19,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Events\ProjectSavedForNews;
 use App\Models\Client;
 use App\Models\Project;
-use App\Models\Setting;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -76,7 +76,8 @@ class ProjectController extends Controller
             $validated['image'] = $request->file('image')->store('projects', 'public');
         }
 
-        Project::create($validated);
+        $project = Project::create($validated);
+        event(new ProjectSavedForNews($project));
 
         return redirect()->route('admin.projects.index')->with('success', 'تمت إضافة المشروع بنجاح.');
     }
@@ -111,6 +112,7 @@ class ProjectController extends Controller
         }
 
         $project->update($validated);
+        event(new ProjectSavedForNews($project));
 
         return redirect()->route('admin.projects.index')->with('success', 'تم تحديث المشروع بنجاح.');
     }
@@ -136,7 +138,8 @@ class ProjectController extends Controller
      */
     private function validateProject(Request $request, ?int $ignoreId = null): array
     {
-        $enabled = (bool) Setting::getValue('enable_multilingual', false);
+        // إيقاف نظام الإدخال متعدد اللغة حاليا والإبقاء على العربية فقط.
+        $enabled = false;
 
         if ($enabled) {
             return $request->validate([

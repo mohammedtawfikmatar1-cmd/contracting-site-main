@@ -81,6 +81,11 @@ footer {
     margin-bottom: var(--s6);
 }
 
+/* عنوان فرعي لمجموعة الصفحات الثابتة تحت «روابط سريعة» */
+.footer-nav .footer-nav__subheading {
+    margin-top: var(--s7);
+}
+
 .footer-nav ul {
     list-style: none;
     padding: 0;

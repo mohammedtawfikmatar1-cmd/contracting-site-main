@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\ContactRequestController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
@@ -78,18 +79,12 @@ Route::get('/pages/{slug}', [SiteController::class, 'page'])->name('pages.show')
 // صفحات ثابتة من قاعدة البيانات (تُدار من قسم الصفحات في الإدارة).
 Route::get('/search', [SiteController::class, 'search'])->name('search');
 // البحث في محتوى الموقع المنشور (خدمات/مشاريع/أخبار/وظائف/مناقصات/صفحات).
-Route::get('/lang/{locale}', function (string $locale) {
-    // تبديل اللغة في الجلسة (مُتاح فقط عند تفعيل خاصية تعدد اللغات من إعدادات الإدارة).
-    $enabled = (bool) \App\Models\Setting::getValue('enable_multilingual', false);
-    if (! $enabled) {
-        return back();
-    }
+Route::get('/media/{path}', function (string $path) {
+    // مسار وسائط موحد: يعرض الملفات مباشرة من التخزين العام دون الحاجة إلى storage:link.
+    abort_unless(Storage::disk('public')->exists($path), 404);
 
-    abort_unless(in_array($locale, ['ar', 'en'], true), 404);
-    session(['locale' => $locale]);
-
-    return back();
-})->name('lang.switch');
+    return Storage::disk('public')->response($path);
+})->where('path', '.*')->name('media.file');
 
 // --- استقبال نماذج الواجهة (Public Forms) ---
 // هذه المسارات تُنشئ بيانات جديدة في جدول contacts وتُطلق إشعارات للإدارة.

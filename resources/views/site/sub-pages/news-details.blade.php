@@ -6,12 +6,18 @@
     @vite(['resources/css/news.css', 'resources/css/service-details.css'])
     <style>
         .news-article-content {
-            color: var(--tm);
-            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.88);
+            line-height: 1.85;
             font-size: var(--t-md);
         }
+        .news-body-html a {
+            color: var(--orange);
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
         .news-article-content h2, .news-article-content h3 {
-            color: var(--tw);
+            color: rgba(255, 255, 255, 0.96);
             margin: var(--s6) 0 var(--s4);
         }
         .news-article-content p {
@@ -87,7 +93,15 @@
                 <div class="service-main-info reveal-up">
                     <div class="news-article-content">
                         <img src="{{ $newsItem->image_url ?: asset('imag/m1.jpg') }}" alt="{{ $newsItem->title }}">
-                        <p>{!! nl2br(e($newsItem->content)) !!}</p>
+                        @php
+                            $body = (string) $newsItem->content;
+                            $isHtml = str_contains($body, '<');
+                        @endphp
+                        @if($isHtml)
+                            <div class="news-body-html">{!! $body !!}</div>
+                        @else
+                            <div class="news-body-plain">{!! nl2br(e($body)) !!}</div>
+                        @endif
                     </div>
 
                     <div class="related-news">
@@ -96,12 +110,15 @@
                             <!-- بداية حلقة الأخبار ذات الصلة: $relatedNews قادمة من SiteController@newsDetails -->
                             @forelse($relatedNews as $related)
                                 <article class="news-card">
-                                    <div class="news-image news-image-sm">
-                                        <img src="{{ $related->image_url ?: asset('imag/m1.jpg') }}" alt="{{ $related->title }}">
-                                    </div>
+                                    <a class="news-card__media" href="{{ route('news.details', $related->slug) }}" tabindex="-1" aria-hidden="true">
+                                        <div class="news-image news-image-sm">
+                                            <img src="{{ $related->image_url ?: asset('imag/m1.jpg') }}" alt="" loading="lazy">
+                                        </div>
+                                    </a>
                                     <div class="news-content">
-                                        <h3>{{ $related->title }}</h3>
-                                        <a href="{{ route('news.details', $related->slug) }}" class="news-link">اقرأ المزيد</a>
+                                        <h3><a href="{{ route('news.details', $related->slug) }}">{{ $related->title }}</a></h3>
+                                        <p class="news-excerpt news-excerpt--compact">{{ $related->getExcerpt(100) }}</p>
+                                        <a href="{{ route('news.details', $related->slug) }}" class="news-link"><span>اقرأ المزيد</span></a>
                                     </div>
                                 </article>
                             @empty

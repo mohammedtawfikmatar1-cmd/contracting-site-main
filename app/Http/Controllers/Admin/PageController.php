@@ -19,7 +19,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
-use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -102,7 +101,8 @@ class PageController extends Controller
      */
     private function validatePage(Request $request, ?int $ignoreId = null): array
     {
-        $enabled = (bool) Setting::getValue('enable_multilingual', false);
+        // إيقاف نظام الإدخال متعدد اللغة حاليا والإبقاء على العربية فقط.
+        $enabled = false;
         if ($enabled) {
             return $request->validate([
                 'title.ar' => ['required', 'string', 'max:255'],

@@ -61,6 +61,13 @@
     transition: transform var(--tb), box-shadow var(--tb), border-color var(--tb);
 }
 
+/* ربط الصورة بالخبر دون تكرار نص الـ alt (يظهر في العنوان أسفلها) */
+.news-card__media {
+    color: inherit;
+    display: block;
+    text-decoration: none;
+}
+
 .news-card:hover {
     border-color: rgba(255, 122, 26, 0.35);
     box-shadow: 0 20px 56px rgba(255, 122, 26, 0.15);
@@ -134,7 +141,6 @@
 .news-card h3 {
     font-size: var(--t-md);
     font-weight: 800;
-    color: var(--tw);
     margin-bottom: var(--s4);
     line-height: 1.4;
     display: -webkit-box;
@@ -143,16 +149,38 @@
     overflow: hidden;
 }
 
-.news-card p {
-    color: var(--tm);
+/* تباين أوضح للنصوص على البطاقات الداكنة (تعديل لون النص فقط) */
+.news-card h3,
+.news-card h3 a {
+    color: rgba(255, 255, 255, 0.96);
+    text-decoration: none;
+}
+
+.news-card h3 a:hover {
+    color: var(--orange);
+}
+
+.news-excerpt {
+    color: rgba(255, 255, 255, 0.86);
     font-size: var(--t-sm);
-    line-height: 1.6;
+    line-height: 1.65;
     margin-bottom: var(--s5);
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
     flex-grow: 1;
+}
+
+.news-excerpt--compact {
+    -webkit-line-clamp: 2;
+    font-size: var(--t-xs);
+}
+
+@media (max-width: 640px) {
+    .news-excerpt {
+        -webkit-line-clamp: 3;
+    }
 }
 
 .news-tags {

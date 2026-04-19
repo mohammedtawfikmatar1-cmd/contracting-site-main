@@ -3,7 +3,13 @@
 namespace App\Providers;
 
 use App\Events\ContactRequestSubmitted;
+use App\Events\JobSavedForNews;
+use App\Events\ProjectSavedForNews;
+use App\Events\TenderSavedForNews;
 use App\Listeners\SendAdminContactNotification;
+use App\Listeners\SyncAutoNewsFromJob;
+use App\Listeners\SyncAutoNewsFromProject;
+use App\Listeners\SyncAutoNewsFromTender;
 use App\Models\Client;
 use App\Models\Page;
 use App\Models\Setting;
@@ -30,7 +36,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // تثبيت اللغة الحالية على العربية بعد إزالة نظام التبديل من الواجهة.
+        app()->setLocale('ar');
+
         Event::listen(ContactRequestSubmitted::class, SendAdminContactNotification::class);
+
+        /* أخبار تلقائية عند حفظ مشروع/مناقصة/وظيفة من لوحة التحكم */
+        Event::listen(ProjectSavedForNews::class, SyncAutoNewsFromProject::class);
+        Event::listen(TenderSavedForNews::class, SyncAutoNewsFromTender::class);
+        Event::listen(JobSavedForNews::class, SyncAutoNewsFromJob::class);
 
         Gate::define('manage-users', function (User $user): bool {
             return (bool) $user->is_super_admin;
@@ -81,13 +95,11 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-            $pagesMenu = $sitePages->map(fn ($page) => [
-                'label' => $page->title,
-                'url' => route('pages.show', $page->slug),
-                'active' => request()->routeIs('pages.show') && request()->route('slug') === $page->slug,
-            ]);
-
-            $siteMenu = $defaultMenu->merge($pagesMenu);
+            /*
+             * الصفحات الثابتة (CMS) تُعرض في الهيدر تحت عنوان فرعي (قائمة منسدلة)
+             * ولا تُدمج في الشريط الأفقي الرئيسي حتى لا تزدحم الروابط وتُفسد التصميم.
+             */
+            $siteMenu = $defaultMenu;
             $configuredMenu = $settings->get('site_menu');
             if (is_array($configuredMenu) && ! empty($configuredMenu)) {
                 $siteMenu = collect($configuredMenu)
@@ -119,7 +131,8 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('admin.*', function ($view) {
             $adminUser = Auth::user() ?? User::query()->first();
-            $enableMultilingual = (bool) Setting::getValue('enable_multilingual', false);
+            // إبقاء خيار الإعدادات كمكوّن مستقبلي فقط دون تفعيل فعلي داخل النماذج حاليا.
+            $enableMultilingual = false;
 
             $view->with('adminUnreadNotificationsCount', $adminUser?->unreadNotifications()->count() ?? 0);
             $view->with('adminLatestNotifications', $adminUser?->notifications()->latest()->limit(5)->get() ?? collect());

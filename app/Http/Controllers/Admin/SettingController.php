@@ -170,6 +170,11 @@ class SettingController extends Controller
             'footer_brief' => ['nullable', 'string', 'max:2000'],
             'site_menu' => ['nullable', 'string', 'max:8000'],
 
+            /* نصوص بانر الصفحة الرئيسية (تُعرض فوق صورة الهيرو في الواجهة الأمامية) */
+            'home_hero_title' => ['nullable', 'string', 'max:500'],
+            'home_hero_badge' => ['nullable', 'string', 'max:500'],
+            'home_hero_description' => ['nullable', 'string', 'max:2000'],
+
             'logo_main' => ['nullable', 'image', 'max:4096'],
             'logo_transparent' => ['nullable', 'image', 'max:4096'],
             'favicon' => ['nullable', 'image', 'max:2048'],
@@ -209,6 +214,10 @@ class SettingController extends Controller
         Setting::setValue('footer_brief', $validated['footer_brief'] ?? null, 'longtext');
         Setting::setValue('site_menu', $validated['site_menu'] ?? null, 'json');
         Setting::setValue('enable_multilingual', $request->boolean('enable_multilingual') ? '1' : '0', 'boolean');
+
+        Setting::setValue('home_hero_title', $validated['home_hero_title'] ?? null, 'text');
+        Setting::setValue('home_hero_badge', $validated['home_hero_badge'] ?? null, 'text');
+        Setting::setValue('home_hero_description', $validated['home_hero_description'] ?? null, 'longtext');
 
         // معالجة ملفات الصور: حذف النسخة القديمة ثم حفظ النسخة الجديدة وتسجيل مسارها في settings.
         foreach (['logo_main', 'logo_transparent', 'favicon', 'home_hero_image', 'about_main_image', 'footer_image'] as $key) {

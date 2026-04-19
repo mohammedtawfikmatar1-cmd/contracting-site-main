@@ -59,8 +59,8 @@ class Service extends Model
 
     public function getImageUrlAttribute()
     {
-        // تجهيز رابط الصورة الكامل للاستخدام المباشر في الواجهة.
-        return $this->image ? asset('storage/' . $this->image) : null;
+        // تجهيز رابط الصورة عبر المسار الموحد /media لضمان الظهور في جميع الصفحات.
+        return $this->image ? route('media.file', ['path' => ltrim((string) $this->image, '/')]) : null;
     }
 
     /**
