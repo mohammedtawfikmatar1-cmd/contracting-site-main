@@ -58,6 +58,8 @@ class PageController extends Controller
         $validated = $this->validatePage($request);
         $validated = $this->normalizeTranslatables($validated, ['title', 'content']);
         $validated['is_published'] = $request->boolean('is_published');
+        // إلغاء "نوع القالب" نهائياً: نعتمد عرض الصفحة القياسي فقط.
+        $validated['template'] = null;
 
         Page::create($validated);
 
@@ -80,6 +82,8 @@ class PageController extends Controller
         $validated = $this->validatePage($request, $page->id);
         $validated = $this->normalizeTranslatables($validated, ['title', 'content']);
         $validated['is_published'] = $request->boolean('is_published');
+        // إلغاء "نوع القالب" نهائياً: نعتمد عرض الصفحة القياسي فقط.
+        $validated['template'] = null;
 
         $page->update($validated);
 
@@ -109,14 +113,12 @@ class PageController extends Controller
                 'title.en' => ['nullable', 'string', 'max:255'],
                 'content.ar' => ['nullable', 'string'],
                 'content.en' => ['nullable', 'string'],
-                'template' => ['required', 'string', 'max:255'],
             ]);
         }
 
         return $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'content' => ['nullable', 'string'],
-            'template' => ['required', 'string', 'max:255'],
         ]);
     }
 

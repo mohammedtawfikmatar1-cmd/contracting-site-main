@@ -8,6 +8,13 @@
     <li class="breadcrumb-item active">تعديل</li>
 @endsection
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('public/admin/plugins/summernote/summernote-bs4.css') }}">
+    <style>
+        .note-editor.note-frame .note-editing-area .note-editable { direction: rtl; text-align: right; }
+    </style>
+@endsection
+
 @section('content')
 <div class="card card-warning">
     <div class="card-header"><h3 class="card-title">تعديل بيانات العميل</h3></div>
@@ -26,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label>وصف عن العميل</label>
-                <textarea name="description" class="form-control" rows="5" maxlength="5000">{{ old('description', $client->description) }}</textarea>
+                <textarea name="description" class="form-control js-editor" rows="5" maxlength="5000">{{ old('description', $client->description) }}</textarea>
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -76,4 +83,32 @@
         </div>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
+    <script>
+        (function ($) {
+            function initSummernote($el) {
+                if (!$el.length || $el.data('summernote')) return;
+                $el.summernote({
+                    height: 200,
+                    lang: 'ar-AR',
+                    toolbar: [
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
+                });
+            }
+
+            $(function () {
+                $('.js-editor').each(function () { initSummernote($(this)); });
+            });
+        })(jQuery);
+    </script>
 @endsection

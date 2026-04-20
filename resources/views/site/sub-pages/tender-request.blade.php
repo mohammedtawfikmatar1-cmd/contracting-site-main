@@ -44,7 +44,15 @@
                     </div>
 
                     <h2>تعليمات تقديم العروض</h2>
-                    <p class="service-description">{!! nl2br(e($tender->description)) !!}</p>
+                    @php
+                        $tenderBody = (string) ($tender->description ?? '');
+                        $tenderIsHtml = str_contains($tenderBody, '<');
+                    @endphp
+                    @if($tenderIsHtml)
+                        <div class="service-description">{!! $tenderBody !!}</div>
+                    @else
+                        <p class="service-description">{!! nl2br(e($tenderBody)) !!}</p>
+                    @endif
 
                     <div class="achievements-list">
                         <div class="achievement-item">

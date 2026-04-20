@@ -46,8 +46,31 @@
                 <span class="sec-label">من نحن</span>
                 <!-- نصوص من نحن: مصدرها إعدادات لوحة التحكم (about_title/about_text_1/about_text_2) -->
                 <h2>{{ $siteSettings['about_title'] ?? ($isAdminPreview ? 'نبذة تعريفية: أضف اسم أو رسالة "من نحن" من لوحة التحكم' : '') }}</h2>
-                <p>{{ $siteSettings['about_text_1'] ?? ($isAdminPreview ? 'نص توضيحي: قدّم وصفًا موجزًا لهوية الشركة وخبرتها في مجال المقاولات.' : '') }}</p>
-                <p>{{ $siteSettings['about_text_2'] ?? ($isAdminPreview ? 'نص توضيحي: أضف الرؤية أو الرسالة والقيم التي تميز شركتك.' : '') }}</p>
+                @php
+                    $about1 = (string) ($siteSettings['about_text_1'] ?? '');
+                    $about2 = (string) ($siteSettings['about_text_2'] ?? '');
+                    $about1IsHtml = str_contains($about1, '<');
+                    $about2IsHtml = str_contains($about2, '<');
+                @endphp
+                @if(filled($about1))
+                    @if($about1IsHtml)
+                        <div class="about-html">{!! $about1 !!}</div>
+                    @else
+                        <p>{{ $about1 }}</p>
+                    @endif
+                @elseif($isAdminPreview)
+                    <p>نص توضيحي: قدّم وصفًا موجزًا لهوية الشركة وخبرتها في مجال المقاولات.</p>
+                @endif
+
+                @if(filled($about2))
+                    @if($about2IsHtml)
+                        <div class="about-html">{!! $about2 !!}</div>
+                    @else
+                        <p>{{ $about2 }}</p>
+                    @endif
+                @elseif($isAdminPreview)
+                    <p>نص توضيحي: أضف الرؤية أو الرسالة والقيم التي تميز شركتك.</p>
+                @endif
                 <div class="about-stats" aria-label="إحصائيات">
                     <!-- إحصاءات الصفحة: $stats قادمة من SiteController@about وتعكس بيانات أقسام الإدارة (مشاريع/خدمات/وظائف) -->
                     <div class="ast"><h4>{{ $stats['projects'] }}</h4><p>مشروع</p></div>

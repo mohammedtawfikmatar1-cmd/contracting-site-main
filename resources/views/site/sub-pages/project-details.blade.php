@@ -39,7 +39,15 @@
         <div class="service-content-grid">
             <div class="service-main-info reveal-up">
                 <h2>عن المشروع</h2>
-                <p class="service-description">{!! nl2br(e($project->description)) !!}</p>
+                @php
+                    $projectBody = (string) ($project->description ?? '');
+                    $projectIsHtml = str_contains($projectBody, '<');
+                @endphp
+                @if($projectIsHtml)
+                    <div class="service-description">{!! $projectBody !!}</div>
+                @else
+                    <p class="service-description">{!! nl2br(e($projectBody)) !!}</p>
+                @endif
 
                 @if($relatedProjects->isNotEmpty())
                     <h2>مشاريع مشابهة</h2>

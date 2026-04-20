@@ -8,6 +8,13 @@
     <li class="breadcrumb-item active">إضافة خدمة</li>
 @endsection
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('public/admin/plugins/summernote/summernote-bs4.css') }}">
+    <style>
+        .note-editor.note-frame .note-editing-area .note-editable { direction: rtl; text-align: right; }
+    </style>
+@endsection
+
 @section('content')
 <div class="row">
     <div class="col-md-12">
@@ -52,9 +59,6 @@
                         @endif
                     </div>
 
-                    <div class="alert alert-light border">
-                        سيتم توليد الرابط (Slug) تلقائياً من اسم الخدمة عند الحفظ.
-                    </div>
                     
                     <div class="form-group">
                         <label for="description">وصف الخدمة</label>
@@ -70,15 +74,15 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="svc-desc-ar" role="tabpanel">
-                                    <textarea name="description[ar]" class="form-control" rows="8" placeholder="أدخل وصفاً تفصيلياً للخدمة">{{ old('description.ar') }}</textarea>
+                                    <textarea name="description[ar]" class="form-control js-editor" rows="8" placeholder="أدخل وصفاً تفصيلياً للخدمة">{{ old('description.ar') }}</textarea>
                                 </div>
                                 <div class="tab-pane fade" id="svc-desc-en" role="tabpanel">
-                                    <textarea name="description[en]" class="form-control" rows="8" placeholder="Service description (EN)">{{ old('description.en') }}</textarea>
+                                    <textarea name="description[en]" class="form-control js-editor" rows="8" placeholder="Service description (EN)">{{ old('description.en') }}</textarea>
                                 </div>
                             </div>
                             <!-- نهاية إدخال الوصف متعدد اللغة -->
                         @else
-                            <textarea name="description" class="form-control" id="description" rows="10" placeholder="أدخل وصفاً تفصيلياً للخدمة">{{ old('description') }}</textarea>
+                            <textarea name="description" class="form-control js-editor" id="description" rows="10" placeholder="أدخل وصفاً تفصيلياً للخدمة">{{ old('description') }}</textarea>
                         @endif
                     </div>
 
@@ -133,4 +137,36 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
+    <script>
+        (function ($) {
+            function initSummernote($el) {
+                if (!$el.length || $el.data('summernote')) return;
+                $el.summernote({
+                    height: 240,
+                    lang: 'ar-AR',
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link', 'picture', 'table']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
+                });
+            }
+
+            $(function () {
+                $('.js-editor').each(function () { initSummernote($(this)); });
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+                    $('.js-editor').each(function () { initSummernote($(this)); });
+                });
+            });
+        })(jQuery);
+    </script>
 @endsection

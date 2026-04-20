@@ -8,6 +8,13 @@
     <li class="breadcrumb-item active">تعديل</li>
 @endsection
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('public/admin/plugins/summernote/summernote-bs4.css') }}">
+    <style>
+        .note-editor.note-frame .note-editing-area .note-editable { direction: rtl; text-align: right; }
+    </style>
+@endsection
+
 @section('content')
 <div class="card card-info">
     <div class="card-header"><h3 class="card-title">تعديل بيانات الوظيفة</h3></div>
@@ -25,9 +32,7 @@
                 <label>المسمى الوظيفي</label>
                 <input type="text" name="title" class="form-control" value="{{ old('title', $job->title) }}" required>
             </div>
-            <div class="alert alert-light border">
-                سيتم توليد الرابط (Slug) تلقائياً من المسمى الوظيفي عند الحفظ.
-            </div>
+      
             <div class="row">
                 <div class="col-md-6"><div class="form-group"><label>الموقع</label><input type="text" name="location" class="form-control" value="{{ old('location', $job->location) }}"></div></div>
                 <div class="col-md-6"><div class="form-group"><label>نوع الوظيفة</label><input type="text" name="type" class="form-control" value="{{ old('type', $job->type) }}"></div></div>
@@ -38,7 +43,7 @@
             </div>
             <div class="form-group">
                 <label>الوصف</label>
-                <textarea name="description" class="form-control" rows="6">{{ old('description', $job->description) }}</textarea>
+                <textarea name="description" class="form-control js-editor" rows="6">{{ old('description', $job->description) }}</textarea>
             </div>
             <div class="form-group">
                 <label>المتطلبات (كل سطر عنصر)</label>
@@ -66,4 +71,33 @@
         </div>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
+    <script>
+        (function ($) {
+            function initSummernote($el) {
+                if (!$el.length || $el.data('summernote')) return;
+                $el.summernote({
+                    height: 220,
+                    lang: 'ar-AR',
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link', 'picture', 'table']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
+                });
+            }
+
+            $(function () {
+                $('.js-editor').each(function () { initSummernote($(this)); });
+            });
+        })(jQuery);
+    </script>
 @endsection

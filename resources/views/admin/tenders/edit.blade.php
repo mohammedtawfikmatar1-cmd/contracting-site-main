@@ -8,6 +8,13 @@
     <li class="breadcrumb-item active">تعديل</li>
 @endsection
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('public/admin/plugins/summernote/summernote-bs4.css') }}">
+    <style>
+        .note-editor.note-frame .note-editing-area .note-editable { direction: rtl; text-align: right; }
+    </style>
+@endsection
+
 @section('content')
 <div class="card card-danger">
     <div class="card-header"><h3 class="card-title">تعديل بيانات المناقصة</h3></div>
@@ -25,9 +32,7 @@
                 <label>العنوان</label>
                 <input type="text" name="title" class="form-control" value="{{ old('title', $tender->title) }}" required>
             </div>
-            <div class="alert alert-light border">
-                سيتم توليد الرابط (Slug) تلقائياً من عنوان المناقصة عند الحفظ.
-            </div>
+
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -51,7 +56,7 @@
             </div>
             <div class="form-group">
                 <label>الوصف</label>
-                <textarea name="description" class="form-control" rows="8">{{ old('description', $tender->description) }}</textarea>
+                <textarea name="description" class="form-control js-editor" rows="8">{{ old('description', $tender->description) }}</textarea>
             </div>
             <div class="form-group">
                 <label>الحالة</label>
@@ -73,4 +78,33 @@
         </div>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
+    <script>
+        (function ($) {
+            function initSummernote($el) {
+                if (!$el.length || $el.data('summernote')) return;
+                $el.summernote({
+                    height: 260,
+                    lang: 'ar-AR',
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link', 'picture', 'table']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
+                });
+            }
+
+            $(function () {
+                $('.js-editor').each(function () { initSummernote($(this)); });
+            });
+        })(jQuery);
+    </script>
 @endsection

@@ -240,17 +240,7 @@ class SiteController extends Controller
     public function page(string $slug)
     {
         $page = \App\Models\Page::query()->published()->where('slug', $slug)->firstOrFail();
-        $viewName = 'site.page';
-
-        if (!empty($page->template)) {
-            $candidate = 'site.pages.' . $page->template;
-            if (view()->exists($candidate)) {
-                // تمكين الإدارة من تغيير طريقة عرض الصفحة عبر اختيار template مناسب.
-                $viewName = $candidate;
-            }
-        }
-
-        return view($viewName, compact('page'));
+        return view('site.page', compact('page'));
     }
 
     /**

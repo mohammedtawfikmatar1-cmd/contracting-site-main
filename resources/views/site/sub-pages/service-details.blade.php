@@ -22,7 +22,15 @@
             <div class="service-content-grid">
                 <div class="service-main-info reveal-up">
                     <h2>نظرة عامة على الخدمة</h2>
-                    <p class="service-description">{!! nl2br(e($service->description)) !!}</p>
+                    @php
+                        $serviceBody = (string) ($service->description ?? '');
+                        $serviceIsHtml = str_contains($serviceBody, '<');
+                    @endphp
+                    @if($serviceIsHtml)
+                        <div class="service-description">{!! $serviceBody !!}</div>
+                    @else
+                        <p class="service-description">{!! nl2br(e($serviceBody)) !!}</p>
+                    @endif
 
                     @if($relatedProjects->isNotEmpty())
                         <h2>مشاريع مرتبطة بهذه الخدمة</h2>

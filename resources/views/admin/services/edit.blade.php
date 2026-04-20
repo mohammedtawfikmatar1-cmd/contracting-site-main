@@ -8,6 +8,13 @@
     <li class="breadcrumb-item active">تعديل</li>
 @endsection
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('public/admin/plugins/summernote/summernote-bs4.css') }}">
+    <style>
+        .note-editor.note-frame .note-editing-area .note-editable { direction: rtl; text-align: right; }
+    </style>
+@endsection
+
 @section('content')
 <div class="card card-success">
     <div class="card-header"><h3 class="card-title">تعديل بيانات الخدمة</h3></div>
@@ -45,9 +52,7 @@
                     <input type="text" name="title" class="form-control" value="{{ old('title', is_array($service->getTranslations('title')) ? ($service->getTranslation('title','ar') ?: $service->title) : $service->title) }}" required>
                 @endif
             </div>
-            <div class="alert alert-light border">
-                سيتم توليد الرابط (Slug) تلقائياً من اسم الخدمة عند الحفظ.
-            </div>
+
             <div class="form-group">
                 <label>الوصف</label>
                 @if(!empty($enableMultilingual))
@@ -61,14 +66,14 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="svc-desc-ar" role="tabpanel">
-                            <textarea name="description[ar]" class="form-control" rows="8">{{ old('description.ar', $service->getTranslation('description','ar')) }}</textarea>
+                            <textarea name="description[ar]" class="form-control js-editor" rows="8">{{ old('description.ar', $service->getTranslation('description','ar')) }}</textarea>
                         </div>
                         <div class="tab-pane fade" id="svc-desc-en" role="tabpanel">
-                            <textarea name="description[en]" class="form-control" rows="8">{{ old('description.en', $service->getTranslation('description','en')) }}</textarea>
+                            <textarea name="description[en]" class="form-control js-editor" rows="8">{{ old('description.en', $service->getTranslation('description','en')) }}</textarea>
                         </div>
                     </div>
                 @else
-                    <textarea name="description" class="form-control" rows="8">{{ old('description', is_array($service->getTranslations('description')) ? ($service->getTranslation('description','ar') ?: $service->description) : $service->description) }}</textarea>
+                    <textarea name="description" class="form-control js-editor" rows="8">{{ old('description', is_array($service->getTranslations('description')) ? ($service->getTranslation('description','ar') ?: $service->description) : $service->description) }}</textarea>
                 @endif
             </div>
             <div class="row">
@@ -112,4 +117,36 @@
         </div>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
+    <script>
+        (function ($) {
+            function initSummernote($el) {
+                if (!$el.length || $el.data('summernote')) return;
+                $el.summernote({
+                    height: 240,
+                    lang: 'ar-AR',
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link', 'picture', 'table']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
+                });
+            }
+
+            $(function () {
+                $('.js-editor').each(function () { initSummernote($(this)); });
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+                    $('.js-editor').each(function () { initSummernote($(this)); });
+                });
+            });
+        })(jQuery);
+    </script>
 @endsection
