@@ -20,10 +20,12 @@ namespace App\Providers;
 use App\Events\ContactRequestSubmitted;
 use App\Events\JobSavedForNews;
 use App\Events\ProjectSavedForNews;
+use App\Events\ServiceSavedForNews;
 use App\Events\TenderSavedForNews;
 use App\Listeners\SendAdminContactNotification;
 use App\Listeners\SyncAutoNewsFromJob;
 use App\Listeners\SyncAutoNewsFromProject;
+use App\Listeners\SyncAutoNewsFromService;
 use App\Listeners\SyncAutoNewsFromTender;
 use App\Models\Client;
 use App\Models\Page;
@@ -64,6 +66,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(ProjectSavedForNews::class, SyncAutoNewsFromProject::class);
         Event::listen(TenderSavedForNews::class, SyncAutoNewsFromTender::class);
         Event::listen(JobSavedForNews::class, SyncAutoNewsFromJob::class);
+        Event::listen(ServiceSavedForNews::class, SyncAutoNewsFromService::class);
 
         Gate::define('manage-users', function (User $user): bool {
             return (bool) $user->is_super_admin;

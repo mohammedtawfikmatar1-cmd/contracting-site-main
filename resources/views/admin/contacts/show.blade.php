@@ -30,7 +30,7 @@
                         <p><strong>رقم الهاتف:</strong> {{ $contact->phone }}</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>نوع الطلب:</strong> {{ $contact->request_type }}</p>
+                        <p><strong>نوع الطلب:</strong> {{ $contact->request_type_label }}</p>
                         <p><strong>تاريخ الطلب:</strong> {{ $contact->created_at->format('Y-m-d H:i') }}</p>
                         <p><strong>الحالة:</strong> <span class="badge badge-info">{{ $contact->status }}</span></p>
                     </div>
@@ -48,9 +48,22 @@
                 @if($contact->cv_file_url)
                     <div class="row mt-3">
                         <div class="col-md-12">
-                            <h5>السيرة الذاتية المرفقة:</h5>
-                            <!-- رابط تحميل الملف المرفق: مصدره storage/public -->
-                            <a href="{{ $contact->cv_file_url }}" class="btn btn-sm btn-info" target="_blank"><i class="fas fa-download"></i> تحميل السيرة الذاتية</a>
+                            <h5>
+                                @if($contact->request_type_label === \App\Models\Contact::TYPE_TENDER_AR)
+                                    ملف العرض المرفق:
+                                @else
+                                    السيرة الذاتية المرفقة:
+                                @endif
+                            </h5>
+                            <!-- رابط تحميل الملف المرفق: يمر عبر /media لتفادي مشاكل Apache -->
+                            <a href="{{ $contact->cv_file_url }}" class="btn btn-sm btn-info" target="_blank">
+                                <i class="fas fa-download"></i>
+                                @if($contact->request_type_label === \App\Models\Contact::TYPE_TENDER_AR)
+                                    تحميل ملف العرض
+                                @else
+                                    تحميل السيرة الذاتية
+                                @endif
+                            </a>
                         </div>
                     </div>
                 @endif

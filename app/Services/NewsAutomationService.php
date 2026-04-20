@@ -33,11 +33,49 @@ namespace App\Services;
 use App\Models\Job;
 use App\Models\News;
 use App\Models\Project;
+use App\Models\Service;
 use App\Models\Tender;
 use Illuminate\Support\Str;
 
 class NewsAutomationService
 {
+    /**
+     * مزامنة خبر مرتبط بخدمة منشورة.
+     *
+     * - إن كانت الخدمة غير منشورة: نحذف الخبر المرتبط إن وُجد.
+     * - إن كانت منشورة: ننشئ/نحدّث خبرًا واحدًا لكل خدمة (مفتاح morph).
+     */
+    public function syncFromService(Service $service): void
+    {
+        $q = News::query()
+            ->where('newsable_type', $service->getMorphClass())
+            ->where('newsable_id', $service->id);
+
+        if (! $service->is_published) {
+            $q->delete();
+
+            return;
+        }
+
+        $title = $this->plainString($service->title);
+        $excerpt = Str::limit(strip_tags($this->plainString($service->description ?? '')), 400);
+        $url = route('services.details', $service->slug);
+        $content = $this->buildHtmlBody($excerpt, 'عرض تفاصيل الخدمة', $url);
+
+        $news = News::query()->firstOrNew([
+            'newsable_type' => $service->getMorphClass(),
+            'newsable_id' => $service->id,
+        ]);
+
+        $news->title = ['ar' => $title ?: 'خدمة جديدة'];
+        $news->content = ['ar' => $content];
+        $news->category = ['ar' => 'خدمات'];
+        $news->image = $service->image;
+        $news->is_published = true;
+        $news->published_at = $news->published_at ?? now();
+        $news->save();
+    }
+
     /**
      * مزامنة خبر مرتبط بمشروع منشور.
      *

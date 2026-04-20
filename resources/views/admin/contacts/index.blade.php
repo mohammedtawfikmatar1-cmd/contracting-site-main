@@ -47,7 +47,7 @@
                             <td>{{ $contact->full_name }}</td>
                             <td>{{ $contact->email }}</td>
                             <td>{{ $contact->phone }}</td>
-                            <td>{{ $contact->request_type }}</td>
+                            <td>{{ $contact->request_type_label }}</td>
                             <td>{{ $contact->status }}</td>
                             <td>{{ $contact->created_at->format('Y-m-d H:i') }}</td>
                             <td>

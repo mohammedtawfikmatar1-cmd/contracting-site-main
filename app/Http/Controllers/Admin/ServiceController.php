@@ -18,6 +18,7 @@
  */
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ServiceSavedForNews;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -66,7 +67,8 @@ class ServiceController extends Controller
             $validated['image'] = $request->file('image')->store('services', 'public');
         }
 
-        Service::create($validated);
+        $service = Service::create($validated);
+        event(new ServiceSavedForNews($service));
 
         return redirect()->route('admin.services.index')->with('success', 'تمت إضافة الخدمة بنجاح.');
     }
@@ -98,6 +100,8 @@ class ServiceController extends Controller
         }
 
         $service->update($validated);
+        $service->refresh();
+        event(new ServiceSavedForNews($service));
 
         return redirect()->route('admin.services.index')->with('success', 'تم تحديث الخدمة بنجاح.');
     }

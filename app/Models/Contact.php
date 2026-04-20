@@ -26,6 +26,15 @@ class Contact extends Model
     use HasFactory;
 
     /**
+     * أنواع الطلبات بالعربي (قيم التخزين في قاعدة البيانات).
+     * نُبقي التوافق مع القيم القديمة (general/service/career) عبر accessors/scopes.
+     */
+    public const TYPE_GENERAL_AR = 'تواصل عام';
+    public const TYPE_SERVICE_AR = 'طلب خدمة';
+    public const TYPE_CAREER_AR = 'طلب توظيف';
+    public const TYPE_TENDER_AR = 'عرض طلب';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -65,7 +74,7 @@ class Contact extends Model
     public function scopeCareers($query)
     {
         // تصفية طلبات التوظيف فقط.
-        return $query->where('request_type', 'career');
+        return $query->whereIn('request_type', ['career', self::TYPE_CAREER_AR]);
     }
 
     /**
@@ -74,7 +83,25 @@ class Contact extends Model
     public function scopeServiceRequests($query)
     {
         // تصفية الطلبات المرتبطة بطلب خدمة من الزائر.
-        return $query->where('request_type', 'service');
+        return $query->whereIn('request_type', ['service', self::TYPE_SERVICE_AR]);
+    }
+
+    /**
+     * اسم نوع الطلب للعرض في لوحة التحكم (عربي) مع دعم البيانات القديمة.
+     */
+    public function getRequestTypeLabelAttribute(): string
+    {
+        return match ($this->request_type) {
+            'general' => self::TYPE_GENERAL_AR,
+            'service' => self::TYPE_SERVICE_AR,
+            'career' => self::TYPE_CAREER_AR,
+            'tender' => self::TYPE_TENDER_AR,
+            self::TYPE_GENERAL_AR,
+            self::TYPE_SERVICE_AR,
+            self::TYPE_CAREER_AR,
+            self::TYPE_TENDER_AR => $this->request_type,
+            default => (string) $this->request_type,
+        };
     }
 
     /**
@@ -84,8 +111,8 @@ class Contact extends Model
      */
     public function getCvFileUrlAttribute()
     {
-        // إنشاء رابط قابل للاستخدام لتحميل ملف السيرة الذاتية.
-        return $this->cv_file ? Storage::url($this->cv_file) : null;
+        // إنشاء رابط تحميل موحد عبر /media لتفادي مشاكل Apache و storage:link.
+        return $this->cv_file ? route('media.file', ['path' => ltrim((string) $this->cv_file, '/')]) : null;
     }
 
     /**

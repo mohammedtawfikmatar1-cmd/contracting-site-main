@@ -48,7 +48,13 @@ class ContactRequestController extends Controller
             'cv_file' => ['nullable', 'file', 'mimes:pdf', 'max:5120'],
         ]);
 
-        $validated['request_type'] = $validated['request_type'] ?? 'general';
+        // نخزن نوع الطلب بالعربي داخل قاعدة البيانات حسب طلب الإدارة،
+        // مع الإبقاء على قبول القيم القديمة القادمة من بعض النماذج.
+        $validated['request_type'] = match ($validated['request_type'] ?? 'general') {
+            'service' => Contact::TYPE_SERVICE_AR,
+            'career' => Contact::TYPE_CAREER_AR,
+            default => Contact::TYPE_GENERAL_AR,
+        };
         $validated['status'] = 'pending';
 
         if ($request->hasFile('cv_file')) {
@@ -81,7 +87,7 @@ class ContactRequestController extends Controller
             'full_name' => $validated['full_name'],
             'phone' => $validated['phone'],
             'email' => $validated['email'] ?? 'unknown@example.com',
-            'request_type' => 'service',
+            'request_type' => Contact::TYPE_SERVICE_AR,
             'service_requested' => $service->title,
             'message' => $validated['message'],
             'status' => 'pending',
@@ -110,9 +116,10 @@ class ContactRequestController extends Controller
             'full_name' => $validated['full_name'],
             'phone' => $validated['phone'],
             'email' => $validated['email'],
-            'request_type' => 'career',
+            'request_type' => Contact::TYPE_CAREER_AR,
             'service_requested' => $job->title,
-            'cv_file' => $request->file('cv_file')->store('job-applications', 'public'), // حفظ ملف السيرة الذاتية.
+            // حفظ ملف السيرة الذاتية داخل مجلد مخصص كما طلبت الإدارة.
+            'cv_file' => $request->file('cv_file')->store('cv-files', 'public'),
             'message' => $validated['message'] ?? ('طلب توظيف على وظيفة: ' . $job->title),
             'status' => 'pending',
         ]);
@@ -140,8 +147,8 @@ class ContactRequestController extends Controller
             'full_name' => $validated['full_name'],
             'phone' => $validated['phone'],
             'email' => $validated['email'],
-            'request_type' => 'service',
-            'service_requested' => 'Tender: ' . $tender->title,
+            'request_type' => Contact::TYPE_TENDER_AR,
+            'service_requested' => $tender->title,
             'cv_file' => $request->hasFile('proposal_file')
                 ? $request->file('proposal_file')->store('tender-proposals', 'public') // رفع ملف العرض الفني/المالي إن وُجد.
                 : null,
