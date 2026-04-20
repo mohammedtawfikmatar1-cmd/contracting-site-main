@@ -13,9 +13,13 @@
  * - ContactRequestSubmitted event لإطلاق الإشعارات بعد الحفظ.
  * - رفع الملفات إلى التخزين العام عند وجود مرفقات.
  *
- * خريطة تدفق البيانات:
- * يبدأ التدفق من نماذج الواجهة الأمامية، ثم يتم التحقق من المدخلات،
- * وبعدها حفظ السجل في جدول contacts، ثم إطلاق حدث ليصل الإشعار إلى لوحة التحكم.
+ * خريطة تدفق البيانات (للمبتدئين):
+ * -------------------------
+ * [نموذج في المتصفح] → POST إلى أحد المسارات في routes/web.php
+ * → دالة هنا (storeGeneral / storeServiceRequest / ...)
+ * → Contact::create(...)
+ * → event(new ContactRequestSubmitted(...))
+ * → SendAdminContactNotification يرسل إشعارًا للمستخدمين في الإدارة
  */
 namespace App\Http\Controllers;
 

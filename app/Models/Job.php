@@ -49,6 +49,7 @@ class Job extends Model
         'closing_date' => 'date',
     ];
 
+    /** حذف الوظيفة يزيل الخبر التلقائي المرتبط بها. */
     protected static function booted(): void
     {
         static::deleting(function (Job $job): void {
@@ -57,7 +58,7 @@ class Job extends Model
     }
 
     /**
-     * أخبار تلقائية مرتبطة بهذه الوظيفة (مزامنة من لوحة التحكم).
+     * أخبار تلقائية من جدول job_posts — راجع NewsAutomationService::syncFromJob.
      */
     public function news()
     {

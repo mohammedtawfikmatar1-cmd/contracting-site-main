@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * بذور قاعدة البيانات (Seeders)
+ *
+ * تُشغَّل يدويًا بـ: php artisan db:seed
+ * تُستخدم لإنشاء بيانات أولية بعد migrations (مثل مستخدم تجريبي).
+ * احذر: لا تشغّل على قاعدة إنتاج دون مراجعة ما سيُحذف أو يُستبدل.
+ */
 namespace Database\Seeders;
 
 use App\Models\User;

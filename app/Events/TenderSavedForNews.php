@@ -7,7 +7,11 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 /**
- * يُطلق بعد حفظ مناقصة من لوحة التحكم لمزامنة خبر تلقائي مرتبط.
+ * حدث: تم حفظ مناقصة من لوحة التحكم (إنشاء أو تعديل).
+ *
+ * المستمع المرتبط: SyncAutoNewsFromTender → NewsAutomationService::syncFromTender()
+ *
+ * @see TenderController::store و ::update حيث يُستدعى event(new TenderSavedForNews(...))
  */
 class TenderSavedForNews
 {

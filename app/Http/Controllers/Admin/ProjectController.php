@@ -77,6 +77,11 @@ class ProjectController extends Controller
         }
 
         $project = Project::create($validated);
+
+        /*
+         * يُطلق حدثًا يمرّ عبر AppServiceProvider إلى SyncAutoNewsFromProject
+         * لإنشاء/تحديث خبر في جدول news إذا كان المشروع منشورًا (انظر NewsAutomationService).
+         */
         event(new ProjectSavedForNews($project));
 
         return redirect()->route('admin.projects.index')->with('success', 'تمت إضافة المشروع بنجاح.');
@@ -112,6 +117,8 @@ class ProjectController extends Controller
         }
 
         $project->update($validated);
+
+        // بعد التعديل نعيد مزامنة الخبر التلقائي (مثلاً إذا تغيّر العنوان أو أُلغي النشر)
         event(new ProjectSavedForNews($project));
 
         return redirect()->route('admin.projects.index')->with('success', 'تم تحديث المشروع بنجاح.');

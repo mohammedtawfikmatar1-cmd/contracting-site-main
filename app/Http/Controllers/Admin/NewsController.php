@@ -68,7 +68,11 @@ class NewsController extends Controller
             $validated['image'] = $request->file('image')->store('news', 'public');
         }
 
-        /* أخبار يدوية: لا ترتبط بمشروع/مناقصة/وظيفة (الأخبار التلقائية تملأ newsable من الخدمة) */
+        /*
+         * أخبار يدوية من شاشة "الأخبار" في الإدارة:
+         * لا نربطها بمشروع/مناقصة/وظيفة (newsable = null).
+         * أمّا الأخبار التلقائية فتُنشأ من NewsAutomationService وتملأ newsable_type / newsable_id.
+         */
         $validated['newsable_type'] = null;
         $validated['newsable_id'] = null;
 

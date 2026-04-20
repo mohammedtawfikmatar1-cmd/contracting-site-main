@@ -66,6 +66,8 @@ class JobController extends Controller
         $validated['skills'] = $this->toArrayFromLines($request->input('skills'));
 
         $job = Job::create($validated);
+
+        // خبر تلقائي للوظائف المفعّلة (is_active) — يُزال عند التعطيل
         event(new JobSavedForNews($job));
 
         return redirect()->route('admin.jobs.index')->with('success', 'تمت إضافة الوظيفة بنجاح.');
@@ -90,6 +92,8 @@ class JobController extends Controller
         $validated['skills'] = $this->toArrayFromLines($request->input('skills'));
 
         $job->update($validated);
+
+        // تحديث الخبر التلقائي أو إزالته إذا أصبحت الوظيفة غير مفعّلة
         event(new JobSavedForNews($job));
 
         return redirect()->route('admin.jobs.index')->with('success', 'تم تحديث الوظيفة بنجاح.');

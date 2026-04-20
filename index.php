@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * نقطة دخول الويب من المجلد العام (عند استضافة المشروع بحيث يشير المستند الجذر هنا).
+ * تمرير كل الطلبات إلى Laravel عبر bootstrap/app.php.
+ */
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 

@@ -67,7 +67,10 @@ class News extends Model
         parent::boot();
 
         static::saving(function ($news) {
-            // عند تفعيل النشر دون تاريخ محدد، يتم ضبط تاريخ النشر تلقائيا.
+            /*
+             * published_at: إذا فعّل المسؤول "منشور" وترك التاريخ فارغًا، نضع الوقت الحالي
+             * حتى تظهر الأخبار في scopePublished() (التي تتطلب published_at <= الآن).
+             */
             if ($news->is_published && is_null($news->published_at)) {
                 $news->published_at = now();
             }

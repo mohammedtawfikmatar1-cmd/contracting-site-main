@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * AppServiceProvider — يُحمّل مبكرًا عند تشغيل Laravel (boot).
+ *
+ * ماذا نضع هنا عادة؟
+ * --------------------
+ * - ربط الأحداث (Events) بالمستمعين (Listeners): أي حدث يحدث → من ينفّذ الكود بعده.
+ * - View::composer: تمرير متغيرات جاهزة لكل قوالب الموقع (site.*) مثل الإعدادات والقائمة.
+ * - Gate: قواعد صلاحيات بسيطة (هنا: إدارة المستخدمين للمشرف الأعلى فقط).
+ *
+ * تسلسل مهم للمبتدئين:
+ * ---------------------
+ * 1) طلب HTTP يصل إلى routes/web.php
+ * 2) المتحكم ينفّذ المنطق ويعيد view(...)
+ * 3) قبل عرض القالب، يعمل composer الخاص بـ site.* فيضيف siteSettings و siteMenu
+ */
 namespace App\Providers;
 
 use App\Events\ContactRequestSubmitted;
@@ -28,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // هنا تُسجّل الخدمات في "حاوية" Laravel (مثل أصناف تُستبدل باختبارات). غالبًا يُترك فارغًا في مشاريع صغيرة.
     }
 
     /**
@@ -39,9 +54,13 @@ class AppServiceProvider extends ServiceProvider
         // تثبيت اللغة الحالية على العربية بعد إزالة نظام التبديل من الواجهة.
         app()->setLocale('ar');
 
+        // طلب تواصل من الموقع → إشعار للمستخدمين في لوحة التحكم
         Event::listen(ContactRequestSubmitted::class, SendAdminContactNotification::class);
 
-        /* أخبار تلقائية عند حفظ مشروع/مناقصة/وظيفة من لوحة التحكم */
+        /*
+         | سلسلة الأخبار التلقائية (راجع app/Services/NewsAutomationService.php):
+         | حفظ في الإدارة → حدث *SavedForNews → مستمع Sync* → تحديث جدول news
+         */
         Event::listen(ProjectSavedForNews::class, SyncAutoNewsFromProject::class);
         Event::listen(TenderSavedForNews::class, SyncAutoNewsFromTender::class);
         Event::listen(JobSavedForNews::class, SyncAutoNewsFromJob::class);
@@ -50,6 +69,7 @@ class AppServiceProvider extends ServiceProvider
             return (bool) $user->is_super_admin;
         });
 
+        // أي قالب يبدأ اسمه بـ site. (مثل site.index) يستقبل المتغيرات التالية تلقائيًا
         View::composer('site.*', function ($view) {
             $settings = collect();
             if (Schema::hasTable((new Setting())->getTable())) {

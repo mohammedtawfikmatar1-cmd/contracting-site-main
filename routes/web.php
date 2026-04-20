@@ -39,6 +39,16 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
 |--------------------------------------------------------------------------
+| نصيحة للمبتدئين: كيف أتتبع أي صفحة؟
+|--------------------------------------------------------------------------
+| 1) ابحث عن المسار هنا (مثلاً Route::get('/news', ...))
+| 2) افتح المتحكم والدالة المشار إليها (مثلاً SiteController@news)
+| 3) افتح اسم القالب في return view(...) داخل تلك الدالة
+|--------------------------------------------------------------------------
+*/
+
+/*
+|--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
@@ -103,6 +113,7 @@ Route::get('/{slug}', [SiteController::class, 'dynamicPage'])
     ->where('slug', '^(?!admin(?:/|$)|services(?:/|$)|projects(?:/|$)|news(?:/|$)|careers(?:/|$)|tenders(?:/|$)|contact(?:/|$)|clients(?:/|$)|search(?:/|$)|pages(?:/|$)|storage(?:/|$)|up(?:/|$)).+');
 
 // --- واجهات لوحة التحكم (Admin Dashboard Routes) ---
+// كل ما بداخل middleware('auth') يتطلب تسجيل دخول مسؤول (انظر Admin\AuthController)
 Route::prefix('admin')->name('admin.')->group(function () {
     // إعداد أول حساب إداري (مرة واحدة عند بداية المشروع) - يظهر إذا لم يوجد أي مستخدم.
     Route::get('/setup', [AdminAuthController::class, 'setupCreate'])->name('setup')->middleware('guest');

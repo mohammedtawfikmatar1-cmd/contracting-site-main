@@ -6,7 +6,9 @@ use App\Events\TenderSavedForNews;
 use App\Services\NewsAutomationService;
 
 /**
- * يحدّث أو ينشئ سجلًا في جدول news عند نشر/تعديل مناقصة.
+ * مستمع لمزامنة الأخبار التلقائية بعد حفظ مناقصة.
+ *
+ * الفكرة نفسها: Event → handle() → NewsAutomationService (انظر تعليق SyncAutoNewsFromProject).
  */
 class SyncAutoNewsFromTender
 {

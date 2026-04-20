@@ -63,6 +63,8 @@ class TenderController extends Controller
         $validated['is_published'] = $request->boolean('is_published');
 
         $tender = Tender::create($validated);
+
+        // مزامنة خبر تلقائي مرتبط بهذه المناقصة (أو حذفه إن لم تكن منشورة)
         event(new TenderSavedForNews($tender));
 
         return redirect()->route('admin.tenders.index')->with('success', 'تمت إضافة المناقصة بنجاح.');
@@ -85,6 +87,8 @@ class TenderController extends Controller
         $validated['is_published'] = $request->boolean('is_published');
 
         $tender->update($validated);
+
+        // إعادة مزامنة الخبر التلقائي بعد أي تعديل على المناقصة أو حالة النشر
         event(new TenderSavedForNews($tender));
 
         return redirect()->route('admin.tenders.index')->with('success', 'تم تحديث المناقصة بنجاح.');

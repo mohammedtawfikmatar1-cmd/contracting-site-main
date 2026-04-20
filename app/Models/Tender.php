@@ -51,6 +51,9 @@ class Tender extends Model
         'is_published' => 'boolean',
     ];
 
+    /**
+     * حذف المناقصة يزيل الخبر التلقائي المقترن بها من جدول news.
+     */
     protected static function booted(): void
     {
         static::deleting(function (Tender $tender): void {
@@ -59,7 +62,7 @@ class Tender extends Model
     }
 
     /**
-     * أخبار تلقائية مرتبطة بهذه المناقصة (مزامنة من لوحة التحكم).
+     * علاقة إلى جدول news: سجل واحد متوقع للمزامنة التلقائية مع قسم المناقصات في الإدارة.
      */
     public function news()
     {

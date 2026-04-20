@@ -1,3 +1,7 @@
+/**
+ * إعداد Vite: يربط Laravel بملفات CSS/JS في resources/
+ * الأمر المعتاد أثناء التطوير: npm run dev — ثم @vite() في القوالب يحقن المسارات الساخنة.
+ */
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';

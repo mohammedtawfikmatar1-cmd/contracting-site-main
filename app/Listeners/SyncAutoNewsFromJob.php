@@ -6,7 +6,7 @@ use App\Events\JobSavedForNews;
 use App\Services\NewsAutomationService;
 
 /**
- * يحدّث أو ينشئ سجلًا في جدول news عند تفعيل/تعديل وظيفة.
+ * مستمع لمزامنة الأخبار التلقائية بعد حفظ وظيفة.
  */
 class SyncAutoNewsFromJob
 {

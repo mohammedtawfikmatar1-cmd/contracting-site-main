@@ -1,19 +1,20 @@
 <?php
 
 /**
- * الغرض من الملف:
- * إدارة جميع صفحات الواجهة الأمامية وتجميع البيانات المنشورة القادمة من لوحة التحكم.
+ * SiteController — واجهة الزوار (الموقع العام، وليس /admin)
  *
- * التبعية:
- * App\Http\Controllers\SiteController.
+ * الفكرة ببساطة:
+ * ---------------
+ * - المسارات في routes/web.php تربط كل URL بدالة هنا (مثل home، news، contact).
+ * - كل دالة تجلب من قاعدة البيانات ما هو "منشور" فقط، ثم تعيد view('site....').
  *
- * المكونات الأساسية:
- * - استرجاع الخدمات والمشاريع والأخبار والوظائف والمناقصات والصفحات.
- * - استهلاك إعدادات الموقع العامة المخزنة في جدول settings.
+ * أين تُدار البيانات؟
+ * ---------------------
+ * من لوحة التحكم (مجلد Admin). ما يُحفظ هناك يُقرأ هنا باستخدام نماذج Eloquent (App\Models\*).
  *
- * خريطة تدفق البيانات:
- * هذا المتحكم هو نقطة العرض النهائية لبيانات الإدارة؛ أي محتوى يُنشر من لوحة التحكم
- * يمر عبر Queries هنا ثم يُرسل إلى قوالب Blade في الواجهة الأمامية.
+ * الأخبار:
+ * --------
+ * تظهر الأخبار اليدوية + الأخبار الناتجة تلقائيًا عن مشروع/مناقصة/وظيفة (انظر NewsAutomationService).
  */
 namespace App\Http\Controllers;
 
@@ -37,6 +38,7 @@ class SiteController extends Controller
     {
         $services = Service::query()->published()->limit(8)->get();
         $projects = Project::query()->published()->latest()->limit(6)->get();
+        // الأخبار: تشمل المنشورة يدويًا والمزامَنة تلقائيًا (نفس جدول news)
         $news = News::query()->published()->latest('published_at')->limit(3)->get();
 
         $homeClients = collect();
@@ -325,7 +327,7 @@ class SiteController extends Controller
 
     private function siteSettings(): Collection
     {
-        // تحويل الإعدادات إلى خريطة key => parsed value ليسهل استهلاكها في الواجهة.
+        // جدول settings: إعدادات عامة (هوية، ألوان، نصوص) تُعرض في القوالب عبر $siteSettings في الـ composer
         return Setting::query()->get()->mapWithKeys(fn ($setting) => [$setting->key => $setting->parseValue()]);
     }
 

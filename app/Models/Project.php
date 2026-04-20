@@ -74,6 +74,10 @@ class Project extends Model
         'completion_date' => 'date',
     ];
 
+    /**
+     * عند حذف المشروع من الإدارة: نحذف أيضًا أي أخبار تلقائية كانت مربوطة به (علاقة morphMany news).
+     * بهذا لا تبقى سجلات يتيمة في جدول news.
+     */
     protected static function booted(): void
     {
         static::deleting(function (Project $project): void {
