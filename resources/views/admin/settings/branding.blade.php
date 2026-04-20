@@ -70,22 +70,22 @@
             </div>
 
             <div class="row" id="theme-custom-colors">
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <div class="form-group">
                   <label>اللون الرئيسي</label>
                   <input type="color" id="theme_primary_color" name="theme_primary_color" class="form-control theme-color-input" value="{{ old('theme_primary_color', $settings['theme_primary_color'] ?? '#ff7a1a') }}">
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <div class="form-group">
                   <label>اللون الثانوي</label>
                   <input type="color" id="theme_secondary_color" name="theme_secondary_color" class="form-control theme-color-input" value="{{ old('theme_secondary_color', $settings['theme_secondary_color'] ?? '#0b5ed7') }}">
                 </div>
               </div>
-              <div class="col-md-4">
+              <div hidden class="">
                 <div class="form-group">
                   <label>لون الإبراز</label>
-                  <input type="color" id="theme_accent_color" name="theme_accent_color" class="form-control theme-color-input" value="{{ old('theme_accent_color', $settings['theme_accent_color'] ?? '#22c55e') }}">
+                  <input  type="color" id="theme_accent_color" name="theme_accent_color" class="form-control theme-color-input" value="{{ old('theme_accent_color', $settings['theme_accent_color'] ?? '#22c55e') }}">
                 </div>
               </div>
             </div>
@@ -93,13 +93,13 @@
               ملاحظة: اللون الرئيسي يتحكم بمعظم عناصر التمييز في الموقع (أزرار، عناوين فرعية، تدرجات مرتبطة بـ CSS). بعد الحفظ، حدّث الصفحة الأمامية لرؤية التغيير.
             </p>
 
-            <div class="form-group">
+            <!-- <div class="form-group">
               <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" id="enable_multilingual" name="enable_multilingual" value="1" {{ old('enable_multilingual', $settings['enable_multilingual'] ?? false) ? 'checked' : '' }}>
                 <label class="custom-control-label" for="enable_multilingual">تفعيل دعم اللغتين (عربي/إنجليزي)</label>
               </div>
               <small class="text-muted d-block mt-1">عند الإيقاف ستختفي حقول اللغة الإنجليزية من لوحة التحكم ويختفي زر تبديل اللغة من الواجهة.</small>
-            </div>
+            </div> -->
 
             <hr>
 
