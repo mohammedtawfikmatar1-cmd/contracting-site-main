@@ -54,9 +54,11 @@
                         <label>العميل (اختياري)</label>
                         <select name="client_id" class="form-control">
                             <option value="">— بدون عميل —</option>
-                            @foreach($clients as $client)
+                            @forelse($clients as $client)
                                 <option value="{{ $client->id }}" {{ (int) old('client_id', $project->client_id) === $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
-                            @endforeach
+                            @empty
+                                <option value="" disabled>لا توجد قائمة عملاء (تأكد من تشغيل ترحيلات قاعدة البيانات)</option>
+                            @endforelse
                         </select>
                     </div>
                 </div>
@@ -85,7 +87,7 @@
             </div>
 
             <div class="form-group">
-                <label>الوصف</label>
+                <label>تفاصيل المشروع</label>
                 @if(!empty($enableMultilingual))
                     <textarea name="description[ar]" class="form-control js-editor mb-2" rows="6">{{ old('description.ar', $project->getTranslation('description','ar')) }}</textarea>
                     <textarea name="description[en]" class="form-control js-editor" rows="6">{{ old('description.en', $project->getTranslation('description','en')) }}</textarea>

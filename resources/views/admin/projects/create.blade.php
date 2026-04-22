@@ -92,9 +92,11 @@
                                 <label for="client_id">العميل (اختياري)</label>
                                 <select name="client_id" id="client_id" class="form-control">
                                     <option value="">— بدون عميل —</option>
-                                    @foreach($clients as $client)
+                                    @forelse($clients as $client)
                                         <option value="{{ $client->id }}" {{ (int) old('client_id') === $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
-                                    @endforeach
+                                    @empty
+                                        <option value="" disabled>لا توجد قائمة عملاء (تأكد من تشغيل ترحيلات قاعدة البيانات)</option>
+                                    @endforelse
                                 </select>
                                 <small class="text-muted d-block mt-1">يُستخدم لربط المشروع بشعار عميل في أقسام العملاء بالواجهة.</small>
                             </div>
@@ -103,7 +105,7 @@
 
                     
                     <div class="form-group">
-                        <label for="description">وصف المشروع</label>
+                        <label for="description">تفاصيل المشروع</label>
                         @if(!empty($enableMultilingual))
                             <textarea name="description[ar]" class="form-control js-editor mb-2" rows="6" placeholder="وصف المشروع (عربي)">{{ old('description.ar') }}</textarea>
                             <textarea name="description[en]" class="form-control js-editor" rows="6" placeholder="Project description (EN)">{{ old('description.en') }}</textarea>

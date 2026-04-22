@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>الوصف</label>
+                <label>تفاصيل المناقصة</label>
                 <textarea name="description" class="form-control js-editor" rows="8">{{ old('description', $tender->description) }}</textarea>
             </div>
             <div class="form-group">

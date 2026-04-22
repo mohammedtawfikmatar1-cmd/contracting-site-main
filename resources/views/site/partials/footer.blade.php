@@ -58,7 +58,22 @@
             <div class="footer-contact">
                 <h4>تواصل معنا</h4>
                 <a href="tel:{{ $settingsValue('company_phone', '+0000000000', '') }}" class="fc-link"><i class="fas fa-phone-alt"></i>{{ $settingsValue('company_phone', '+0000000000', '') }}</a>
+                @php
+                    $phone2 = $settingsValue('company_phone_2', '', '');
+                @endphp
+                @if(filled($phone2))
+                    <a href="tel:{{ $phone2 }}" class="fc-link"><i class="fas fa-phone"></i>{{ $phone2 }}</a>
+                @endif
                 <a href="mailto:{{ $settingsValue('company_email', 'info@company.com', '') }}" class="fc-link"><i class="fas fa-envelope"></i>{{ $settingsValue('company_email', 'info@company.com', '') }}</a>
+                @php
+                    $whatsapp = $settingsValue('social_whatsapp', '', '');
+                @endphp
+                @if(filled($whatsapp))
+                    <a href="{{ $whatsapp }}" class="fc-link" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i>
+                        واتساب
+                    </a>
+                @endif
                 <div class="social-links" aria-label="تواصل اجتماعي">
                     <a href="{{ $settingsValue('social_facebook', 'https://facebook.com/your-company', '#') }}" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="{{ $settingsValue('social_x', 'https://x.com/your-company', '#') }}" aria-label="X"><i class="fab fa-x-twitter"></i></a>

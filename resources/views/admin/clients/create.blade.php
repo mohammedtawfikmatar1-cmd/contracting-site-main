@@ -32,7 +32,7 @@
                 <input type="text" name="name" class="form-control" value="{{ old('name') }}" required maxlength="255">
             </div>
             <div class="form-group">
-                <label>وصف عن العميل</label>
+                <label>نبذة عن العميل</label>
                 <textarea name="description" class="form-control js-editor" rows="5" maxlength="5000">{{ old('description') }}</textarea>
             </div>
             <div class="row">

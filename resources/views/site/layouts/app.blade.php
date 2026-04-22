@@ -48,6 +48,14 @@
             'logo_main',
         ];
 
+        $brandingKeyLabels = [
+            'company_name' => 'اسم الشركة',
+            'company_phone' => 'رقم التواصل',
+            'company_email' => 'البريد الإلكتروني',
+            'company_address' => 'العنوان',
+            'logo_main' => 'الشعار الأساسي',
+        ];
+
         $missingBrandingKeys = collect($brandingRequiredKeys)
             ->filter(fn ($key) => empty($siteSettings[$key] ?? null))
             ->values();
@@ -214,9 +222,9 @@
                     gap: 12px;
                 ">
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <strong style="white-space:nowrap;">تنبيه إداري</strong>
+                        <strong style="white-space:nowrap;">تنبيه للمسؤول</strong>
                         <span style="opacity:.95;">
-                            بعض بيانات الموقع غير مكتملة، عدّلها من لوحة التحكم &gt; الهوية البصرية.
+                            بعض بيانات الموقع الأساسية غير مكتملة. أكملها من لوحة التحكم &gt; الهوية البصرية.
                         </span>
                     </div>
                     <a href="{{ route('admin.settings.branding') }}"
@@ -233,7 +241,8 @@
                     </a>
                 </div>
                 <div style="margin-top:8px;color:#6b7280;font-size:13px;">
-                    الحقول الناقصة: {{ $missingBrandingKeys->implode('، ') }}
+                    الحقول الناقصة:
+                    {{ $missingBrandingKeys->map(fn ($k) => $brandingKeyLabels[$k] ?? $k)->implode('، ') }}
                 </div>
             </div>
         @endif

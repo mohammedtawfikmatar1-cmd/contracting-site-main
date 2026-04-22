@@ -1247,7 +1247,6 @@ body.has-admin-toolbar .hero {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.22);
 }
-
 @keyframes clients-marquee-scroll {
     0% {
         transform: translateX(0);

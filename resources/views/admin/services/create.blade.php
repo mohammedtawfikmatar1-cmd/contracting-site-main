@@ -61,7 +61,7 @@
 
                     
                     <div class="form-group">
-                        <label for="description">وصف الخدمة</label>
+                        <label for="description">تفاصيل الخدمة</label>
                         @if(!empty($enableMultilingual))
                             <!-- بداية إدخال الوصف متعدد اللغة -->
                             <ul class="nav nav-tabs mb-2" role="tablist">

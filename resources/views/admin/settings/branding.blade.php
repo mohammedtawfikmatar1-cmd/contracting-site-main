@@ -70,28 +70,83 @@
             </div>
 
             <div class="row" id="theme-custom-colors">
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <div class="form-group">
                   <label>اللون الرئيسي</label>
-                  <input type="color" id="theme_primary_color" name="theme_primary_color" class="form-control theme-color-input" value="{{ old('theme_primary_color', $settings['theme_primary_color'] ?? '#ff7a1a') }}">
+                  <div class="input-group">
+                    <input type="color" id="theme_primary_color" name="theme_primary_color" class="form-control theme-color-input" value="{{ old('theme_primary_color', $settings['theme_primary_color'] ?? '#ff7a1a') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#theme_primary_color" value="{{ old('theme_primary_color', $settings['theme_primary_color'] ?? '#ff7a1a') }}" dir="ltr">
+                  </div>
                 </div>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <div class="form-group">
                   <label>اللون الثانوي</label>
-                  <input type="color" id="theme_secondary_color" name="theme_secondary_color" class="form-control theme-color-input" value="{{ old('theme_secondary_color', $settings['theme_secondary_color'] ?? '#0b5ed7') }}">
+                  <div class="input-group">
+                    <input type="color" id="theme_secondary_color" name="theme_secondary_color" class="form-control theme-color-input" value="{{ old('theme_secondary_color', $settings['theme_secondary_color'] ?? '#0b5ed7') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#theme_secondary_color" value="{{ old('theme_secondary_color', $settings['theme_secondary_color'] ?? '#0b5ed7') }}" dir="ltr">
+                  </div>
                 </div>
               </div>
-              <div hidden class="">
+              <div  class="col-md-4">
                 <div class="form-group">
                   <label>لون الإبراز</label>
-                  <input  type="color" id="theme_accent_color" name="theme_accent_color" class="form-control theme-color-input" value="{{ old('theme_accent_color', $settings['theme_accent_color'] ?? '#22c55e') }}">
+                  <div class="input-group">
+                    <input type="color" id="theme_accent_color" name="theme_accent_color" class="form-control theme-color-input" value="{{ old('theme_accent_color', $settings['theme_accent_color'] ?? '#22c55e') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#theme_accent_color" value="{{ old('theme_accent_color', $settings['theme_accent_color'] ?? '#22c55e') }}" dir="ltr">
+                  </div>
                 </div>
               </div>
             </div>
             <p class="text-muted small">
               ملاحظة: اللون الرئيسي يتحكم بمعظم عناصر التمييز في الموقع (أزرار، عناوين فرعية، تدرجات مرتبطة بـ CSS). بعد الحفظ، حدّث الصفحة الأمامية لرؤية التغيير.
             </p>
+
+            <hr>
+
+            <h5 class="mb-3">ألوان الهيكل (الخلفية / الهيدر / الفوتر)</h5>
+            <p class="text-muted small mb-3">
+              هذا القسم للتحكم بالألوان العامة التي تحدد شكل الموقع: خلفية الصفحة، وخلفية الهيدر، وخلفية الفوتر.
+            </p>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>خلفية الموقع</label>
+                  <div class="input-group">
+                    <input type="color" id="body_bg_color" name="body_bg_color" class="form-control theme-color-input" value="{{ old('body_bg_color', $settings['body_bg_color'] ?? '#0d0f14') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#body_bg_color" value="{{ old('body_bg_color', $settings['body_bg_color'] ?? '#0d0f14') }}" dir="ltr">
+                  </div>
+                  <small class="text-muted d-block mt-1">تؤثر على خلفية الموقع بالكامل.</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>خلفية الفوتر</label>
+                  <div class="input-group">
+                    <input type="color" id="footer_bg_color" name="footer_bg_color" class="form-control theme-color-input" value="{{ old('footer_bg_color', $settings['footer_bg_color'] ?? '#07080b') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#footer_bg_color" value="{{ old('footer_bg_color', $settings['footer_bg_color'] ?? '#07080b') }}" dir="ltr">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>خلفية الهيدر</label>
+                  <div class="input-group">
+                    <input type="color" id="header_bg_color" name="header_bg_color" class="form-control theme-color-input" value="{{ old('header_bg_color', $settings['header_bg_color'] ?? '#0d0f14') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#header_bg_color" value="{{ old('header_bg_color', $settings['header_bg_color'] ?? '#0d0f14') }}" dir="ltr">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>خلفية الهيدر بعد التمرير</label>
+                  <div class="input-group">
+                    <input type="color" id="header_scrolled_bg_color" name="header_scrolled_bg_color" class="form-control theme-color-input" value="{{ old('header_scrolled_bg_color', $settings['header_scrolled_bg_color'] ?? '#0d0f14') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#header_scrolled_bg_color" value="{{ old('header_scrolled_bg_color', $settings['header_scrolled_bg_color'] ?? '#0d0f14') }}" dir="ltr">
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <!-- <div class="form-group">
               <div class="custom-control custom-switch">
@@ -273,12 +328,12 @@
 
             <h5 class="mb-3">روابط منصات التواصل</h5>
             <div class="row">
-              <div class="col-md-4"><div class="form-group"><label>Facebook</label><input type="text" name="social_facebook" class="form-control" value="{{ old('social_facebook', $settings['social_facebook'] ?? '') }}"></div></div>
-              <div class="col-md-4"><div class="form-group"><label>X</label><input type="text" name="social_x" class="form-control" value="{{ old('social_x', $settings['social_x'] ?? '') }}"></div></div>
-              <div class="col-md-4"><div class="form-group"><label>Instagram</label><input type="text" name="social_instagram" class="form-control" value="{{ old('social_instagram', $settings['social_instagram'] ?? '') }}"></div></div>
-              <div class="col-md-4"><div class="form-group"><label>LinkedIn</label><input type="text" name="social_linkedin" class="form-control" value="{{ old('social_linkedin', $settings['social_linkedin'] ?? '') }}"></div></div>
-              <div class="col-md-4"><div class="form-group"><label>YouTube</label><input type="text" name="social_youtube" class="form-control" value="{{ old('social_youtube', $settings['social_youtube'] ?? '') }}"></div></div>
-              <div class="col-md-4"><div class="form-group"><label>WhatsApp</label><input type="text" name="social_whatsapp" class="form-control" value="{{ old('social_whatsapp', $settings['social_whatsapp'] ?? '') }}"></div></div>
+              <div class="col-md-4"><div class="form-group"><label>فيسبوك</label><input type="text" name="social_facebook" class="form-control" value="{{ old('social_facebook', $settings['social_facebook'] ?? '') }}"></div></div>
+              <div class="col-md-4"><div class="form-group"><label>إكس (X)</label><input type="text" name="social_x" class="form-control" value="{{ old('social_x', $settings['social_x'] ?? '') }}"></div></div>
+              <div class="col-md-4"><div class="form-group"><label>إنستغرام</label><input type="text" name="social_instagram" class="form-control" value="{{ old('social_instagram', $settings['social_instagram'] ?? '') }}"></div></div>
+              <div class="col-md-4"><div class="form-group"><label>لينكدإن</label><input type="text" name="social_linkedin" class="form-control" value="{{ old('social_linkedin', $settings['social_linkedin'] ?? '') }}"></div></div>
+              <div class="col-md-4"><div class="form-group"><label>يوتيوب</label><input type="text" name="social_youtube" class="form-control" value="{{ old('social_youtube', $settings['social_youtube'] ?? '') }}"></div></div>
+              <div class="col-md-4"><div class="form-group"><label>واتساب</label><input type="text" name="social_whatsapp" class="form-control" value="{{ old('social_whatsapp', $settings['social_whatsapp'] ?? '') }}"></div></div>
             </div>
 
           </div>
@@ -415,6 +470,39 @@
         const custom = document.querySelector('input[name="theme_preset"][value="custom"]');
         if (custom) {
           custom.checked = true;
+        }
+      });
+    });
+  })();
+
+  // مزامنة حقل HEX النصي مع input[type=color]
+  (function () {
+    const hexInputs = document.querySelectorAll('.js-color-hex');
+    if (!hexInputs.length) {
+      return;
+    }
+
+    function normalizeHex(val) {
+      const v = (val || '').trim();
+      if (!v) return '';
+      return v.startsWith('#') ? v : ('#' + v);
+    }
+
+    hexInputs.forEach(function (hexInput) {
+      const selector = hexInput.getAttribute('data-color-input');
+      const colorInput = selector ? document.querySelector(selector) : null;
+      if (!colorInput) {
+        return;
+      }
+
+      colorInput.addEventListener('input', function () {
+        hexInput.value = colorInput.value;
+      });
+
+      hexInput.addEventListener('input', function () {
+        const normalized = normalizeHex(hexInput.value);
+        if (/^#[0-9a-fA-F]{6}$/.test(normalized)) {
+          colorInput.value = normalized;
         }
       });
     });

@@ -24,6 +24,8 @@ use App\Models\Client;
 use App\Models\Project;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
@@ -55,7 +57,10 @@ class ProjectController extends Controller
     public function create()
     {
         $services = Service::query()->orderBy('title')->get();
-        $clients = Client::query()->orderBy('name')->get();
+        $clients = collect();
+        if (Schema::hasTable((new Client())->getTable())) {
+            $clients = Client::query()->orderBy('name')->get();
+        }
 
         return view('admin.projects.create', compact('services', 'clients'));
     }
@@ -93,7 +98,10 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $services = Service::query()->orderBy('title')->get();
-        $clients = Client::query()->orderBy('name')->get();
+        $clients = collect();
+        if (Schema::hasTable((new Client())->getTable())) {
+            $clients = Client::query()->orderBy('name')->get();
+        }
 
         return view('admin.projects.edit', compact('project', 'services', 'clients'));
     }
@@ -147,11 +155,12 @@ class ProjectController extends Controller
     {
         // إيقاف نظام الإدخال متعدد اللغة حاليا والإبقاء على العربية فقط.
         $enabled = false;
+        $clientsTableExists = Schema::hasTable((new Client())->getTable());
 
         if ($enabled) {
             return $request->validate([
                 'service_id' => ['required', 'exists:services,id'],
-                'client_id' => ['nullable', 'exists:clients,id'],
+                'client_id' => $clientsTableExists ? ['nullable', 'exists:clients,id'] : ['nullable', 'integer'],
                 'title.ar' => ['required', 'string', 'max:255'],
                 'title.en' => ['nullable', 'string', 'max:255'],
                 'description.ar' => ['nullable', 'string'],
@@ -166,7 +175,7 @@ class ProjectController extends Controller
 
         return $request->validate([
             'service_id' => ['required', 'exists:services,id'],
-            'client_id' => ['nullable', 'exists:clients,id'],
+            'client_id' => $clientsTableExists ? ['nullable', 'exists:clients,id'] : ['nullable', 'integer'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'category' => ['nullable', 'string', 'max:255'],

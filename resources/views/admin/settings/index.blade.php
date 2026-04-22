@@ -31,27 +31,28 @@
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
-                        <label>المفتاح</label>
-                        <input type="text" name="key" class="form-control" required>
+                        <label>اسم الإعداد (مفتاح تقني)</label>
+                        <input type="text" name="key" class="form-control" required placeholder="مثال: site_name أو contact_phone">
+                        <small class="text-muted d-block mt-1">هذا الاسم تقني ويُستخدم داخل القوالب والبرمجة. إن لم تكن متأكدًا اتركه للمطور.</small>
                     </div>
                     <div class="form-group">
                         <label>القيمة</label>
                         <textarea name="value" class="form-control" rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>النوع</label>
+                        <label>نوع القيمة</label>
                         <select name="type" class="form-control">
-                            <option value="text">text</option>
-                            <option value="longtext">longtext</option>
-                            <option value="image">image</option>
-                            <option value="color">color</option>
-                            <option value="json">json</option>
-                            <option value="boolean">boolean</option>
-                            <option value="integer">integer</option>
+                            <option value="text">نص قصير</option>
+                            <option value="longtext">نص طويل</option>
+                            <option value="image">صورة</option>
+                            <option value="color">لون</option>
+                            <option value="json">بيانات (JSON)</option>
+                            <option value="boolean">نعم / لا</option>
+                            <option value="integer">رقم</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>الوصف</label>
+                        <label>وصف للإدارة (اختياري)</label>
                         <input type="text" name="description" class="form-control">
                     </div>
                 </div>
@@ -66,9 +67,9 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>المفتاح</th>
+                            <th>اسم الإعداد</th>
                             <th>القيمة</th>
-                            <th>النوع</th>
+                            <th>النوع + وصف</th>
                             <th>عمليات</th>
                         </tr>
                     </thead>
@@ -82,17 +83,29 @@
                                         @csrf
                                         @method('PUT')
                                         <input type="text" name="key" class="form-control form-control-sm" value="{{ $setting->key }}" required>
+                                        <small class="text-muted d-block mt-1">مفتاح تقني</small>
                                 </td>
                                 <td style="max-width: 260px; word-break: break-word;">
                                         <input type="text" name="value" class="form-control form-control-sm" value="{{ $setting->value }}">
                                 </td>
                                 <td>
                                         <select name="type" class="form-control form-control-sm">
+                                            @php
+                                                $typeLabels = [
+                                                    'text' => 'نص قصير',
+                                                    'longtext' => 'نص طويل',
+                                                    'image' => 'صورة',
+                                                    'color' => 'لون',
+                                                    'json' => 'بيانات (JSON)',
+                                                    'boolean' => 'نعم / لا',
+                                                    'integer' => 'رقم',
+                                                ];
+                                            @endphp
                                             @foreach(['text','longtext','image','color','json','boolean','integer'] as $type)
-                                                <option value="{{ $type }}" {{ $setting->type === $type ? 'selected' : '' }}>{{ $type }}</option>
+                                                <option value="{{ $type }}" {{ $setting->type === $type ? 'selected' : '' }}>{{ $typeLabels[$type] ?? $type }}</option>
                                             @endforeach
                                         </select>
-                                        <input type="text" name="description" class="form-control form-control-sm mt-1" value="{{ $setting->description }}" placeholder="وصف">
+                                        <input type="text" name="description" class="form-control form-control-sm mt-1" value="{{ $setting->description }}" placeholder="وصف للإدارة (اختياري)">
                                 </td>
                                 <td>
                                         <button class="btn btn-sm btn-primary">تحديث سريع</button>

@@ -54,7 +54,7 @@
             </div>
 
             <div class="form-group">
-                <label>الوصف</label>
+                <label>تفاصيل الخدمة</label>
                 @if(!empty($enableMultilingual))
                     <ul class="nav nav-tabs mb-2" role="tablist">
                         <li class="nav-item">

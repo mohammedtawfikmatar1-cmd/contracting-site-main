@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="description">وصف المناقصة وشروطها</label>
+                        <label for="description">تفاصيل المناقصة وشروطها</label>
                         <textarea name="description" class="form-control js-editor" id="description" rows="10" placeholder="أدخل تفاصيل وشروط المناقصة">{{ old('description') }}</textarea>
                     </div>
 

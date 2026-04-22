@@ -42,7 +42,7 @@
                 <div class="col-md-6"><div class="form-group"><label>المؤهل</label><input type="text" name="qualification" class="form-control" value="{{ old('qualification', $job->qualification) }}"></div></div>
             </div>
             <div class="form-group">
-                <label>الوصف</label>
+                <label>تفاصيل الوظيفة</label>
                 <textarea name="description" class="form-control js-editor" rows="6">{{ old('description', $job->description) }}</textarea>
             </div>
             <div class="form-group">
