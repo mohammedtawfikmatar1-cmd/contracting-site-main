@@ -59,7 +59,7 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $validated = $this->validateService($request);
-        $validated = $this->normalizeTranslatables($validated, ['title', 'description']);
+        $validated = $this->normalizeTranslatables($validated, ['title', 'overview', 'description']);
         $validated['is_published'] = $request->boolean('is_published');
 
         if ($request->hasFile('image')) {
@@ -88,7 +88,7 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $validated = $this->validateService($request, $service->id);
-        $validated = $this->normalizeTranslatables($validated, ['title', 'description']);
+        $validated = $this->normalizeTranslatables($validated, ['title', 'overview', 'description']);
         $validated['is_published'] = $request->boolean('is_published');
 
         if ($request->hasFile('image')) {
@@ -132,6 +132,8 @@ class ServiceController extends Controller
             return $request->validate([
                 'title.ar' => ['required', 'string', 'max:255'],
                 'title.en' => ['nullable', 'string', 'max:255'],
+                'overview.ar' => ['nullable', 'string', 'max:500'],
+                'overview.en' => ['nullable', 'string', 'max:500'],
                 'description.ar' => ['nullable', 'string'],
                 'description.en' => ['nullable', 'string'],
                 'icon' => ['nullable', 'string', 'max:255'],
@@ -142,6 +144,7 @@ class ServiceController extends Controller
 
         return $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'overview' => ['nullable', 'string', 'max:500'],
             'description' => ['nullable', 'string'],
             'icon' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer'],

@@ -105,8 +105,8 @@ html {
 body {
   font-family: var(--font);
   font-size: var(--t-base);
-  color: var(--ink);
-  background: var(--d800);
+  color: var(--site-content-text, var(--ink));
+  background: var(--site-body-bg, var(--d800));
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -118,9 +118,9 @@ body {
  * الهيدر والفوتر يستخدمان ألوانًا مستقلة ولا يُعاد تعريفها هنا حسب طلب التصميم.
  */
 main.site-main {
-  --ink: #0a0d16;
-  --ink-m: #283144;
-  --ink-s: #3f4a5f;
+  --ink: var(--site-content-text, #0a0d16);
+  --ink-m: color-mix(in srgb, var(--site-content-text, #0a0d16) 78%, var(--site-body-bg, #0d0f14));
+  --ink-s: color-mix(in srgb, var(--site-content-text, #0a0d16) 58%, var(--site-body-bg, #0d0f14));
 }
 
 a {

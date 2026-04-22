@@ -19,7 +19,7 @@
                 <a class="svc-card reveal" href="{{ route('services.details', $service->slug) }}">
                     <div class="svc-icon"><i class="{{ $service->icon ?: 'fas fa-tools' }}"></i></div>
                     <h3>{{ $service->title }}</h3>
-                    <p>{{ \Illuminate\Support\Str::limit(strip_tags($service->description), 120) }}</p>
+                    <p>{{ \Illuminate\Support\Str::limit(strip_tags($service->overview ?: $service->description), 120) }}</p>
                     <div class="svc-line"></div>
                 </a>
             @empty

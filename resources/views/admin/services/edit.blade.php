@@ -54,6 +54,30 @@
             </div>
 
             <div class="form-group">
+                <label>وصف الخدمة</label>
+                @if(!empty($enableMultilingual))
+                    <ul class="nav nav-tabs mb-2" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#svc-overview-ar" role="tab">عربي</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#svc-overview-en" role="tab">English</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="svc-overview-ar" role="tabpanel">
+                            <textarea name="overview[ar]" class="form-control" rows="3" maxlength="500">{{ old('overview.ar', $service->getTranslation('overview','ar')) }}</textarea>
+                        </div>
+                        <div class="tab-pane fade" id="svc-overview-en" role="tabpanel">
+                            <textarea name="overview[en]" class="form-control" rows="3" maxlength="500">{{ old('overview.en', $service->getTranslation('overview','en')) }}</textarea>
+                        </div>
+                    </div>
+                @else
+                    <textarea name="overview" class="form-control" rows="3" maxlength="500">{{ old('overview', is_array($service->getTranslations('overview')) ? ($service->getTranslation('overview','ar') ?: $service->overview) : $service->overview) }}</textarea>
+                @endif
+            </div>
+
+            <div class="form-group">
                 <label>تفاصيل الخدمة</label>
                 @if(!empty($enableMultilingual))
                     <ul class="nav nav-tabs mb-2" role="tablist">

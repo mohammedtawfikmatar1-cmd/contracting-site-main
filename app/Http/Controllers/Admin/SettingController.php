@@ -97,8 +97,9 @@ class SettingController extends Controller
     {
         $settings = Setting::query()->get()->mapWithKeys(fn ($s) => [$s->key => $s->parseValue()]);
         $themePresets = $this->themePresetsForView();
+        $structurePresets = $this->structurePresetsForView();
 
-        return view('admin.settings.branding', compact('settings', 'themePresets'));
+        return view('admin.settings.branding', compact('settings', 'themePresets', 'structurePresets'));
     }
 
     /**
@@ -153,6 +154,14 @@ class SettingController extends Controller
             'theme_primary_color' => ['nullable', 'string', 'max:32'],
             'theme_secondary_color' => ['nullable', 'string', 'max:32'],
             'theme_accent_color' => ['nullable', 'string', 'max:32'],
+            'body_bg_color' => ['nullable', 'string', 'max:32'],
+            'footer_bg_color' => ['nullable', 'string', 'max:32'],
+            'header_bg_color' => ['nullable', 'string', 'max:32'],
+            'header_scrolled_bg_color' => ['nullable', 'string', 'max:32'],
+            'header_text_color' => ['nullable', 'string', 'max:32'],
+            'footer_text_color' => ['nullable', 'string', 'max:32'],
+            'content_text_color' => ['nullable', 'string', 'max:32'],
+            'structure_preset' => ['nullable', Rule::in(array_merge(['custom'], array_keys($this->structurePresetsForView())))],
 
             'company_name' => ['nullable', 'string', 'max:255'],
             'company_phone' => ['nullable', 'string', 'max:255'],
@@ -198,9 +207,32 @@ class SettingController extends Controller
             Setting::setValue('theme_accent_color', $validated['theme_accent_color'] ?? null, 'color');
         }
 
+        $structurePreset = $validated['structure_preset'] ?? 'custom';
+        Setting::setValue('structure_preset', $structurePreset, 'text');
+
+        $structurePresets = $this->structurePresetsForView();
+        if ($structurePreset !== 'custom' && isset($structurePresets[$structurePreset])) {
+            $preset = $structurePresets[$structurePreset];
+            Setting::setValue('body_bg_color', $preset['body_bg'], 'color');
+            Setting::setValue('footer_bg_color', $preset['footer_bg'], 'color');
+            Setting::setValue('header_bg_color', $preset['header_bg'], 'color');
+            Setting::setValue('header_scrolled_bg_color', $preset['header_scrolled_bg'], 'color');
+            Setting::setValue('header_text_color', $preset['header_text'], 'color');
+            Setting::setValue('footer_text_color', $preset['footer_text'], 'color');
+            Setting::setValue('content_text_color', $preset['content_text'], 'color');
+        } else {
+            Setting::setValue('body_bg_color', $validated['body_bg_color'] ?? null, 'color');
+            Setting::setValue('footer_bg_color', $validated['footer_bg_color'] ?? null, 'color');
+            Setting::setValue('header_bg_color', $validated['header_bg_color'] ?? null, 'color');
+            Setting::setValue('header_scrolled_bg_color', $validated['header_scrolled_bg_color'] ?? null, 'color');
+            Setting::setValue('header_text_color', $validated['header_text_color'] ?? null, 'color');
+            Setting::setValue('footer_text_color', $validated['footer_text_color'] ?? null, 'color');
+            Setting::setValue('content_text_color', $validated['content_text_color'] ?? null, 'color');
+        }
+
         Setting::setValue('company_name', $validated['company_name'] ?? null, 'text');
-        Setting::setValue('company_phone', $validated['company_phone'] ?? null, 'text');
-        Setting::setValue('company_phone_2', $validated['company_phone_2'] ?? null, 'text');
+        Setting::setValue('company_phone', trim((string) ($validated['company_phone'] ?? '')) ?: null, 'text');
+        Setting::setValue('company_phone_2', trim((string) ($validated['company_phone_2'] ?? '')) ?: null, 'text');
         Setting::setValue('company_email', $validated['company_email'] ?? null, 'text');
         Setting::setValue('company_address', $validated['company_address'] ?? null, 'text');
 
@@ -262,6 +294,47 @@ class SettingController extends Controller
                 'primary' => '#2563eb',
                 'secondary' => '#334155',
                 'accent' => '#22d3ee',
+            ],
+        ];
+    }
+
+    /**
+     * لوحات جاهزة لألوان الهيكل والنصوص لتسهيل الاختيار دون الحاجة لتنسيق يدوي.
+     *
+     * @return array<string, array{label: string, body_bg: string, footer_bg: string, header_bg: string, header_scrolled_bg: string, header_text: string, footer_text: string, content_text: string}>
+     */
+    protected function structurePresetsForView(): array
+    {
+        return [
+            'structure_warm' => [
+                'label' => 'متناسق مع الكلاسيكي الدافئ',
+                'body_bg' => '#12151c',
+                'footer_bg' => '#07080b',
+                'header_bg' => '#1f2330',
+                'header_scrolled_bg' => '#0d0f14',
+                'header_text' => '#f8fafc',
+                'footer_text' => '#f8fafc',
+                'content_text' => '#f3f4f6',
+            ],
+            'structure_marine' => [
+                'label' => 'متناسق مع البحري الاحترافي',
+                'body_bg' => '#0f172a',
+                'footer_bg' => '#082f49',
+                'header_bg' => '#0c4a6e',
+                'header_scrolled_bg' => '#082f49',
+                'header_text' => '#ecfeff',
+                'footer_text' => '#f0fdfa',
+                'content_text' => '#e0f2fe',
+            ],
+            'structure_mineral' => [
+                'label' => 'متناسق بدقة مع المعدني العصري',
+                'body_bg' => '#334155',
+                'footer_bg' => '#1e293b',
+                'header_bg' => '#2563eb',
+                'header_scrolled_bg' => '#1d4ed8',
+                'header_text' => '#f8fafc',
+                'footer_text' => '#e2e8f0',
+                'content_text' => '#f8fafc',
             ],
         ];
     }

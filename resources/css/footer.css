@@ -1,7 +1,7 @@
 /* ── FOOTER ─────────────────────────────────────── */
 footer {
-    background: var(--d900);
-    color: var(--tw);
+    background: var(--site-footer-bg, var(--d900));
+    color: var(--site-footer-text, var(--tw));
     position: relative;
     overflow: hidden;
 }
@@ -39,7 +39,7 @@ footer {
 }
 
 .footer-brand > p {
-    color: var(--ts);
+    color: color-mix(in srgb, var(--site-footer-text, #fff) 68%, transparent);
     font-size: var(--t-sm);
     line-height: 1.85;
     max-width: 300px;
@@ -62,7 +62,7 @@ footer {
     gap: var(--s4);
     font-size: clamp(18px, 2vw, 22px);
     font-weight: 900;
-    color: var(--tw);
+    color: var(--site-footer-text, var(--tw));
     letter-spacing: -.02em;
 }
 
@@ -77,7 +77,7 @@ footer {
     font-weight: 800;
     letter-spacing: .12em;
     text-transform: uppercase;
-    color: var(--ts);
+    color: color-mix(in srgb, var(--site-footer-text, #fff) 55%, transparent);
     margin-bottom: var(--s6);
 }
 
@@ -96,7 +96,7 @@ footer {
 
 .footer-nav a {
     font-size: var(--t-sm);
-    color: var(--tm);
+    color: color-mix(in srgb, var(--site-footer-text, #fff) 82%, transparent);
     opacity: .8;
     transition: color var(--tf), opacity var(--tf);
     display: inline-flex;
@@ -115,7 +115,7 @@ footer {
     align-items: center;
     gap: var(--s4);
     font-size: var(--t-sm);
-    color: var(--tm);
+    color: color-mix(in srgb, var(--site-footer-text, #fff) 82%, transparent);
     opacity: .8;
     margin-bottom: var(--s4);
     min-height: 36px;
@@ -145,8 +145,8 @@ footer {
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: rgba(255, 255, 255, .07);
-    border: 1px solid rgba(255, 255, 255, .1);
+    background: color-mix(in srgb, var(--site-footer-text, #fff) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--site-footer-text, #fff) 16%, transparent);
     font-size: 13px;
     transition: transform var(--tf), background var(--tf), border-color var(--tf);
 }
@@ -165,7 +165,7 @@ footer {
 }
 
 .footer-bottom p {
-    color: var(--ts);
+    color: color-mix(in srgb, var(--site-footer-text, #fff) 55%, transparent);
     font-size: var(--t-xs);
 }
 
@@ -175,8 +175,8 @@ footer {
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: rgba(255, 255, 255, .07);
-    border: 1px solid rgba(255, 255, 255, .1);
+    background: color-mix(in srgb, var(--site-footer-text, #fff) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--site-footer-text, #fff) 16%, transparent);
     font-size: 13px;
     transition: transform var(--tf), background var(--tf), border-color var(--tf);
 }

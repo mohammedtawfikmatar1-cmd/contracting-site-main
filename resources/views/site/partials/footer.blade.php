@@ -57,13 +57,21 @@
             </nav>
             <div class="footer-contact">
                 <h4>تواصل معنا</h4>
-                <a href="tel:{{ $settingsValue('company_phone', '+0000000000', '') }}" class="fc-link"><i class="fas fa-phone-alt"></i>{{ $settingsValue('company_phone', '+0000000000', '') }}</a>
                 @php
-                    $phone2 = $settingsValue('company_phone_2', '', '');
+                    $phones = collect([
+                        $settingsValue('company_phone', '+0000000000', ''),
+                        $settingsValue('company_phone_2', '', ''),
+                    ])->map(fn ($phone) => trim((string) $phone))
+                      ->filter()
+                      ->unique()
+                      ->values();
                 @endphp
-                @if(filled($phone2))
-                    <a href="tel:{{ $phone2 }}" class="fc-link"><i class="fas fa-phone"></i>{{ $phone2 }}</a>
-                @endif
+                @foreach($phones as $index => $phone)
+                    <a href="tel:{{ $phone }}" class="fc-link">
+                        <i class="fas {{ $index === 0 ? 'fa-phone-alt' : 'fa-phone' }}"></i>
+                        {{ $phone }}
+                    </a>
+                @endforeach
                 <a href="mailto:{{ $settingsValue('company_email', 'info@company.com', '') }}" class="fc-link"><i class="fas fa-envelope"></i>{{ $settingsValue('company_email', 'info@company.com', '') }}</a>
                 @php
                     $whatsapp = $settingsValue('social_whatsapp', '', '');

@@ -13,7 +13,7 @@
             <span class="sec-label">تفاصيل الخدمة</span>
             <!-- بيانات الخدمة: $service قادمة من SiteController@serviceDetails (مُدارة من لوحة التحكم: الخدمات) -->
             <h1>{{ $service->title }}</h1>
-            <p>{{ \Illuminate\Support\Str::limit(strip_tags($service->description), 160) }}</p>
+            <p>{{ \Illuminate\Support\Str::limit(strip_tags($service->overview ?: $service->description), 160) }}</p>
         </div>
     </section>
 

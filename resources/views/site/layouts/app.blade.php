@@ -79,24 +79,38 @@
         /*
          * قراءة الألوان مباشرة من إعدادات الموقع (بعد parseValue) لضمان تطابق القيم المحفوظة.
          */
+        $normalizeColor = function ($value, string $fallback): string {
+            return is_string($value) && preg_match('/^#[0-9a-fA-F]{6}$/', trim($value))
+                ? trim($value)
+                : $fallback;
+        };
+
         $themePrimary = $siteSettings['theme_primary_color'] ?? null;
         $themeSecondary = $siteSettings['theme_secondary_color'] ?? null;
         $themeAccent = $siteSettings['theme_accent_color'] ?? null;
-        if (! is_string($themePrimary) || ! str_starts_with(trim($themePrimary), '#')) {
-            $themePrimary = '#ff7a1a';
-        }
-        if (! is_string($themeSecondary) || ! str_starts_with(trim($themeSecondary), '#')) {
-            $themeSecondary = '#0b5ed7';
-        }
-        if (! is_string($themeAccent) || ! str_starts_with(trim($themeAccent), '#')) {
-            $themeAccent = '#22c55e';
-        }
+        $themePrimary = $normalizeColor($themePrimary, '#ff7a1a');
+        $themeSecondary = $normalizeColor($themeSecondary, '#0b5ed7');
+        $themeAccent = $normalizeColor($themeAccent, '#22c55e');
+        $bodyBgColor = $normalizeColor($siteSettings['body_bg_color'] ?? null, '#0d0f14');
+        $footerBgColor = $normalizeColor($siteSettings['footer_bg_color'] ?? null, '#07080b');
+        $headerBgColor = $normalizeColor($siteSettings['header_bg_color'] ?? null, '#0d0f14');
+        $headerScrolledBgColor = $normalizeColor($siteSettings['header_scrolled_bg_color'] ?? null, '#0d0f14');
+        $headerTextColor = $normalizeColor($siteSettings['header_text_color'] ?? null, '#f8fafc');
+        $footerTextColor = $normalizeColor($siteSettings['footer_text_color'] ?? null, '#f8fafc');
+        $contentTextColor = $normalizeColor($siteSettings['content_text_color'] ?? null, '#f8fafc');
     @endphp
     <style>
         :root {
             --theme-primary: {{ $themePrimary }};
             --theme-secondary: {{ $themeSecondary }};
             --theme-accent: {{ $themeAccent }};
+            --site-body-bg: {{ $bodyBgColor }};
+            --site-footer-bg: {{ $footerBgColor }};
+            --site-header-bg: {{ $headerBgColor }};
+            --site-header-scrolled-bg: {{ $headerScrolledBgColor }};
+            --site-header-text: {{ $headerTextColor }};
+            --site-footer-text: {{ $footerTextColor }};
+            --site-content-text: {{ $contentTextColor }};
 
             /* ربط رموز التصميم الحالية باللون الرئيسي من لوحة التحكم */
             --orange: var(--theme-primary);
@@ -104,6 +118,20 @@
             --orange-dark: color-mix(in srgb, var(--theme-primary) 78%, black);
             --orange-glow: color-mix(in srgb, var(--theme-primary) 22%, transparent);
             --orange-subtle: color-mix(in srgb, var(--theme-primary) 10%, transparent);
+            --tw: var(--site-header-text);
+            --tm: color-mix(in srgb, var(--site-header-text) 78%, transparent);
+            --ts: color-mix(in srgb, var(--site-header-text) 54%, transparent);
+        }
+
+        body {
+            background: var(--site-body-bg);
+        }
+
+        main.site-main {
+            color: var(--site-content-text);
+            --ink: var(--site-content-text);
+            --ink-m: color-mix(in srgb, var(--site-content-text) 78%, var(--site-body-bg));
+            --ink-s: color-mix(in srgb, var(--site-content-text) 58%, var(--site-body-bg));
         }
 
         .admin-preview-toolbar {

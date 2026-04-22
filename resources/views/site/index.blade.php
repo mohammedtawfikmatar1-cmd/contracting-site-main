@@ -44,7 +44,7 @@
                 <a class="svc-card reveal" href="{{ route('services.details', $service->slug) }}">
                     <div class="svc-icon"><i class="{{ $service->icon ?: 'fas fa-tools' }}"></i></div>
                     <h3>{{ $service->title }}</h3>
-                    <p>{{ \Illuminate\Support\Str::limit(strip_tags($service->description), 110) }}</p>
+                    <p>{{ \Illuminate\Support\Str::limit(strip_tags($service->overview ?: $service->description), 110) }}</p>
                     <div class="svc-line"></div>
                 </a>
             @empty
@@ -96,23 +96,21 @@
                 </div>
                 <div class="clients-marquee-wrap">
                     <div class="clients-marquee-track">
-                        @foreach([1, 2] as $dup)
-                            <div class="clients-marquee-group" @if($dup === 2) aria-hidden="true" @endif>
-                                @foreach($homeClients as $client)
-                                    @php
-                                        $href = $clientsPageOn
-                                            ? route('clients').'#c-'.$client->slug
-                                            : '#clients-showcase';
-                                    @endphp
-                                    <a class="clients-marquee-item" href="{{ $href }}">
-                                        @if($client->logo_url)
-                                            <img src="{{ $client->logo_url }}" alt="{{ $client->name }}" loading="lazy">
-                                        @endif
-                                        <span>{{ $client->name }}</span>
-                                    </a>
-                                @endforeach
-                            </div>
-                        @endforeach
+                        <div class="clients-marquee-group">
+                            @foreach($homeClients as $client)
+                                @php
+                                    $href = $clientsPageOn
+                                        ? route('clients').'#c-'.$client->slug
+                                        : '#clients-showcase';
+                                @endphp
+                                <a class="clients-marquee-item" href="{{ $href }}">
+                                    @if($client->logo_url)
+                                        <img src="{{ $client->logo_url }}" alt="{{ $client->name }}" loading="lazy">
+                                    @endif
+                                    <span>{{ $client->name }}</span>
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>

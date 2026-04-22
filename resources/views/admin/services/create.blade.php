@@ -59,6 +59,30 @@
                         @endif
                     </div>
 
+                    <div class="form-group">
+                        <label for="overview">وصف الخدمة</label>
+                        @if(!empty($enableMultilingual))
+                            <ul class="nav nav-tabs mb-2" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#svc-overview-ar" role="tab">عربي</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#svc-overview-en" role="tab">English</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="svc-overview-ar" role="tabpanel">
+                                    <textarea name="overview[ar]" class="form-control" rows="3" maxlength="500" placeholder="وصف مختصر يظهر تحت اسم الخدمة في الموقع">{{ old('overview.ar') }}</textarea>
+                                </div>
+                                <div class="tab-pane fade" id="svc-overview-en" role="tabpanel">
+                                    <textarea name="overview[en]" class="form-control" rows="3" maxlength="500" placeholder="Short service summary shown under the title">{{ old('overview.en') }}</textarea>
+                                </div>
+                            </div>
+                        @else
+                            <textarea name="overview" class="form-control" id="overview" rows="3" maxlength="500" placeholder="وصف مختصر يظهر تحت اسم الخدمة في الموقع">{{ old('overview') }}</textarea>
+                        @endif
+                    </div>
+
                     
                     <div class="form-group">
                         <label for="description">تفاصيل الخدمة</label>

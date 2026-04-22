@@ -8,6 +8,57 @@
   <li class="breadcrumb-item active">الهوية البصرية</li>
 @endsection
 
+@section('styles')
+  <style>
+    .structure-preset-option,
+    .theme-preset-option {
+      transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+    }
+
+    .structure-preset-option:hover,
+    .theme-preset-option:hover {
+      border-color: #17a2b8 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(23, 162, 184, .08);
+    }
+
+    .structure-swatch-list {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .structure-swatch {
+      width: 100%;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, .08);
+    }
+
+    .quick-color-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .quick-color-btn {
+      width: 100%;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, .12);
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .quick-color-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 14px rgba(0, 0, 0, .08);
+    }
+  </style>
+@endsection
+
 @section('content')
   <div class="row">
     <div class="col-md-12">
@@ -106,8 +157,72 @@
 
             <h5 class="mb-3">ألوان الهيكل (الخلفية / الهيدر / الفوتر)</h5>
             <p class="text-muted small mb-3">
-              هذا القسم للتحكم بالألوان العامة التي تحدد شكل الموقع: خلفية الصفحة، وخلفية الهيدر، وخلفية الفوتر.
+              هذا القسم للتحكم بالألوان العامة التي تحدد شكل الموقع: خلفية الصفحة، وخلفية الهيدر، وخلفية الفوتر، وألوان النصوص في الهيدر والفوتر والمحتوى.
             </p>
+            @php
+              $currentStructurePreset = old('structure_preset', $settings['structure_preset'] ?? 'custom');
+              $quickColorSets = [
+                  'body_bg_color' => ['#07080b', '#0d0f14', '#12151c', '#1e293b', '#334155', '#f6f7fb', '#ffffff'],
+                  'footer_bg_color' => ['#050608', '#07080b', '#0f172a', '#1e293b', '#082f49', '#111827', '#1f2937'],
+                  'header_bg_color' => ['#0d0f14', '#12151c', '#1f2330', '#0c4a6e', '#2563eb', '#ffffff', '#f8fafc'],
+                  'header_scrolled_bg_color' => ['#07080b', '#0d0f14', '#1d4ed8', '#082f49', '#1e293b', '#f3f4f6', '#ffffff'],
+                  'header_text_color' => ['#ffffff', '#f8fafc', '#e2e8f0', '#cbd5e1', '#1f2937', '#0f172a', '#334155'],
+                  'footer_text_color' => ['#ffffff', '#f8fafc', '#e2e8f0', '#cbd5e1', '#1f2937', '#0f172a', '#334155'],
+                  'content_text_color' => ['#ffffff', '#f8fafc', '#e5e7eb', '#dbeafe', '#1f2937', '#334155', '#0f172a'],
+              ];
+            @endphp
+            <div class="form-group">
+              <label class="d-block font-weight-bold mb-2">لوحات الهيكل الجاهزة</label>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="w-100 border rounded p-3 h-100 mb-0 structure-preset-option" style="cursor:pointer;">
+                    <div class="d-flex align-items-start">
+                      <input type="radio" name="structure_preset" value="custom" class="mt-1 ml-2" {{ $currentStructurePreset === 'custom' ? 'checked' : '' }}>
+                      <div>
+                        <strong>تخصيص يدوي</strong>
+                        <div class="text-muted small mt-1">اختر ألوان الهيكل من الحقول ولوحات الألوان السريعة أدناه.</div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                @foreach($structurePresets as $presetKey => $preset)
+                  <div class="col-md-4 mb-3">
+                    <label
+                      class="w-100 border rounded p-3 h-100 mb-0 structure-preset-option"
+                      style="cursor:pointer;"
+                      data-structure-body-bg="{{ $preset['body_bg'] }}"
+                      data-structure-footer-bg="{{ $preset['footer_bg'] }}"
+                      data-structure-header-bg="{{ $preset['header_bg'] }}"
+                      data-structure-header-scrolled-bg="{{ $preset['header_scrolled_bg'] }}"
+                      data-structure-header-text="{{ $preset['header_text'] }}"
+                      data-structure-footer-text="{{ $preset['footer_text'] }}"
+                      data-structure-content-text="{{ $preset['content_text'] }}"
+                    >
+                      <div class="d-flex align-items-start">
+                        <input type="radio" name="structure_preset" value="{{ $presetKey }}" class="mt-1 ml-2" {{ $currentStructurePreset === $presetKey ? 'checked' : '' }}>
+                        <div class="flex-grow-1">
+                          <strong class="small d-block">{{ $preset['label'] }}</strong>
+                          <div class="structure-swatch-list">
+                            @foreach([
+                              $preset['body_bg'],
+                              $preset['footer_bg'],
+                              $preset['header_bg'],
+                              $preset['header_scrolled_bg'],
+                              $preset['header_text'],
+                              $preset['footer_text'],
+                              $preset['content_text'],
+                            ] as $swatch)
+                              <span class="structure-swatch" style="background: {{ $swatch }};"></span>
+                            @endforeach
+                          </div>
+                          <div class="text-muted small mt-2">7 ألوان جاهزة: الخلفيات الأربع + ألوان نص الهيدر والفوتر والمحتوى.</div>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                @endforeach
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-3">
                 <div class="form-group">
@@ -117,6 +232,11 @@
                     <input type="text" class="form-control js-color-hex" data-color-input="#body_bg_color" value="{{ old('body_bg_color', $settings['body_bg_color'] ?? '#0d0f14') }}" dir="ltr">
                   </div>
                   <small class="text-muted d-block mt-1">تؤثر على خلفية الموقع بالكامل.</small>
+                  <div class="quick-color-grid">
+                    @foreach($quickColorSets['body_bg_color'] as $color)
+                      <button type="button" class="quick-color-btn js-quick-color" data-target="#body_bg_color" data-value="{{ $color }}" title="{{ $color }}" style="background: {{ $color }};"></button>
+                    @endforeach
+                  </div>
                 </div>
               </div>
               <div class="col-md-3">
@@ -125,6 +245,11 @@
                   <div class="input-group">
                     <input type="color" id="footer_bg_color" name="footer_bg_color" class="form-control theme-color-input" value="{{ old('footer_bg_color', $settings['footer_bg_color'] ?? '#07080b') }}">
                     <input type="text" class="form-control js-color-hex" data-color-input="#footer_bg_color" value="{{ old('footer_bg_color', $settings['footer_bg_color'] ?? '#07080b') }}" dir="ltr">
+                  </div>
+                  <div class="quick-color-grid">
+                    @foreach($quickColorSets['footer_bg_color'] as $color)
+                      <button type="button" class="quick-color-btn js-quick-color" data-target="#footer_bg_color" data-value="{{ $color }}" title="{{ $color }}" style="background: {{ $color }};"></button>
+                    @endforeach
                   </div>
                 </div>
               </div>
@@ -135,6 +260,11 @@
                     <input type="color" id="header_bg_color" name="header_bg_color" class="form-control theme-color-input" value="{{ old('header_bg_color', $settings['header_bg_color'] ?? '#0d0f14') }}">
                     <input type="text" class="form-control js-color-hex" data-color-input="#header_bg_color" value="{{ old('header_bg_color', $settings['header_bg_color'] ?? '#0d0f14') }}" dir="ltr">
                   </div>
+                  <div class="quick-color-grid">
+                    @foreach($quickColorSets['header_bg_color'] as $color)
+                      <button type="button" class="quick-color-btn js-quick-color" data-target="#header_bg_color" data-value="{{ $color }}" title="{{ $color }}" style="background: {{ $color }};"></button>
+                    @endforeach
+                  </div>
                 </div>
               </div>
               <div class="col-md-3">
@@ -143,6 +273,53 @@
                   <div class="input-group">
                     <input type="color" id="header_scrolled_bg_color" name="header_scrolled_bg_color" class="form-control theme-color-input" value="{{ old('header_scrolled_bg_color', $settings['header_scrolled_bg_color'] ?? '#0d0f14') }}">
                     <input type="text" class="form-control js-color-hex" data-color-input="#header_scrolled_bg_color" value="{{ old('header_scrolled_bg_color', $settings['header_scrolled_bg_color'] ?? '#0d0f14') }}" dir="ltr">
+                  </div>
+                  <div class="quick-color-grid">
+                    @foreach($quickColorSets['header_scrolled_bg_color'] as $color)
+                      <button type="button" class="quick-color-btn js-quick-color" data-target="#header_scrolled_bg_color" data-value="{{ $color }}" title="{{ $color }}" style="background: {{ $color }};"></button>
+                    @endforeach
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>لون خط الهيدر</label>
+                  <div class="input-group">
+                    <input type="color" id="header_text_color" name="header_text_color" class="form-control theme-color-input" value="{{ old('header_text_color', $settings['header_text_color'] ?? '#f8fafc') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#header_text_color" value="{{ old('header_text_color', $settings['header_text_color'] ?? '#f8fafc') }}" dir="ltr">
+                  </div>
+                  <div class="quick-color-grid">
+                    @foreach($quickColorSets['header_text_color'] as $color)
+                      <button type="button" class="quick-color-btn js-quick-color" data-target="#header_text_color" data-value="{{ $color }}" title="{{ $color }}" style="background: {{ $color }};"></button>
+                    @endforeach
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>لون خط الفوتر</label>
+                  <div class="input-group">
+                    <input type="color" id="footer_text_color" name="footer_text_color" class="form-control theme-color-input" value="{{ old('footer_text_color', $settings['footer_text_color'] ?? '#f8fafc') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#footer_text_color" value="{{ old('footer_text_color', $settings['footer_text_color'] ?? '#f8fafc') }}" dir="ltr">
+                  </div>
+                  <div class="quick-color-grid">
+                    @foreach($quickColorSets['footer_text_color'] as $color)
+                      <button type="button" class="quick-color-btn js-quick-color" data-target="#footer_text_color" data-value="{{ $color }}" title="{{ $color }}" style="background: {{ $color }};"></button>
+                    @endforeach
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>لون خط المحتوى</label>
+                  <div class="input-group">
+                    <input type="color" id="content_text_color" name="content_text_color" class="form-control theme-color-input" value="{{ old('content_text_color', $settings['content_text_color'] ?? '#f8fafc') }}">
+                    <input type="text" class="form-control js-color-hex" data-color-input="#content_text_color" value="{{ old('content_text_color', $settings['content_text_color'] ?? '#f8fafc') }}" dir="ltr">
+                  </div>
+                  <div class="quick-color-grid">
+                    @foreach($quickColorSets['content_text_color'] as $color)
+                      <button type="button" class="quick-color-btn js-quick-color" data-target="#content_text_color" data-value="{{ $color }}" title="{{ $color }}" style="background: {{ $color }};"></button>
+                    @endforeach
                   </div>
                 </div>
               </div>
@@ -475,6 +652,65 @@
     });
   })();
 
+  (function () {
+    const structureFields = {
+      bodyBg: document.getElementById('body_bg_color'),
+      footerBg: document.getElementById('footer_bg_color'),
+      headerBg: document.getElementById('header_bg_color'),
+      headerScrolledBg: document.getElementById('header_scrolled_bg_color'),
+      headerText: document.getElementById('header_text_color'),
+      footerText: document.getElementById('footer_text_color'),
+      contentText: document.getElementById('content_text_color'),
+    };
+
+    if (Object.values(structureFields).some(function (field) { return !field; })) {
+      return;
+    }
+
+    function applyStructurePreset(labelEl) {
+      if (!labelEl) {
+        return;
+      }
+
+      const mapping = {
+        bodyBg: 'data-structure-body-bg',
+        footerBg: 'data-structure-footer-bg',
+        headerBg: 'data-structure-header-bg',
+        headerScrolledBg: 'data-structure-header-scrolled-bg',
+        headerText: 'data-structure-header-text',
+        footerText: 'data-structure-footer-text',
+        contentText: 'data-structure-content-text',
+      };
+
+      Object.keys(mapping).forEach(function (key) {
+        const value = labelEl.getAttribute(mapping[key]);
+        if (value) {
+          structureFields[key].value = value;
+          structureFields[key].dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+    }
+
+    document.querySelectorAll('input[name="structure_preset"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        if (radio.value === 'custom') {
+          return;
+        }
+
+        applyStructurePreset(radio.closest('.structure-preset-option'));
+      });
+    });
+
+    Object.values(structureFields).forEach(function (input) {
+      input.addEventListener('input', function () {
+        const custom = document.querySelector('input[name="structure_preset"][value="custom"]');
+        if (custom) {
+          custom.checked = true;
+        }
+      });
+    });
+  })();
+
   // مزامنة حقل HEX النصي مع input[type=color]
   (function () {
     const hexInputs = document.querySelectorAll('.js-color-hex');
@@ -507,6 +743,22 @@
       });
     });
   })();
+
+  (function () {
+    document.querySelectorAll('.js-quick-color').forEach(function (button) {
+      button.addEventListener('click', function () {
+        const selector = button.getAttribute('data-target');
+        const value = button.getAttribute('data-value');
+        const input = selector ? document.querySelector(selector) : null;
+
+        if (!input || !value) {
+          return;
+        }
+
+        input.value = value;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    });
+  })();
 </script>
 @endsection
-

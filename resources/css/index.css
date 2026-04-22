@@ -1183,10 +1183,27 @@ body.has-admin-toolbar .hero {
 
 /* ── عملاء الصفحة الرئيسية (شريط متحرك) ───────────────────────── */
 .clients-showcase {
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    padding: 16px 14px 14px;
-    background: rgba(255, 255, 255, 0.03);
+    margin-top: clamp(34px, 6vw, 64px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 28px;
+    padding: clamp(22px, 3vw, 32px);
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+        radial-gradient(circle at top right, rgba(255, 122, 26, 0.14), transparent 38%);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
+    position: relative;
+    overflow: hidden;
+}
+
+.clients-showcase::before {
+    content: "";
+    position: absolute;
+    inset: auto auto -60px -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 122, 26, 0.14), transparent 68%);
+    pointer-events: none;
 }
 
 .clients-showcase .sec-label {
@@ -1195,64 +1212,115 @@ body.has-admin-toolbar .hero {
 
 .clients-showcase h3 {
     color: var(--tw);
+    letter-spacing: -0.02em;
+}
+
+.clients-showcase .sec-head {
+    margin-bottom: 24px !important;
+    text-align: right;
 }
 
 .clients-marquee-wrap {
     overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    position: relative;
+    padding-block: 6px;
+    mask-image: linear-gradient(to left, transparent 0%, black 14%, black 86%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, black 14%, black 86%, transparent 100%);
 }
 
 .clients-marquee-track {
     display: flex;
     width: max-content;
-    animation: clients-marquee-scroll 32s linear infinite;
-}
-
-.clients-marquee-track:hover {
-    animation-play-state: paused;
+    min-width: 100%;
+    will-change: transform, opacity;
+    animation: clientsMarqueeLoop 40s linear infinite;
 }
 
 .clients-marquee-group {
     display: flex;
     align-items: center;
-    gap: 28px;
-    padding-inline: 14px;
+    gap: 18px;
+    padding-inline: 0;
+    flex-wrap: nowrap;
+    position: relative;
+    z-index: 1;
 }
 
 .clients-marquee-item {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+    border: 1px solid rgba(255, 255, 255, 0.14);
     color: #fff;
     text-decoration: none;
     font-weight: 800;
     white-space: nowrap;
-    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    min-height: 72px;
+    min-width: min(100%, 260px);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.14);
+    transition: transform 0.28s ease, background 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
 }
 
 .clients-marquee-item img {
-    height: 34px;
+    height: 42px;
     width: auto;
-    max-width: 120px;
+    max-width: 130px;
     object-fit: contain;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+    flex-shrink: 0;
+}
+
+.clients-marquee-item span {
+    display: inline-block;
+    line-height: 1.5;
 }
 
 .clients-marquee-item:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.22);
+    transform: translateY(-6px) scale(1.02);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.06));
+    border-color: rgba(255, 255, 255, 0.26);
+    box-shadow: 0 20px 34px rgba(0, 0, 0, 0.18);
 }
-@keyframes clients-marquee-scroll {
+
+@keyframes clientsMarqueeLoop {
     0% {
-        transform: translateX(0);
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    8% {
+        opacity: 1;
+    }
+
+    88% {
+        opacity: 1;
     }
 
     100% {
-        transform: translateX(-50%);
+        transform: translateX(-115%);
+        opacity: 0;
+    }
+}
+
+.clients-showcase:hover .clients-marquee-track {
+    animation-play-state: paused;
+}
+
+@media (max-width: 768px) {
+    .clients-showcase {
+        padding: 20px 16px;
+        border-radius: 22px;
+    }
+
+    .clients-marquee-group {
+        gap: 14px;
+    }
+
+    .clients-marquee-item {
+        min-width: 220px;
+        justify-content: flex-start;
     }
 }
