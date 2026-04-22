@@ -156,9 +156,24 @@ class AppServiceProvider extends ServiceProvider
             $adminUser = Auth::user() ?? User::query()->first();
             // إبقاء خيار الإعدادات كمكوّن مستقبلي فقط دون تفعيل فعلي داخل النماذج حاليا.
             $enableMultilingual = false;
+            $notificationFingerprint = function ($notification) {
+                return ($notification->data['contact_id'] ?? $notification->id)
+                    . '|' . ($notification->type ?? '')
+                    . '|' . ($notification->data['url'] ?? '');
+            };
 
-            $view->with('adminUnreadNotificationsCount', $adminUser?->unreadNotifications()->count() ?? 0);
-            $view->with('adminLatestNotifications', $adminUser?->notifications()->latest()->limit(5)->get() ?? collect());
+            $adminNotifications = $adminUser?->notifications()->latest()->get() ?? collect();
+            $adminLatestNotifications = $adminNotifications
+                ->unique($notificationFingerprint)
+                ->take(5)
+                ->values();
+
+            $adminUnreadNotificationsCount = ($adminUser?->unreadNotifications()->get() ?? collect())
+                ->unique($notificationFingerprint)
+                ->count();
+
+            $view->with('adminUnreadNotificationsCount', $adminUnreadNotificationsCount);
+            $view->with('adminLatestNotifications', $adminLatestNotifications);
             $view->with('enableMultilingual', $enableMultilingual);
         });
     }

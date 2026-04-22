@@ -85,21 +85,29 @@
             <span class="badge badge-danger navbar-badge">{{ $adminUnreadNotificationsCount }}</span>
           @endif
         </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
-          <span class="dropdown-item dropdown-header">{{ $adminUnreadNotificationsCount }} إشعارات غير مقروءة</span>
-          <div class="dropdown-divider"></div>
-          @forelse($adminLatestNotifications as $notification)
-            <a href="{{ $notification->data['url'] ?? route('admin.notifications.index') }}" class="dropdown-item">
-              <i class="fas fa-envelope mr-2"></i> {{ $notification->data['message'] ?? 'إشعار جديد' }}
-              <span class="float-left text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
+       <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
+    <span class="dropdown-item dropdown-header">{{ $adminUnreadNotificationsCount }} إشعارات غير مقروءة</span>
+    <div class="dropdown-divider"></div>
+
+    @forelse($adminLatestNotifications as $notification)
+        {{-- إضافة الشرط هنا: يعرض فقط إذا كان read_at فارغاً --}}
+        @if(is_null($notification->read_at)) 
+            <a href="{{ $notification->data['url'] ?? route('admin.notifications.index') }}" 
+               class="dropdown-item" 
+               style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <i class="fas fa-envelope mr-2"></i> 
+                {{ $notification->data['message'] ?? 'إشعار جديد' }}
+                <span class="float-left text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
             </a>
             <div class="dropdown-divider"></div>
-          @empty
-            <span class="dropdown-item text-center text-muted">لا توجد إشعارات</span>
-            <div class="dropdown-divider"></div>
-          @endforelse
-          <a href="{{ route('admin.notifications.index') }}" class="dropdown-item dropdown-footer">عرض كل الإشعارات</a>
-        </div>
+        @endif
+    @empty
+        <span class="dropdown-item text-center text-muted">لا توجد إشعارات</span>
+        <div class="dropdown-divider"></div>
+    @endforelse
+
+    <a href="{{ route('admin.notifications.index') }}" class="dropdown-item dropdown-footer">عرض كل الإشعارات</a>
+</div>
       </li>
     </ul>
   </nav>

@@ -21,6 +21,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
@@ -49,6 +50,9 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
+        // عند فتح الرسالة من لوحة التحكم نعتبر الإشعارات المرتبطة بها مقروءة للمستخدم الحالي.
+        $this->markRelatedNotificationsAsRead($contact);
+
         return view('admin.contacts.show', compact('contact'));
     }
 
@@ -61,6 +65,9 @@ class ContactController extends Controller
             $contact->update(['status' => 'in_progress']);
         }
 
+        // تغيير حالة الطلب يعني أن المستخدم تعامل معه، لذا نحدّث الإشعارات المرتبطة به.
+        $this->markRelatedNotificationsAsRead($contact);
+
         return redirect()->route('admin.contacts.show', $contact)->with('success', 'تم تحديث حالة الرسالة.');
     }
 
@@ -72,5 +79,22 @@ class ContactController extends Controller
         $contact->delete();
 
         return redirect()->route('admin.contacts.index')->with('success', 'تم حذف الرسالة بنجاح.');
+    }
+
+    /**
+     * تعليم إشعارات الطلب الحالي كمقروءة للمستخدم الحالي.
+     */
+    private function markRelatedNotificationsAsRead(Contact $contact): void
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return;
+        }
+
+        $user->unreadNotifications()
+            ->where('data->contact_id', $contact->id)
+            ->get()
+            ->each
+            ->markAsRead();
     }
 }

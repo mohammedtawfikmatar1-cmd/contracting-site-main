@@ -19,6 +19,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class NotificationController extends Controller
 {
@@ -29,8 +30,26 @@ class NotificationController extends Controller
     {
         $user = auth()->user();
 
-        $notifications = $user?->notifications()->latest()->paginate(20)
-            ?? new LengthAwarePaginator([], 0, 20);
+        if (! $user) {
+            $notifications = new LengthAwarePaginator([], 0, 20);
+
+            return view('admin.notifications.index', compact('notifications'));
+        }
+
+        // نعرض الإشعارات بشكل فريد حتى لا يرى المسؤول نسخا مكررة لنفس الطلب.
+        $allNotifications = $user->notifications()->latest()->get();
+        $uniqueNotifications = $this->uniqueNotifications($allNotifications)->values();
+
+        $perPage = 20;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = $uniqueNotifications->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        $notifications = new LengthAwarePaginator(
+            $currentItems,
+            $uniqueNotifications->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
 
         return view('admin.notifications.index', compact('notifications'));
     }
@@ -43,9 +62,13 @@ class NotificationController extends Controller
         $user = auth()->user();
 
         if ($user) {
-            $notification = $user->unreadNotifications()->where('id', $id)->first();
+            $notification = $user->notifications()->where('id', $id)->first();
             if ($notification) {
-                $notification->markAsRead();
+                // عند تعليم إشعار كمقروء نعلّم أيضا أي نسخ مكررة مرتبطة بنفس الطلب.
+                $this->relatedNotifications($user->notifications()->get(), $notification)
+                    ->whereNull('read_at')
+                    ->each
+                    ->markAsRead();
             }
         }
 
@@ -59,9 +82,39 @@ class NotificationController extends Controller
     {
         $user = auth()->user();
         if ($user) {
-            $user->unreadNotifications->markAsRead();
+            $this->uniqueNotifications($user->unreadNotifications()->get())
+                ->each
+                ->markAsRead();
         }
 
         return back()->with('success', 'تم تعليم جميع الإشعارات كمقروءة.');
+    }
+
+    /**
+     * إزالة التكرار من مجموعة الإشعارات بحسب الطلب المرتبط ونوع الإشعار.
+     */
+    private function uniqueNotifications(Collection $notifications): Collection
+    {
+        return $notifications->unique(fn ($notification) => $this->notificationFingerprint($notification));
+    }
+
+    /**
+     * جلب الإشعارات المرتبطة بنفس البصمة حتى نتعامل مع النسخ المكررة دفعة واحدة.
+     */
+    private function relatedNotifications(Collection $notifications, $target): Collection
+    {
+        $fingerprint = $this->notificationFingerprint($target);
+
+        return $notifications->filter(fn ($notification) => $this->notificationFingerprint($notification) === $fingerprint);
+    }
+
+    /**
+     * إنشاء بصمة موحدة للإشعار تعتمد على الطلب المرتبط بدلا من المعرّف العشوائي للإشعار.
+     */
+    private function notificationFingerprint($notification): string
+    {
+        return ($notification->data['contact_id'] ?? $notification->id)
+            . '|' . ($notification->type ?? '')
+            . '|' . ($notification->data['url'] ?? '');
     }
 }
