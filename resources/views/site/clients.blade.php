@@ -1,6 +1,7 @@
 @extends('site.layouts.app')
 
-@section('title', 'عملاؤنا')
+@section('title', ($siteSettings['company_name'] ?? 'شركة مقاولات') . ' | عملاؤنا')
+@section('description', 'تعرف على عملاء الشركة وشركائها المرتبطين بالمشاريع المنشورة في الموقع.')
 
 @section('styles')
 @vite(['resources/css/index.css'])
@@ -9,6 +10,12 @@
 @section('content')
 <section class="section-py" aria-labelledby="clients-page-title">
     <div class="container">
+        @include('site.partials.breadcrumbs', [
+            'items' => [
+                ['label' => 'الرئيسية', 'url' => route('home')],
+                ['label' => 'عملاؤنا'],
+            ],
+        ])
         <!--
             خريطة تدفق البيانات:
             - $clients من SiteController@clients (جدول clients + ربط المشاريع من الإدارة).

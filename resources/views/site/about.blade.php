@@ -1,6 +1,8 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - من نحن')
+@section('title', ($siteSettings['company_name'] ?? 'شركة مقاولات') . ' | من نحن')
+@section('description', \Illuminate\Support\Str::limit(strip_tags((string) ($siteSettings['about_text_1'] ?? 'تعرف على شركة المقاولات وخبراتها ومشاريعها وقيمها في التنفيذ والبناء.')), 160))
+@section('og_image', $siteSettings['about_main_image'] ?? asset('imag/m1.jpg'))
 
 @section('styles')
 @vite(['resources/css/about.css'])
@@ -13,6 +15,12 @@
 @endphp
 <section id="about" class="about section-py">
     <div class="container">
+        @include('site.partials.breadcrumbs', [
+            'items' => [
+                ['label' => 'الرئيسية', 'url' => route('home')],
+                ['label' => 'من نحن'],
+            ],
+        ])
         <div class="about-grid">
             <div class="about-visuals reveal">
                 <div class="aimg-main">

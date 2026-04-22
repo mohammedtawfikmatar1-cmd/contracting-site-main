@@ -1,6 +1,7 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - اتصل بنا')
+@section('title', ($siteSettings['company_name'] ?? 'شركة مقاولات') . ' | اتصل بنا')
+@section('description', 'تواصل مع شركة المقاولات لطلب عرض سعر أو الاستفسار عن الخدمات والمشاريع وفرص التعاون.')
 
 @section('styles')
     @vite(['resources/css/contact.css'])
@@ -94,6 +95,12 @@
     @endphp
     <section id="contact" class="contact section-py">
       <div class="container">
+        @include('site.partials.breadcrumbs', [
+            'items' => [
+                ['label' => 'الرئيسية', 'url' => route('home')],
+                ['label' => 'اتصل بنا'],
+            ],
+        ])
         <div class="sec-head reveal">
           <span class="sec-label">اتصل بنا</span>
           <h2>نحن هنا لمساعدتك</h2>

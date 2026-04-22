@@ -1,6 +1,7 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - أعمالنا')
+@section('title', ($siteSettings['company_name'] ?? 'شركة مقاولات') . ' | مشاريعنا')
+@section('description', 'تعرف على مشاريع الشركة المنفذة في مجال البناء والمقاولات، مع عرض أحدث الأعمال والتصنيفات المختلفة.')
 
 @section('styles')
 @vite(['resources/css/projects.css'])
@@ -9,6 +10,12 @@
 @section('content')
 <section id="projects" class="projects section-py">
     <div class="container">
+        @include('site.partials.breadcrumbs', [
+            'items' => [
+                ['label' => 'الرئيسية', 'url' => route('home')],
+                ['label' => 'المشاريع'],
+            ],
+        ])
         <div class="sec-head reveal">
             <span class="sec-label">أعمالنا</span>
             <h2>مشاريعنا</h2>

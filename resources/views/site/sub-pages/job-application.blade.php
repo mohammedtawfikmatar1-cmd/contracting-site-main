@@ -1,6 +1,43 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - طلب وظيفة')
+@section('title', $job->title . ' | التقديم على وظيفة | ' . ($siteSettings['company_name'] ?? 'شركة مقاولات'))
+@section('description', \Illuminate\Support\Str::limit(strip_tags((string) $job->description), 160))
+@section('og_type', 'article')
+@section('structured_data')
+    @php
+        /* بيانات منظمة للوظيفة مع مسار التنقل */
+        $jobStructuredData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'JobPosting',
+            'title' => $job->title,
+            'description' => \Illuminate\Support\Str::limit(strip_tags((string) $job->description), 200),
+            'employmentType' => $job->type ?: 'FULL_TIME',
+            'jobLocation' => [
+                '@type' => 'Place',
+                'address' => [
+                    '@type' => 'PostalAddress',
+                    'addressLocality' => $job->location ?: null,
+                ],
+            ],
+            'hiringOrganization' => [
+                '@type' => 'Organization',
+                'name' => $siteSettings['company_name'] ?? 'شركة مقاولات',
+                'sameAs' => route('home'),
+            ],
+        ];
+        $jobBreadcrumbData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'الرئيسية', 'item' => route('home')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'الوظائف', 'item' => route('careers')],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => $job->title, 'item' => route('careers.apply', $job->id)],
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">{!! json_encode($jobStructuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    <script type="application/ld+json">{!! json_encode($jobBreadcrumbData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endsection
 
 @section('styles')
     @vite(['resources/css/service-details.css'])
@@ -22,6 +59,13 @@
 <div class="service-details-page">
     <section class="service-hero">
         <div class="container">
+            @include('site.partials.breadcrumbs', [
+                'items' => [
+                    ['label' => 'الرئيسية', 'url' => route('home')],
+                    ['label' => 'الوظائف', 'url' => route('careers')],
+                    ['label' => $job->title],
+                ],
+            ])
             <span class="sec-label">انضم لفريقنا</span>
             <!-- بيانات الوظيفة: $job قادمة من SiteController@jobApply (مُدارة من لوحة التحكم: الوظائف) -->
             <h1>تقديم طلب توظيف - {{ $job->title }}</h1>

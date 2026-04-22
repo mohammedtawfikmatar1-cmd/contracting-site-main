@@ -1,10 +1,18 @@
 @extends('site.layouts.app')
 
-@section('title', 'نتائج البحث')
+@section('title', 'نتائج البحث | ' . ($siteSettings['company_name'] ?? 'شركة مقاولات'))
+@section('description', 'صفحة نتائج البحث الداخلية في الموقع.')
+@section('robots', 'noindex,follow')
 
 @section('content')
 <section class="section-py">
     <div class="container">
+        @include('site.partials.breadcrumbs', [
+            'items' => [
+                ['label' => 'الرئيسية', 'url' => route('home')],
+                ['label' => 'البحث'],
+            ],
+        ])
         <div class="sec-head">
             <span class="sec-label">البحث</span>
             <h1>نتائج البحث عن: {{ $q ?: '---' }}</h1>

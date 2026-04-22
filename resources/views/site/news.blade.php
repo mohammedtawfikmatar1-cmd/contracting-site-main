@@ -1,6 +1,7 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - الأخبار')
+@section('title', ($siteSettings['company_name'] ?? 'شركة مقاولات') . ' | الأخبار')
+@section('description', 'تابع آخر أخبار الشركة وتحديثاتها ومشاريعها وخدماتها وإعلاناتها الجديدة.')
 
 @section('styles')
 @vite(['resources/css/news.css'])
@@ -10,6 +11,12 @@
 @section('content')
 <section class="news-hero">
     <div class="container">
+        @include('site.partials.breadcrumbs', [
+            'items' => [
+                ['label' => 'الرئيسية', 'url' => route('home')],
+                ['label' => 'الأخبار'],
+            ],
+        ])
         <div class="hero-content reveal">
             <span class="sec-label">آخر الأخبار</span>
             <h1>أخبار وتحديثات الشركة</h1>
@@ -25,7 +32,7 @@
                 <article class="news-card reveal">
                     <a class="news-card__media" href="{{ route('news.details', $item->slug) }}" aria-hidden="true" tabindex="-1">
                         <div class="news-image">
-                            <img src="{{ $item->image_url ?: asset('imag/m1.jpg') }}" alt="" loading="lazy">
+                            <img src="{{ $item->image_url ?: asset('imag/m1.jpg') }}" alt="{{ $item->title }}" loading="lazy">
                             <span class="news-date">{{ optional($item->published_at)->format('Y-m-d') }}</span>
                         </div>
                     </a>

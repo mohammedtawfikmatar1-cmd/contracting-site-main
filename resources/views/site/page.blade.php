@@ -1,10 +1,17 @@
 @extends('site.layouts.app')
 
 @section('title', $page->title)
+@section('description', \Illuminate\Support\Str::limit(strip_tags((string) $page->content), 160))
 
 @section('content')
 <section class="section-py">
     <div class="container">
+        @include('site.partials.breadcrumbs', [
+            'items' => [
+                ['label' => 'الرئيسية', 'url' => route('home')],
+                ['label' => $page->title],
+            ],
+        ])
         <div class="sec-head">
             <span class="sec-label">صفحة</span>
             <!--

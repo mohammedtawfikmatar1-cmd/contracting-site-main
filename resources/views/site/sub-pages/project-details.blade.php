@@ -1,6 +1,33 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - تفاصيل المشروع')
+@section('title', $project->title . ' | مشاريع ' . ($siteSettings['company_name'] ?? 'شركة مقاولات'))
+@section('description', \Illuminate\Support\Str::limit(strip_tags((string) $project->description), 160))
+@section('og_type', 'article')
+@section('og_image', $project->image_url ?: asset('imag/m1.jpg'))
+@section('structured_data')
+    @php
+        /* بيانات منظمة للمشروع مع مسار التنقل */
+        $projectStructuredData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'CreativeWork',
+            'name' => $project->title,
+            'description' => \Illuminate\Support\Str::limit(strip_tags((string) $project->description), 200),
+            'url' => route('projects.details', $project->slug),
+            'image' => $project->image_url ?: asset('imag/m1.jpg'),
+        ];
+        $projectBreadcrumbData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'الرئيسية', 'item' => route('home')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'المشاريع', 'item' => route('projects')],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => $project->title, 'item' => route('projects.details', $project->slug)],
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">{!! json_encode($projectStructuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    <script type="application/ld+json">{!! json_encode($projectBreadcrumbData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endsection
 
 @section('styles')
     @vite(['resources/css/project-details.css', 'resources/css/service-details.css'])
@@ -10,6 +37,13 @@
 <div class="project-details-page">
     <section class="project-hero" style="--hero-bg-image: url('{{ $project->image_url ?: asset('imag/m1.jpg') }}');">
         <div class="container">
+            @include('site.partials.breadcrumbs', [
+                'items' => [
+                    ['label' => 'الرئيسية', 'url' => route('home')],
+                    ['label' => 'المشاريع', 'url' => route('projects')],
+                    ['label' => $project->title],
+                ],
+            ])
             <span class="sec-label">تفاصيل المشروع</span>
             <!-- بيانات المشروع: $project قادمة من SiteController@projectDetails (مُدار من لوحة التحكم: المشاريع) -->
             <h1>{{ $project->title }}</h1>

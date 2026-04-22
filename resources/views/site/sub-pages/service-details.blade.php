@@ -1,6 +1,37 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - تفاصيل الخدمة')
+@section('title', $service->title . ' | خدمات ' . ($siteSettings['company_name'] ?? 'شركة مقاولات'))
+@section('description', \Illuminate\Support\Str::limit(strip_tags((string) ($service->overview ?: $service->description)), 160))
+@section('og_type', 'article')
+@section('og_image', $service->image_url ?: asset('imag/m1.jpg'))
+@section('structured_data')
+    @php
+        /* بيانات منظمة للخدمة + مسار تنقل لمساعدة محركات البحث على فهم الصفحة */
+        $serviceStructuredData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Service',
+            'name' => $service->title,
+            'description' => \Illuminate\Support\Str::limit(strip_tags((string) ($service->overview ?: $service->description)), 200),
+            'url' => route('services.details', $service->slug),
+            'image' => $service->image_url ?: asset('imag/m1.jpg'),
+            'provider' => [
+                '@type' => 'Organization',
+                'name' => $siteSettings['company_name'] ?? 'شركة مقاولات',
+            ],
+        ];
+        $serviceBreadcrumbData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'الرئيسية', 'item' => route('home')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'الخدمات', 'item' => route('services')],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => $service->title, 'item' => route('services.details', $service->slug)],
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">{!! json_encode($serviceStructuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    <script type="application/ld+json">{!! json_encode($serviceBreadcrumbData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endsection
 
 @section('styles')
     @vite(['resources/css/service-details.css'])
@@ -10,6 +41,13 @@
 <div class="service-details-page">
     <section class="service-hero" style="--hero-bg-image: url('{{ $service->image_url ?: asset('imag/m1.jpg') }}');">
         <div class="container">
+            @include('site.partials.breadcrumbs', [
+                'items' => [
+                    ['label' => 'الرئيسية', 'url' => route('home')],
+                    ['label' => 'الخدمات', 'url' => route('services')],
+                    ['label' => $service->title],
+                ],
+            ])
             <span class="sec-label">تفاصيل الخدمة</span>
             <!-- بيانات الخدمة: $service قادمة من SiteController@serviceDetails (مُدارة من لوحة التحكم: الخدمات) -->
             <h1>{{ $service->title }}</h1>

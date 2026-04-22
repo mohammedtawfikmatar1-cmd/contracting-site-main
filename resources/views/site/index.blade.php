@@ -1,6 +1,9 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - الصفحة الرئيسية')
+@section('title', ($siteSettings['company_name'] ?? 'شركة مقاولات') . ' | الرئيسية وخدمات المقاولات')
+@section('description', \Illuminate\Support\Str::limit((string) ($siteSettings['home_hero_description'] ?? 'شركة مقاولات متخصصة في تنفيذ مشاريع البناء والتشييد والبنية التحتية بجودة عالية وتسليم موثوق.'), 160))
+@section('og_type', 'website')
+@section('og_image', $siteSettings['home_hero_image'] ?? asset('imag/m1.jpg'))
 
 @section('styles')
 @vite(['resources/css/index.css', 'resources/css/services.css', 'resources/css/news.css'])
@@ -15,7 +18,7 @@
 <section id="home" class="hero" aria-label="الرئيسية">
     <div class="hero-media" aria-hidden="true">
         <!-- صورة الغلاف: مصدرها إعدادات لوحة التحكم (home_hero_image) -->
-        <img src="{{ $siteSettings['home_hero_image'] ?? asset('imag/m1.jpg') }}" alt="">
+        <img src="{{ $siteSettings['home_hero_image'] ?? asset('imag/m1.jpg') }}" alt="صورة تعريفية عن {{ $siteSettings['company_name'] ?? 'شركة المقاولات' }}">
     </div>
     <div class="container hero-body">
         <!--
@@ -130,7 +133,7 @@
                 <article class="news-card reveal">
                     <a class="news-card__media" href="{{ route('news.details', $item->slug) }}" aria-hidden="true" tabindex="-1">
                         <div class="news-image">
-                            <img src="{{ $item->image_url ?: asset('imag/m1.jpg') }}" alt="" loading="lazy">
+                            <img src="{{ $item->image_url ?: asset('imag/m1.jpg') }}" alt="{{ $item->title }}" loading="lazy">
                             <span class="news-date">{{ optional($item->published_at)->format('Y-m-d') }}</span>
                         </div>
                     </a>

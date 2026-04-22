@@ -1,6 +1,47 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - تفاصيل الخبر')
+@section('title', $newsItem->title . ' | أخبار ' . ($siteSettings['company_name'] ?? 'شركة مقاولات'))
+@section('description', \Illuminate\Support\Str::limit(strip_tags((string) $newsItem->content), 160))
+@section('og_type', 'article')
+@section('og_image', $newsItem->image_url ?: asset('imag/m1.jpg'))
+@section('structured_data')
+    @php
+        /* بيانات منظمة للخبر مع تاريخ النشر وصورة الخبر */
+        $newsStructuredData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'NewsArticle',
+            'headline' => $newsItem->title,
+            'description' => \Illuminate\Support\Str::limit(strip_tags((string) $newsItem->content), 200),
+            'datePublished' => optional($newsItem->published_at)->toIso8601String(),
+            'dateModified' => optional($newsItem->updated_at)->toIso8601String(),
+            'image' => [$newsItem->image_url ?: asset('imag/m1.jpg')],
+            'mainEntityOfPage' => route('news.details', $newsItem->slug),
+            'author' => [
+                '@type' => 'Organization',
+                'name' => $siteSettings['company_name'] ?? 'شركة مقاولات',
+            ],
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => $siteSettings['company_name'] ?? 'شركة مقاولات',
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => $siteSettings['logo_main'] ?? asset('building.png'),
+                ],
+            ],
+        ];
+        $newsBreadcrumbData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'الرئيسية', 'item' => route('home')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'الأخبار', 'item' => route('news')],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => $newsItem->title, 'item' => route('news.details', $newsItem->slug)],
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">{!! json_encode($newsStructuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    <script type="application/ld+json">{!! json_encode($newsBreadcrumbData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endsection
 
 @section('styles')
     @vite(['resources/css/news.css', 'resources/css/service-details.css'])
@@ -75,6 +116,13 @@
 <div class="service-details-page">
     <section class="service-hero" style="--hero-bg-image: url('{{ $newsItem->image_url ?: asset('imag/m1.jpg') }}');">
         <div class="container">
+            @include('site.partials.breadcrumbs', [
+                'items' => [
+                    ['label' => 'الرئيسية', 'url' => route('home')],
+                    ['label' => 'الأخبار', 'url' => route('news')],
+                    ['label' => $newsItem->title],
+                ],
+            ])
             <div class="hero-content reveal">
                 <span class="sec-label">أخبار وتحديثات</span>
                 <!-- بيانات الخبر: $newsItem قادمة من SiteController@newsDetails (مُدار من لوحة التحكم: الأخبار) -->
@@ -112,7 +160,7 @@
                                 <article class="news-card">
                                     <a class="news-card__media" href="{{ route('news.details', $related->slug) }}" tabindex="-1" aria-hidden="true">
                                         <div class="news-image news-image-sm">
-                                            <img src="{{ $related->image_url ?: asset('imag/m1.jpg') }}" alt="" loading="lazy">
+                                            <img src="{{ $related->image_url ?: asset('imag/m1.jpg') }}" alt="{{ $related->title }}" loading="lazy">
                                         </div>
                                     </a>
                                     <div class="news-content">

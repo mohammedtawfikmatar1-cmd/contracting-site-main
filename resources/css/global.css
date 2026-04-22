@@ -155,6 +155,48 @@ button {
   padding-block: var(--py);
 }
 
+/* ── BREADCRUMBS ─────────────────────────────────────── */
+.site-breadcrumbs {
+  margin-bottom: var(--s6);
+}
+
+.site-breadcrumbs__list {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.site-breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-s);
+  font-size: var(--t-xs);
+  font-weight: 700;
+}
+
+.site-breadcrumbs__item:not(:last-child)::before {
+  content: "/";
+  color: color-mix(in srgb, var(--site-content-text, #fff) 36%, transparent);
+}
+
+.site-breadcrumbs__link {
+  color: color-mix(in srgb, var(--site-content-text, #fff) 76%, transparent);
+  transition: color var(--tf);
+}
+
+.site-breadcrumbs__link:hover {
+  color: var(--orange);
+}
+
+.site-breadcrumbs__current {
+  color: var(--site-content-text, #fff);
+}
+
 /* ── ACCESSIBILITY ────────────────────────────────────────── */
 .skip-link {
   position: absolute;

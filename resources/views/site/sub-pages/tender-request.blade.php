@@ -1,6 +1,31 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - تقديم مناقصة')
+@section('title', $tender->title . ' | تقديم عرض مناقصة | ' . ($siteSettings['company_name'] ?? 'شركة مقاولات'))
+@section('description', \Illuminate\Support\Str::limit(strip_tags((string) $tender->description), 160))
+@section('og_type', 'article')
+@section('structured_data')
+    @php
+        /* بيانات منظمة للمناقصة مع مسار التنقل */
+        $tenderStructuredData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'CreativeWork',
+            'name' => $tender->title,
+            'description' => \Illuminate\Support\Str::limit(strip_tags((string) $tender->description), 200),
+            'url' => route('tenders.request', $tender->id),
+        ];
+        $tenderBreadcrumbData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'الرئيسية', 'item' => route('home')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'المناقصات', 'item' => route('tenders')],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => $tender->title, 'item' => route('tenders.request', $tender->id)],
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">{!! json_encode($tenderStructuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    <script type="application/ld+json">{!! json_encode($tenderBreadcrumbData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endsection
 
 @section('styles')
     @vite(['resources/css/service-details.css'])
@@ -22,6 +47,13 @@
 <div class="service-details-page">
     <section class="service-hero">
         <div class="container">
+            @include('site.partials.breadcrumbs', [
+                'items' => [
+                    ['label' => 'الرئيسية', 'url' => route('home')],
+                    ['label' => 'المناقصات', 'url' => route('tenders')],
+                    ['label' => $tender->title],
+                ],
+            ])
             <span class="sec-label">المناقصات والعقود</span>
             <h1>تقديم عرض مناقصة</h1>
             <!-- بيانات المناقصة: $tender قادمة من SiteController@tenderRequest (مُدارة من لوحة التحكم: المناقصات) -->

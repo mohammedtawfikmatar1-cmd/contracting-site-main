@@ -54,6 +54,10 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 // --- واجهات الموقع العام (Site Routes) ---
 // هذه المجموعة هي نقطة العرض لبيانات لوحة التحكم: تعرض العناصر المنشورة فقط.
+Route::get('/robots.txt', [SiteController::class, 'robots'])->name('robots');
+// ملف robots.txt ديناميكي لتوجيه عناكب البحث.
+Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('sitemap');
+// خريطة الموقع XML لتسهيل اكتشاف الصفحات المنشورة وفهرستها.
 Route::get('/', [SiteController::class, 'home'])->name('home');
 // الصفحة الرئيسية: خدمات + مشاريع + أخبار (من لوحة التحكم) + إعدادات عامة.
 Route::get('/about', [SiteController::class, 'about'])->name('about');
@@ -109,7 +113,7 @@ Route::post('/tenders/{tender}/request', [ContactRequestController::class, 'stor
 // --- صفحات ديناميكية من لوحة التحكم (Catch-all) ---
 // يجب أن تكون في نهاية المسارات لتجنب التعارض
 Route::get('/{slug}', [SiteController::class, 'dynamicPage'])
-    ->where('slug', '^(?!admin(?:/|$)|services(?:/|$)|projects(?:/|$)|news(?:/|$)|careers(?:/|$)|tenders(?:/|$)|contact(?:/|$)|clients(?:/|$)|search(?:/|$)|pages(?:/|$)|storage(?:/|$)|up(?:/|$)).+');
+    ->where('slug', '^(?!admin(?:/|$)|services(?:/|$)|projects(?:/|$)|news(?:/|$)|careers(?:/|$)|tenders(?:/|$)|contact(?:/|$)|clients(?:/|$)|search(?:/|$)|pages(?:/|$)|storage(?:/|$)|up(?:/|$)|robots\.txt$|sitemap\.xml$).+');
 
 // --- واجهات لوحة التحكم (Admin Dashboard Routes) ---
 // كل ما بداخل middleware('auth') يتطلب تسجيل دخول مسؤول (انظر Admin\AuthController)

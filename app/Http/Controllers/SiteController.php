@@ -315,6 +315,123 @@ class SiteController extends Controller
         return view('site.search', compact('q', 'services', 'projects', 'news', 'jobs', 'tenders', 'pages'));
     }
 
+    /**
+     * خريطة الموقع XML:
+     * تجمع أهم روابط الموقع المنشورة لتسهيل الأرشفة على محركات البحث.
+     */
+    public function sitemap()
+    {
+        $urls = collect([
+            [
+                'loc' => route('home'),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'daily',
+                'priority' => '1.0',
+            ],
+            [
+                'loc' => route('about'),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.8',
+            ],
+            [
+                'loc' => route('services'),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.9',
+            ],
+            [
+                'loc' => route('projects'),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.9',
+            ],
+            [
+                'loc' => route('news'),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'daily',
+                'priority' => '0.8',
+            ],
+            [
+                'loc' => route('contact'),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.7',
+            ],
+            [
+                'loc' => route('careers'),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.7',
+            ],
+            [
+                'loc' => route('tenders'),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.7',
+            ],
+        ]);
+
+        $urls = $urls
+            ->merge(Service::query()->published()->get()->map(fn ($service) => [
+                'loc' => route('services.details', $service->slug),
+                'lastmod' => optional($service->updated_at)->toDateString() ?? now()->toDateString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.8',
+            ]))
+            ->merge(Project::query()->published()->get()->map(fn ($project) => [
+                'loc' => route('projects.details', $project->slug),
+                'lastmod' => optional($project->updated_at)->toDateString() ?? now()->toDateString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.8',
+            ]))
+            ->merge(News::query()->published()->get()->map(fn ($newsItem) => [
+                'loc' => route('news.details', $newsItem->slug),
+                'lastmod' => optional($newsItem->updated_at)->toDateString() ?? now()->toDateString(),
+                'changefreq' => 'daily',
+                'priority' => '0.7',
+            ]));
+
+        if (Schema::hasTable('pages')) {
+            $urls = $urls->merge(\App\Models\Page::query()->published()->get()->map(fn ($page) => [
+                'loc' => route('pages.show', $page->slug),
+                'lastmod' => optional($page->updated_at)->toDateString() ?? now()->toDateString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.7',
+            ]));
+        }
+
+        if ((bool) Setting::getValue('clients_page_enabled', false) && Schema::hasTable((new Client())->getTable())) {
+            $urls->push([
+                'loc' => route('clients'),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.7',
+            ]);
+        }
+
+        return response()
+            ->view('site.sitemap', ['urls' => $urls->values()])
+            ->header('Content-Type', 'application/xml; charset=UTF-8');
+    }
+
+    /**
+     * ملف robots.txt ديناميكي:
+     * يسمح بأرشفة صفحات الموقع العامة ويمنع صفحات الإدارة والبحث الداخلي.
+     */
+    public function robots()
+    {
+        $lines = [
+            'User-agent: *',
+            'Allow: /',
+            'Disallow: /admin',
+            'Disallow: /search',
+            'Sitemap: ' . route('sitemap'),
+        ];
+
+        return response(implode("\n", $lines), 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
+    }
+
     private function siteSettings(): Collection
     {
         // جدول settings: إعدادات عامة (هوية، ألوان، نصوص) تُعرض في القوالب عبر $siteSettings في الـ composer

@@ -10,7 +10,7 @@
         -->
         <a href="{{ route('home') }}" class="logo" aria-label="موقع الشركة">
             <span class="logo-mark">
-                <img src="{{ $settingsMedia('logo_main', asset('building.png'), asset('building.png')) }}" alt="" width="48" height="48" decoding="async">
+                <img src="{{ $settingsMedia('logo_main', asset('building.png'), asset('building.png')) }}" alt="{{ $settingsValue(['company_name', 'site_name'], 'شعار الشركة', 'شعار الموقع') }}" width="48" height="48" decoding="async">
             </span>
             <span class="logo-name">{{ $settingsValue(['company_name', 'site_name'], 'شركة مقاولات نموذجية', '') }}</span>
         </a>

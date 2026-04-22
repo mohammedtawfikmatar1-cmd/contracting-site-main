@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    خريطة موقع XML:
+    تُستخدم بواسطة محركات البحث لاكتشاف الصفحات المنشورة المهمة داخل الموقع.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+@foreach($urls as $url)
+    <url>
+        <loc>{{ htmlspecialchars($url['loc'], ENT_XML1) }}</loc>
+        <lastmod>{{ $url['lastmod'] }}</lastmod>
+        <changefreq>{{ $url['changefreq'] }}</changefreq>
+        <priority>{{ $url['priority'] }}</priority>
+    </url>
+@endforeach
+</urlset>

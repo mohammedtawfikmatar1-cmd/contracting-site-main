@@ -1,6 +1,7 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - الوظائف')
+@section('title', ($siteSettings['company_name'] ?? 'شركة مقاولات') . ' | الوظائف')
+@section('description', 'اطلع على الوظائف المتاحة لدى الشركة وقدّم طلبك للانضمام إلى فريق العمل.')
 
 @section('styles')
 @vite(['resources/css/careers.css'])
@@ -9,6 +10,12 @@
 @section('content')
 <section class="careers-hero">
     <div class="container">
+        @include('site.partials.breadcrumbs', [
+            'items' => [
+                ['label' => 'الرئيسية', 'url' => route('home')],
+                ['label' => 'الوظائف'],
+            ],
+        ])
         <div class="hero-content reveal">
             <span class="sec-label">انضم إلينا</span>
             <h1>الوظائف المتاحة</h1>

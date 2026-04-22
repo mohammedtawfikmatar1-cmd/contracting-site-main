@@ -1,6 +1,7 @@
 @extends('site.layouts.app')
 
-@section('title', 'شركة مقاولات - المناقصات')
+@section('title', ($siteSettings['company_name'] ?? 'شركة مقاولات') . ' | المناقصات')
+@section('description', 'استعرض المناقصات والفرص التعاقدية المتاحة من الشركة، مع تفاصيل الأعمال والمواقع ومواعيد الإغلاق.')
 
 @section('styles')
 @vite(['resources/css/tenders.css'])
@@ -9,6 +10,12 @@
 @section('content')
 <section class="tenders-hero">
     <div class="container">
+        @include('site.partials.breadcrumbs', [
+            'items' => [
+                ['label' => 'الرئيسية', 'url' => route('home')],
+                ['label' => 'المناقصات'],
+            ],
+        ])
         <div class="hero-content reveal">
             <span class="sec-label">المناقصات</span>
             <h1>فرص تعاقدية متاحة</h1>
