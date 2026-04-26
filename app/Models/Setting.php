@@ -21,6 +21,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 class Setting extends Model
@@ -63,13 +64,18 @@ class Setting extends Model
             return $default;
         }
 
-        $setting = self::where('key', $key)->first();
-        if (!$setting) {
-            return $default;
-        }
+        // تحسين الأداء: كاش للإعدادات الأكثر استخداماً في الواجهة.
+        // مدة قصيرة كافية لتسريع الموقع وتجنب بقاء بيانات قديمة فترة طويلة.
+        $cacheKey = "settings:value:{$key}";
 
-        // إعادة القيمة بعد تحويلها لنوعها المناسب.
-        return $setting->parseValue();
+        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($key, $default) {
+            $setting = self::query()->where('key', $key)->first();
+            if (! $setting) {
+                return $default;
+            }
+
+            return $setting->parseValue();
+        });
     }
 
     /**
@@ -87,13 +93,39 @@ class Setting extends Model
             ? json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             : $value;
 
-        return self::updateOrCreate(
+        $setting = self::updateOrCreate(
             ['key' => $key],
             [
                 'value' => $storedValue,
                 'type' => $type,
             ]
         );
+
+        // تفريغ الكاش لهذا المفتاح + تفريغ كاش تجميعة إعدادات الموقع إن وُجد.
+        self::clearCacheForKey($key);
+
+        return $setting;
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(function (self $setting) {
+            self::clearCacheForKey($setting->key);
+        });
+
+        static::deleted(function (self $setting) {
+            self::clearCacheForKey($setting->key);
+        });
+    }
+
+    private static function clearCacheForKey(string $key): void
+    {
+        try {
+            Cache::forget("settings:value:{$key}");
+            Cache::forget('site:settings:all');
+        } catch (\Throwable $e) {
+            // في حال عدم توفر كاش فعّال، لا نكسر سير العمل.
+        }
     }
 
     /**

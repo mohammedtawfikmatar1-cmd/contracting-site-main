@@ -13,7 +13,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\EditorImageUploadRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
 
 class EditorUploadController extends Controller
 {
@@ -28,7 +27,8 @@ class EditorUploadController extends Controller
         $path = $request->file('image')->store("editor/{$context}", 'public');
 
         return response()->json([
-            'url' => Storage::disk('public')->url($path),
+            // نستخدم مسار /media الموحد حتى يعمل العرض في جميع البيئات (مجلدات فرعية/بدون ضبط APP_URL).
+            'url' => route('media.file', ['path' => $path]),
             'path' => $path,
         ]);
     }
