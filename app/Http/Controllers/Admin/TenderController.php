@@ -19,8 +19,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\TenderSavedForNews;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreTenderRequest;
+use App\Http\Requests\Admin\UpdateTenderRequest;
 use App\Models\Tender;
-use Illuminate\Http\Request;
 
 class TenderController extends Controller
 {
@@ -57,9 +58,9 @@ class TenderController extends Controller
      * حفظ مناقصة جديدة.
      * بعد الحفظ يمكن أن تنعكس مباشرة في الموقع إذا كانت حالة النشر مفعلة.
      */
-    public function store(Request $request)
+    public function store(StoreTenderRequest $request)
     {
-        $validated = $this->validateTender($request);
+        $validated = $request->validated();
         $validated['is_published'] = $request->boolean('is_published');
 
         $tender = Tender::create($validated);
@@ -81,9 +82,9 @@ class TenderController extends Controller
     /**
      * تحديث بيانات المناقصة وحالة ظهورها للزوار.
      */
-    public function update(Request $request, Tender $tender)
+    public function update(UpdateTenderRequest $request, Tender $tender)
     {
-        $validated = $this->validateTender($request, $tender->id);
+        $validated = $request->validated();
         $validated['is_published'] = $request->boolean('is_published');
 
         $tender->update($validated);
@@ -104,19 +105,4 @@ class TenderController extends Controller
         return redirect()->route('admin.tenders.index')->with('success', 'تم حذف المناقصة بنجاح.');
     }
 
-    /**
-     * قواعد التحقق لبيانات المناقصة.
-     * تضمن إدخال حالة صحيحة وتاريخ إغلاق صالح.
-     */
-    private function validateTender(Request $request, ?int $ignoreId = null): array
-    {
-        return $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'work_type' => ['nullable', 'string', 'max:255'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'closing_date' => ['required', 'date'],
-            'status' => ['required', 'in:open,closed,completed'],
-        ]);
-    }
 }

@@ -90,14 +90,14 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="svc-desc-ar" role="tabpanel">
-                            <textarea name="description[ar]" class="form-control js-editor" rows="8">{{ old('description.ar', $service->getTranslation('description','ar')) }}</textarea>
+                            <textarea name="description[ar]" class="form-control js-editor" data-editor-context="services" rows="8">{{ old('description.ar', $service->getTranslation('description','ar')) }}</textarea>
                         </div>
                         <div class="tab-pane fade" id="svc-desc-en" role="tabpanel">
-                            <textarea name="description[en]" class="form-control js-editor" rows="8">{{ old('description.en', $service->getTranslation('description','en')) }}</textarea>
+                            <textarea name="description[en]" class="form-control js-editor" data-editor-context="services" rows="8">{{ old('description.en', $service->getTranslation('description','en')) }}</textarea>
                         </div>
                     </div>
                 @else
-                    <textarea name="description" class="form-control js-editor" rows="8">{{ old('description', is_array($service->getTranslations('description')) ? ($service->getTranslation('description','ar') ?: $service->description) : $service->description) }}</textarea>
+                    <textarea name="description" class="form-control js-editor" data-editor-context="services" rows="8">{{ old('description', is_array($service->getTranslations('description')) ? ($service->getTranslation('description','ar') ?: $service->description) : $service->description) }}</textarea>
                 @endif
             </div>
             <div class="row">
@@ -144,33 +144,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
-    <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
-    <script>
-        (function ($) {
-            function initSummernote($el) {
-                if (!$el.length || $el.data('summernote')) return;
-                $el.summernote({
-                    height: 240,
-                    lang: 'ar-AR',
-                    toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'italic', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['insert', ['link', 'picture', 'table']],
-                        ['view', ['fullscreen', 'codeview', 'help']]
-                    ]
-                });
-            }
-
-            $(function () {
-                $('.js-editor').each(function () { initSummernote($(this)); });
-                $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
-                    $('.js-editor').each(function () { initSummernote($(this)); });
-                });
-            });
-        })(jQuery);
-    </script>
+    @include('admin.partials.summernote')
 @endsection

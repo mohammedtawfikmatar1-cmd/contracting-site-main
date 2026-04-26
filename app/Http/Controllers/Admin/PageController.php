@@ -18,8 +18,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StorePageRequest;
+use App\Http\Requests\Admin\UpdatePageRequest;
 use App\Models\Page;
-use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
@@ -53,9 +54,9 @@ class PageController extends Controller
     /**
      * حفظ صفحة جديدة مع تحديد حالة النشر.
      */
-    public function store(Request $request)
+    public function store(StorePageRequest $request)
     {
-        $validated = $this->validatePage($request);
+        $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'content']);
         $validated['is_published'] = $request->boolean('is_published');
         // إلغاء "نوع القالب" نهائياً: نعتمد عرض الصفحة القياسي فقط.
@@ -77,9 +78,9 @@ class PageController extends Controller
     /**
      * تحديث صفحة موجودة.
      */
-    public function update(Request $request, Page $page)
+    public function update(UpdatePageRequest $request, Page $page)
     {
-        $validated = $this->validatePage($request, $page->id);
+        $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'content']);
         $validated['is_published'] = $request->boolean('is_published');
         // إلغاء "نوع القالب" نهائياً: نعتمد عرض الصفحة القياسي فقط.
@@ -98,28 +99,6 @@ class PageController extends Controller
         $page->delete();
 
         return redirect()->route('admin.pages.index')->with('success', 'تم حذف الصفحة بنجاح.');
-    }
-
-    /**
-     * قواعد التحقق الخاصة بالصفحات.
-     */
-    private function validatePage(Request $request, ?int $ignoreId = null): array
-    {
-        // إيقاف نظام الإدخال متعدد اللغة حاليا والإبقاء على العربية فقط.
-        $enabled = false;
-        if ($enabled) {
-            return $request->validate([
-                'title.ar' => ['required', 'string', 'max:255'],
-                'title.en' => ['nullable', 'string', 'max:255'],
-                'content.ar' => ['nullable', 'string'],
-                'content.en' => ['nullable', 'string'],
-            ]);
-        }
-
-        return $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'content' => ['nullable', 'string'],
-        ]);
     }
 
     /**

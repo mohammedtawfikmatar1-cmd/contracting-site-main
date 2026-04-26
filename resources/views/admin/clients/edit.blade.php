@@ -33,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label>نبذة عن العميل</label>
-                <textarea name="description" class="form-control js-editor" rows="5" maxlength="5000">{{ old('description', $client->description) }}</textarea>
+                <textarea name="description" class="form-control js-editor" data-editor-context="clients" rows="5" maxlength="5000">{{ old('description', $client->description) }}</textarea>
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -86,29 +86,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
-    <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
-    <script>
-        (function ($) {
-            function initSummernote($el) {
-                if (!$el.length || $el.data('summernote')) return;
-                $el.summernote({
-                    height: 200,
-                    lang: 'ar-AR',
-                    toolbar: [
-                        ['font', ['bold', 'italic', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['insert', ['link']],
-                        ['view', ['fullscreen', 'codeview', 'help']]
-                    ]
-                });
-            }
-
-            $(function () {
-                $('.js-editor').each(function () { initSummernote($(this)); });
-            });
-        })(jQuery);
-    </script>
+    @include('admin.partials.summernote')
 @endsection

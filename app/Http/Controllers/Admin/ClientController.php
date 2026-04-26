@@ -18,10 +18,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreClientRequest;
+use App\Http\Requests\Admin\UpdateClientRequest;
 use App\Models\Client;
 use App\Models\Project;
 use App\Models\Setting;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ClientController extends Controller
@@ -52,7 +53,7 @@ class ClientController extends Controller
     /**
      * تفعيل أو تعطيل صفحة "عملاؤنا" والرابط في القائمة الرئيسية.
      */
-    public function toggleClientsPage(Request $request)
+    public function toggleClientsPage(\Illuminate\Http\Request $request)
     {
         Setting::setValue('clients_page_enabled', $request->boolean('enabled') ? '1' : '0', 'boolean');
 
@@ -74,11 +75,25 @@ class ClientController extends Controller
     /**
      * حفظ عميل جديد ثم ربط المشاريع المختارة به.
      */
-    public function store(Request $request)
+    public function store(StoreClientRequest $request)
     {
-        $validated = $this->validateClient($request);
-        $projectIds = $validated['project_ids'];
+        $validated = $request->validated();
+        $validated['is_published'] = $request->boolean('is_published');
+        $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
+
+        $projectIds = array_values(array_unique(array_map('intval', $validated['project_ids'] ?? [])));
         unset($validated['project_ids']);
+
+        // منع ربط نفس المشروع بأكثر من عميل في وقت واحد.
+        $conflict = Project::query()
+            ->whereIn('id', $projectIds)
+            ->whereNotNull('client_id')
+            ->exists();
+        if ($conflict) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'project_ids' => 'أحد المشاريع المختارة مرتبط بالفعل بعميل آخر؛ أزل التعارض أو عدّل العميل الآخر أولا.',
+            ]);
+        }
 
         if ($request->hasFile('logo')) {
             $validated['logo'] = $request->file('logo')->store('clients', 'public');
@@ -104,11 +119,26 @@ class ClientController extends Controller
     /**
      * تحديث بيانات العميل وإعادة ربط المشاريع وفق القائدة: مشروع واحد على الأقل.
      */
-    public function update(Request $request, Client $client)
+    public function update(UpdateClientRequest $request, Client $client)
     {
-        $validated = $this->validateClient($request, $client->id);
-        $projectIds = $validated['project_ids'];
+        $validated = $request->validated();
+        $validated['is_published'] = $request->boolean('is_published');
+        $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
+
+        $projectIds = array_values(array_unique(array_map('intval', $validated['project_ids'] ?? [])));
         unset($validated['project_ids']);
+
+        // منع ربط نفس المشروع بأكثر من عميل في وقت واحد (مع السماح للعميل الحالي).
+        $conflict = Project::query()
+            ->whereIn('id', $projectIds)
+            ->whereNotNull('client_id')
+            ->where('client_id', '!=', $client->id)
+            ->exists();
+        if ($conflict) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'project_ids' => 'أحد المشاريع المختارة مرتبط بالفعل بعميل آخر؛ أزل التعارض أو عدّل العميل الآخر أولا.',
+            ]);
+        }
 
         if ($request->hasFile('logo')) {
             if ($client->logo) {
@@ -137,50 +167,6 @@ class ClientController extends Controller
         $client->delete();
 
         return redirect()->route('admin.clients.index')->with('success', 'تم حذف العميل وفك ربط المشاريع.');
-    }
-
-    /**
-     * قواعد التحقق: يجب ربط العميل بمشروع واحد على الأقل.
-     */
-    private function validateClient(Request $request, ?int $ignoreClientId = null): array
-    {
-        $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:5000'],
-            'sort_order' => ['nullable', 'integer', 'min:0', 'max:999999'],
-            'is_published' => ['sometimes', 'boolean'],
-            'project_ids' => ['required', 'array', 'min:1'],
-            'project_ids.*' => ['integer', 'exists:projects,id'],
-        ];
-
-        if ($request->isMethod('post')) {
-            $rules['logo'] = ['required', 'image', 'max:4096'];
-        } else {
-            $rules['logo'] = ['nullable', 'image', 'max:4096'];
-        }
-
-        $validated = $request->validate($rules);
-        $validated['is_published'] = $request->boolean('is_published');
-        $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
-
-        $ids = array_values(array_unique(array_map('intval', $validated['project_ids'])));
-
-        // منع ربط نفس المشروع بأكثر من عميل في وقت واحد (باستثناء العميل الحالي عند التحديث).
-        $conflict = Project::query()
-            ->whereIn('id', $ids)
-            ->whereNotNull('client_id')
-            ->when($ignoreClientId, fn ($q) => $q->where('client_id', '!=', $ignoreClientId))
-            ->exists();
-
-        if ($conflict) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'project_ids' => 'أحد المشاريع المختارة مرتبط بالفعل بعميل آخر؛ أزل التعارض أو عدّل العميل الآخر أولا.',
-            ]);
-        }
-
-        $validated['project_ids'] = $ids;
-
-        return $validated;
     }
 
     /**

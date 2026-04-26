@@ -20,10 +20,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Events\ProjectSavedForNews;
+use App\Http\Requests\Admin\StoreProjectRequest;
+use App\Http\Requests\Admin\UpdateProjectRequest;
 use App\Models\Client;
 use App\Models\Project;
 use App\Models\Service;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -70,9 +71,9 @@ class ProjectController extends Controller
      * يتضمن هذا التدفق التحقق من صحة البيانات، تهيئة الحقول متعددة اللغة،
      * ثم رفع الصورة الرئيسية إن وُجدت، وأخيرا إنشاء السجل.
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        $validated = $this->validateProject($request);
+        $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'description', 'category', 'location']);
         $validated['is_published'] = $request->boolean('is_published');
 
@@ -110,9 +111,9 @@ class ProjectController extends Controller
      * تحديث بيانات مشروع قائم.
      * عند رفع صورة جديدة يتم حذف الصورة القديمة أولًا لتجنب بقاء ملفات غير مستخدمة.
      */
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        $validated = $this->validateProject($request, $project->id);
+        $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'description', 'category', 'location']);
         $validated['is_published'] = $request->boolean('is_published');
 
@@ -145,43 +146,6 @@ class ProjectController extends Controller
         $project->delete();
 
         return redirect()->route('admin.projects.index')->with('success', 'تم حذف المشروع بنجاح.');
-    }
-
-    /**
-     * قواعد التحقق الخاصة بالمشروع.
-     * تتبدل القواعد حسب تفعيل الإدخال متعدد اللغات من الإعدادات العامة.
-     */
-    private function validateProject(Request $request, ?int $ignoreId = null): array
-    {
-        // إيقاف نظام الإدخال متعدد اللغة حاليا والإبقاء على العربية فقط.
-        $enabled = false;
-        $clientsTableExists = Schema::hasTable((new Client())->getTable());
-
-        if ($enabled) {
-            return $request->validate([
-                'service_id' => ['required', 'exists:services,id'],
-                'client_id' => $clientsTableExists ? ['nullable', 'exists:clients,id'] : ['nullable', 'integer'],
-                'title.ar' => ['required', 'string', 'max:255'],
-                'title.en' => ['nullable', 'string', 'max:255'],
-                'description.ar' => ['nullable', 'string'],
-                'description.en' => ['nullable', 'string'],
-                'category.ar' => ['nullable', 'string', 'max:255'],
-                'category.en' => ['nullable', 'string', 'max:255'],
-                'location.ar' => ['nullable', 'string', 'max:255'],
-                'location.en' => ['nullable', 'string', 'max:255'],
-                'image' => ['nullable', 'image', 'max:4096'],
-            ]);
-        }
-
-        return $request->validate([
-            'service_id' => ['required', 'exists:services,id'],
-            'client_id' => $clientsTableExists ? ['nullable', 'exists:clients,id'] : ['nullable', 'integer'],
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'category' => ['nullable', 'string', 'max:255'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'image' => ['nullable', 'image', 'max:4096'],
-        ]);
     }
 
     /**

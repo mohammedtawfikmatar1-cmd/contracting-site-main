@@ -19,8 +19,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreNewsRequest;
+use App\Http\Requests\Admin\UpdateNewsRequest;
 use App\Models\News;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
@@ -56,9 +57,9 @@ class NewsController extends Controller
     /**
      * حفظ خبر جديد مع معالجة صورة الخبر ووقت النشر.
      */
-    public function store(Request $request)
+    public function store(StoreNewsRequest $request)
     {
-        $validated = $this->validateNews($request);
+        $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'content', 'category']);
         $validated['is_published'] = $request->boolean('is_published');
         $validated['published_at'] = $request->input('published_at');
@@ -92,9 +93,9 @@ class NewsController extends Controller
     /**
      * تحديث خبر موجود واستبدال صورته عند رفع ملف جديد.
      */
-    public function update(Request $request, News $news)
+    public function update(UpdateNewsRequest $request, News $news)
     {
-        $validated = $this->validateNews($request, $news->id);
+        $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'content', 'category']);
         $validated['is_published'] = $request->boolean('is_published');
         $validated['published_at'] = $request->input('published_at');
@@ -124,35 +125,6 @@ class NewsController extends Controller
         $news->delete();
 
         return redirect()->route('admin.news.index')->with('success', 'تم حذف الخبر بنجاح.');
-    }
-
-    /**
-     * قواعد التحقق الخاصة بالأخبار.
-     */
-    private function validateNews(Request $request, ?int $ignoreId = null): array
-    {
-        // إيقاف نظام الإدخال متعدد اللغة حاليا والإبقاء على العربية فقط.
-        $enabled = false;
-        if ($enabled) {
-            return $request->validate([
-                'title.ar' => ['required', 'string', 'max:255'],
-                'title.en' => ['nullable', 'string', 'max:255'],
-                'content.ar' => ['nullable', 'string'],
-                'content.en' => ['nullable', 'string'],
-                'category.ar' => ['nullable', 'string', 'max:255'],
-                'category.en' => ['nullable', 'string', 'max:255'],
-                'image' => ['nullable', 'image', 'max:4096'],
-                'published_at' => ['nullable', 'date'],
-            ]);
-        }
-
-        return $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'content' => ['nullable', 'string'],
-            'category' => ['nullable', 'string', 'max:255'],
-            'image' => ['nullable', 'image', 'max:4096'],
-            'published_at' => ['nullable', 'date'],
-        ]);
     }
 
     /**

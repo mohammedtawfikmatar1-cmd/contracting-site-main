@@ -20,8 +20,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\ServiceSavedForNews;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreServiceRequest;
+use App\Http\Requests\Admin\UpdateServiceRequest;
 use App\Models\Service;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
@@ -56,9 +57,9 @@ class ServiceController extends Controller
     /**
      * حفظ خدمة جديدة بعد التحقق من البيانات ورفع الصورة إن وُجدت.
      */
-    public function store(Request $request)
+    public function store(StoreServiceRequest $request)
     {
-        $validated = $this->validateService($request);
+        $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'overview', 'description']);
         $validated['is_published'] = $request->boolean('is_published');
 
@@ -85,9 +86,9 @@ class ServiceController extends Controller
      * تحديث الخدمة.
      * عند استبدال الصورة يتم حذف الملف القديم للحفاظ على نظافة التخزين.
      */
-    public function update(Request $request, Service $service)
+    public function update(UpdateServiceRequest $request, Service $service)
     {
-        $validated = $this->validateService($request, $service->id);
+        $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'overview', 'description']);
         $validated['is_published'] = $request->boolean('is_published');
 
@@ -118,38 +119,6 @@ class ServiceController extends Controller
         $service->delete();
 
         return redirect()->route('admin.services.index')->with('success', 'تم حذف الخدمة بنجاح.');
-    }
-
-    /**
-     * التحقق من بيانات الخدمة بحسب وضع الترجمة المفعل من الإعدادات.
-     */
-    private function validateService(Request $request, ?int $ignoreId = null): array
-    {
-        // إيقاف نظام الإدخال متعدد اللغة حاليا والإبقاء على العربية فقط.
-        $enabled = false;
-
-        if ($enabled) {
-            return $request->validate([
-                'title.ar' => ['required', 'string', 'max:255'],
-                'title.en' => ['nullable', 'string', 'max:255'],
-                'overview.ar' => ['nullable', 'string', 'max:500'],
-                'overview.en' => ['nullable', 'string', 'max:500'],
-                'description.ar' => ['nullable', 'string'],
-                'description.en' => ['nullable', 'string'],
-                'icon' => ['nullable', 'string', 'max:255'],
-                'sort_order' => ['nullable', 'integer'],
-                'image' => ['nullable', 'image', 'max:4096'],
-            ]);
-        }
-
-        return $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'overview' => ['nullable', 'string', 'max:500'],
-            'description' => ['nullable', 'string'],
-            'icon' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer'],
-            'image' => ['nullable', 'image', 'max:4096'],
-        ]);
     }
 
     /**

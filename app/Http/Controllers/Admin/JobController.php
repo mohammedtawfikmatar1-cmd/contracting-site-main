@@ -19,8 +19,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\JobSavedForNews;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreJobRequest;
+use App\Http\Requests\Admin\UpdateJobRequest;
 use App\Models\Job;
-use Illuminate\Http\Request;
 
 class JobController extends Controller
 {
@@ -57,9 +58,9 @@ class JobController extends Controller
      * حفظ وظيفة جديدة.
      * المتطلبات والمهارات تُخزن كمصفوفات JSON بعد تحويل الإدخال النصي.
      */
-    public function store(Request $request)
+    public function store(StoreJobRequest $request)
     {
-        $validated = $this->validateJob($request);
+        $validated = $request->validated();
         $validated['is_active'] = $request->boolean('is_active');
         // تحويل النص متعدد الأسطر إلى قوائم منظمة لسهولة العرض في واجهة الوظائف.
         $validated['requirements'] = $this->toArrayFromLines($request->input('requirements'));
@@ -84,9 +85,9 @@ class JobController extends Controller
     /**
      * تحديث وظيفة موجودة مع إعادة بناء قوائم المتطلبات والمهارات.
      */
-    public function update(Request $request, Job $job)
+    public function update(UpdateJobRequest $request, Job $job)
     {
-        $validated = $this->validateJob($request, $job->id);
+        $validated = $request->validated();
         $validated['is_active'] = $request->boolean('is_active');
         $validated['requirements'] = $this->toArrayFromLines($request->input('requirements'));
         $validated['skills'] = $this->toArrayFromLines($request->input('skills'));
@@ -107,24 +108,6 @@ class JobController extends Controller
         $job->delete();
 
         return redirect()->route('admin.jobs.index')->with('success', 'تم حذف الوظيفة بنجاح.');
-    }
-
-    /**
-     * قواعد التحقق لبيانات الوظيفة.
-     */
-    private function validateJob(Request $request, ?int $ignoreId = null): array
-    {
-        return $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'type' => ['nullable', 'string', 'max:255'],
-            'experience' => ['nullable', 'string', 'max:255'],
-            'qualification' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'requirements' => ['nullable', 'string'],
-            'skills' => ['nullable', 'string'],
-            'closing_date' => ['nullable', 'date'],
-        ]);
     }
 
     /**

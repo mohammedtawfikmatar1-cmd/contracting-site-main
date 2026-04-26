@@ -19,8 +19,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\SaveAboutPageRequest;
+use App\Http\Requests\Admin\SaveBrandingRequest;
+use App\Http\Requests\Admin\StoreSettingRequest;
+use App\Http\Requests\Admin\UpdateSettingRequest;
 use App\Models\Setting;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -39,14 +42,9 @@ class SettingController extends Controller
     /**
      * إنشاء إعداد جديد بمفتاح فريد.
      */
-    public function store(Request $request)
+    public function store(StoreSettingRequest $request)
     {
-        $validated = $request->validate([
-            'key' => ['required', 'string', 'max:255', 'alpha_dash', Rule::unique('settings', 'key')],
-            'value' => ['nullable', 'string'],
-            'type' => ['required', Rule::in(['text', 'longtext', 'image', 'color', 'json', 'boolean', 'integer'])],
-            'description' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $request->validated();
 
         if ($validated['type'] === 'boolean') {
             // تخزين القيم المنطقية كنص متوافق مع بنية جدول settings.
@@ -61,14 +59,9 @@ class SettingController extends Controller
     /**
      * تحديث إعداد عام قائم.
      */
-    public function update(Request $request, Setting $setting)
+    public function update(UpdateSettingRequest $request, Setting $setting)
     {
-        $validated = $request->validate([
-            'key' => ['required', 'string', 'max:255', 'alpha_dash', Rule::unique('settings', 'key')->ignore($setting->id)],
-            'value' => ['nullable', 'string'],
-            'type' => ['required', Rule::in(['text', 'longtext', 'image', 'color', 'json', 'boolean', 'integer'])],
-            'description' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $request->validated();
 
         if ($validated['type'] === 'boolean') {
             // توحيد تمثيل القيمة المنطقية في قاعدة البيانات.
@@ -117,14 +110,9 @@ class SettingController extends Controller
      * حفظ إعدادات صفحة "من نحن" من الشاشة المخصصة.
      * أي تعديل هنا ينعكس مباشرة في واجهة route('about').
      */
-    public function saveAboutPage(Request $request)
+    public function saveAboutPage(SaveAboutPageRequest $request)
     {
-        $validated = $request->validate([
-            'about_title' => ['nullable', 'string', 'max:255'],
-            'about_text_1' => ['nullable', 'string', 'max:3000'],
-            'about_text_2' => ['nullable', 'string', 'max:3000'],
-            'about_main_image' => ['nullable', 'image', 'max:6144'],
-        ]);
+        $validated = $request->validated();
 
         Setting::setValue('about_title', $validated['about_title'] ?? null, 'text');
         Setting::setValue('about_text_1', $validated['about_text_1'] ?? null, 'longtext');
@@ -147,49 +135,14 @@ class SettingController extends Controller
      * حفظ إعدادات الهوية البصرية.
      * هذا التدفق هو أهم نقطة ربط بين لوحة التحكم والعناصر الثابتة في الواجهة.
      */
-    public function saveBranding(Request $request)
+    public function saveBranding(SaveBrandingRequest $request)
     {
-        $validated = $request->validate([
+        $validated = $request->validated();
+
+        // التحقق الدقيق من قيم presets (لأن القوائم ديناميكية داخل المتحكم).
+        $request->validate([
             'theme_preset' => ['nullable', Rule::in(array_merge(['custom'], array_keys($this->themePresetsForView())))],
-            'theme_primary_color' => ['nullable', 'string', 'max:32'],
-            'theme_secondary_color' => ['nullable', 'string', 'max:32'],
-            'theme_accent_color' => ['nullable', 'string', 'max:32'],
-            'body_bg_color' => ['nullable', 'string', 'max:32'],
-            'footer_bg_color' => ['nullable', 'string', 'max:32'],
-            'header_bg_color' => ['nullable', 'string', 'max:32'],
-            'header_scrolled_bg_color' => ['nullable', 'string', 'max:32'],
-            'header_text_color' => ['nullable', 'string', 'max:32'],
-            'footer_text_color' => ['nullable', 'string', 'max:32'],
-            'content_text_color' => ['nullable', 'string', 'max:32'],
             'structure_preset' => ['nullable', Rule::in(array_merge(['custom'], array_keys($this->structurePresetsForView())))],
-
-            'company_name' => ['nullable', 'string', 'max:255'],
-            'company_phone' => ['nullable', 'string', 'max:255'],
-            'company_phone_2' => ['nullable', 'string', 'max:255'],
-            'company_email' => ['nullable', 'string', 'max:255'],
-            'company_address' => ['nullable', 'string', 'max:255'],
-
-            'social_facebook' => ['nullable', 'string', 'max:255'],
-            'social_x' => ['nullable', 'string', 'max:255'],
-            'social_instagram' => ['nullable', 'string', 'max:255'],
-            'social_linkedin' => ['nullable', 'string', 'max:255'],
-            'social_youtube' => ['nullable', 'string', 'max:255'],
-            'social_whatsapp' => ['nullable', 'string', 'max:255'],
-
-            'footer_brief' => ['nullable', 'string', 'max:2000'],
-            'site_menu' => ['nullable', 'string', 'max:8000'],
-
-            /* نصوص بانر الصفحة الرئيسية (تُعرض فوق صورة الهيرو في الواجهة الأمامية) */
-            'home_hero_title' => ['nullable', 'string', 'max:500'],
-            'home_hero_badge' => ['nullable', 'string', 'max:500'],
-            'home_hero_description' => ['nullable', 'string', 'max:2000'],
-
-            'logo_main' => ['nullable', 'image', 'max:4096'],
-            'logo_transparent' => ['nullable', 'image', 'max:4096'],
-            'favicon' => ['nullable', 'image', 'max:2048'],
-            'home_hero_image' => ['nullable', 'image', 'max:6144'],
-            'about_main_image' => ['nullable', 'image', 'max:6144'],
-            'footer_image' => ['nullable', 'image', 'max:6144'],
         ]);
 
         $themePreset = $validated['theme_preset'] ?? 'custom';

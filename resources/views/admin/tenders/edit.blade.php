@@ -56,7 +56,7 @@
             </div>
             <div class="form-group">
                 <label>تفاصيل المناقصة</label>
-                <textarea name="description" class="form-control js-editor" rows="8">{{ old('description', $tender->description) }}</textarea>
+                <textarea name="description" class="form-control js-editor" data-editor-context="tenders" rows="8">{{ old('description', $tender->description) }}</textarea>
             </div>
             <div class="form-group">
                 <label>الحالة</label>
@@ -81,30 +81,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
-    <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
-    <script>
-        (function ($) {
-            function initSummernote($el) {
-                if (!$el.length || $el.data('summernote')) return;
-                $el.summernote({
-                    height: 260,
-                    lang: 'ar-AR',
-                    toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'italic', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['insert', ['link', 'picture', 'table']],
-                        ['view', ['fullscreen', 'codeview', 'help']]
-                    ]
-                });
-            }
-
-            $(function () {
-                $('.js-editor').each(function () { initSummernote($(this)); });
-            });
-        })(jQuery);
-    </script>
+    @include('admin.partials.summernote')
 @endsection

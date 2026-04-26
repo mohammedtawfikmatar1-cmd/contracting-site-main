@@ -56,10 +56,10 @@
                     <div class="form-group">
                         <label for="content">محتوى الخبر</label>
                         @if(!empty($enableMultilingual))
-                            <textarea name="content[ar]" class="form-control js-editor mb-2" rows="8" placeholder="محتوى الخبر (عربي)">{{ old('content.ar') }}</textarea>
-                            <textarea name="content[en]" class="form-control js-editor" rows="8" placeholder="News content (EN)">{{ old('content.en') }}</textarea>
+                            <textarea name="content[ar]" class="form-control js-editor mb-2" data-editor-context="news" rows="8" placeholder="محتوى الخبر (عربي)">{{ old('content.ar') }}</textarea>
+                            <textarea name="content[en]" class="form-control js-editor" data-editor-context="news" rows="8" placeholder="News content (EN)">{{ old('content.en') }}</textarea>
                         @else
-                            <textarea name="content" class="form-control js-editor" id="content" rows="10" placeholder="أدخل محتوى الخبر">{{ old('content') }}</textarea>
+                            <textarea name="content" class="form-control js-editor" data-editor-context="news" id="content" rows="10" placeholder="أدخل محتوى الخبر">{{ old('content') }}</textarea>
                         @endif
                     </div>
 
@@ -99,33 +99,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
-    <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
-    <script>
-        (function ($) {
-            function initSummernote($el) {
-                if (!$el.length || $el.data('summernote')) return;
-                $el.summernote({
-                    height: 260,
-                    lang: 'ar-AR',
-                    toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'italic', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['insert', ['link', 'picture', 'table']],
-                        ['view', ['fullscreen', 'codeview', 'help']]
-                    ]
-                });
-            }
-
-            $(function () {
-                $('.js-editor').each(function () { initSummernote($(this)); });
-                $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
-                    $('.js-editor').each(function () { initSummernote($(this)); });
-                });
-            });
-        })(jQuery);
-    </script>
+    @include('admin.partials.summernote')
 @endsection

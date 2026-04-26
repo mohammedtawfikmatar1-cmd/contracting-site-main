@@ -39,12 +39,12 @@
 
             <div class="form-group">
               <label>النص التعريفي الأول</label>
-              <textarea name="about_text_1" class="form-control js-editor" rows="5" placeholder="اكتب نصا تعريفيا موجزا عن الشركة">{{ old('about_text_1', $settings['about_text_1'] ?? '') }}</textarea>
+              <textarea name="about_text_1" class="form-control js-editor" data-editor-context="settings_about" rows="5" placeholder="اكتب نصا تعريفيا موجزا عن الشركة">{{ old('about_text_1', $settings['about_text_1'] ?? '') }}</textarea>
             </div>
 
             <div class="form-group">
               <label>النص التعريفي الثاني</label>
-              <textarea name="about_text_2" class="form-control js-editor" rows="5" placeholder="اكتب نصا إضافيا عن الرؤية أو الرسالة">{{ old('about_text_2', $settings['about_text_2'] ?? '') }}</textarea>
+              <textarea name="about_text_2" class="form-control js-editor" data-editor-context="settings_about" rows="5" placeholder="اكتب نصا إضافيا عن الرؤية أو الرسالة">{{ old('about_text_2', $settings['about_text_2'] ?? '') }}</textarea>
             </div>
 
             <div class="form-group">
@@ -71,30 +71,5 @@
 @endsection
 
 @section('scripts')
-  <script src="{{ asset('public/admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
-  <script src="{{ asset('public/admin/plugins/summernote/lang/summernote-ar-AR.js') }}"></script>
-  <script>
-    (function ($) {
-      function initSummernote($el) {
-        if (!$el.length || $el.data('summernote')) return;
-        $el.summernote({
-          height: 220,
-          lang: 'ar-AR',
-          toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'italic', 'underline', 'clear']],
-            ['fontname', ['fontname']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['insert', ['link', 'picture', 'table']],
-            ['view', ['fullscreen', 'codeview', 'help']]
-          ]
-        });
-      }
-
-      $(function () {
-        $('.js-editor').each(function () { initSummernote($(this)); });
-      });
-    })(jQuery);
-  </script>
+  @include('admin.partials.summernote')
 @endsection

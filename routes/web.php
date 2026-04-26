@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\TenderController as AdminTenderController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\EditorUploadController;
 
 /**
  * الغرض من الملف:
@@ -129,6 +130,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('auth')->group(function () {
         // لوحة القيادة: ملخص إحصائي لبيانات النظام القادمة من الأقسام المختلفة.
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        // رفع صور المحرر (Summernote): رفع فوري وإرجاع URL لتجنب Base64 داخل قاعدة البيانات.
+        Route::post('/editor/upload', [EditorUploadController::class, 'store'])->name('editor.upload');
 
         // الإعدادات العامة + الهوية البصرية: تتحكم في عناصر ثابتة تظهر في الواجهة.
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
