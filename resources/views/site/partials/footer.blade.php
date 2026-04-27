@@ -74,6 +74,15 @@
                 @endforeach
                 <a href="mailto:{{ $settingsValue('company_email', 'info@company.com', '') }}" class="fc-link"><i class="fas fa-envelope"></i>{{ $settingsValue('company_email', 'info@company.com', '') }}</a>
                 @php
+                    $companyAddress = $settingsValue('company_address', '', '');
+                @endphp
+                @if(filled($companyAddress))
+                    <div class="fc-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ $companyAddress }}
+                    </div>
+                @endif
+                @php
                     $whatsapp = $settingsValue('social_whatsapp', '', '');
                 @endphp
                 @if(filled($whatsapp))
