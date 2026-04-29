@@ -49,7 +49,6 @@ class ContactRequestController extends Controller
         ]);
 
         // نخزن نوع الطلب بالعربي داخل قاعدة البيانات حسب طلب الإدارة،
-        // مع الإبقاء على قبول القيم القديمة القادمة من بعض النماذج.
         $validated['request_type'] = match ($validated['request_type'] ?? 'general') {
             'service' => Contact::TYPE_SERVICE_AR,
             'career' => Contact::TYPE_CAREER_AR,

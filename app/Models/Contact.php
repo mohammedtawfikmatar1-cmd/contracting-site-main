@@ -87,7 +87,7 @@ class Contact extends Model
     }
 
     /**
-     * اسم نوع الطلب للعرض في لوحة التحكم (عربي) مع دعم البيانات القديمة.
+     * اسم نوع الطلب للعرض في لوحة التحكم عربي)  
      */
     public function getRequestTypeLabelAttribute(): string
     {

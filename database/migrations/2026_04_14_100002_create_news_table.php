@@ -27,7 +27,7 @@ return new class extends Migration
     {
         Schema::create("news", function (Blueprint $table) {
             $table->id(); // المعرف الفريد للخبر.
-            $table->morphs('newsable'); // علاقة متعددة الأشكال لربط الخبر بأي كيان داعم للأخبار.
+            $table->nullableMorphs('newsable');// علاقة متعددة الأشكال لربط الخبر بأي كيان داعم للأخبار.
             $table->string("title"); // عنوان الخبر.
             $table->string("slug")->unique(); // رابط نصي فريد لتفاصيل الخبر.
             $table->longText("content"); // محتوى الخبر الكامل.
