@@ -15,6 +15,7 @@
  * 2) المتحكم ينفّذ المنطق ويعيد view(...)
  * 3) قبل عرض القالب، يعمل composer الخاص بـ site.* فيضيف siteSettings و siteMenu
  */
+
 namespace App\Providers;
 
 use App\Events\ContactRequestSubmitted;
@@ -78,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
             if (Schema::hasTable((new Setting())->getTable())) {
                 $settings = Setting::query()
                     ->get()
-                    ->mapWithKeys(fn ($setting) => [$setting->key => $setting->parseValue()]);
+                    ->mapWithKeys(fn($setting) => [$setting->key => $setting->parseValue()]);
             }
 
             $sitePages = collect();
@@ -105,7 +106,7 @@ class AppServiceProvider extends ServiceProvider
 
             // إدراج "عملاؤنا" بعد "أعمالنا" عند تفعيل الصفحة وجاهزية جدول العملاء.
             if ($clientsPageEnabled && Schema::hasTable((new Client())->getTable())) {
-                $aboutIndex = $defaultMenu->search(fn ($item) => ($item['label'] ?? '') === 'من نحن');
+                $aboutIndex = $defaultMenu->search(fn($item) => ($item['label'] ?? '') === 'من نحن');
                 $item = [
                     'label' => 'عملاؤنا',
                     'url' => $clientsUrl,
@@ -126,8 +127,8 @@ class AppServiceProvider extends ServiceProvider
             $configuredMenu = $settings->get('site_menu');
             if (is_array($configuredMenu) && ! empty($configuredMenu)) {
                 $siteMenu = collect($configuredMenu)
-                    ->filter(fn ($item) => is_array($item) && ! empty($item['label']) && ! empty($item['url']))
-                    ->map(fn ($item) => [
+                    ->filter(fn($item) => is_array($item) && ! empty($item['label']) && ! empty($item['url']))
+                    ->map(fn($item) => [
                         'label' => (string) $item['label'],
                         'url' => (string) $item['url'],
                         'active' => request()->fullUrlIs((string) $item['url']) || request()->url() === (string) $item['url'],
@@ -137,7 +138,7 @@ class AppServiceProvider extends ServiceProvider
 
             // عند استخدام قائمة مخصصة، نُدرج رابط "عملاؤنا" تلقائياً إن كان مفعّلاً وغير مضاف يدوياً.
             if ($clientsPageEnabled && Schema::hasTable((new Client())->getTable())) {
-                $hasClientsLink = $siteMenu->contains(fn ($item) => ($item['url'] ?? '') === $clientsUrl);
+                $hasClientsLink = $siteMenu->contains(fn($item) => ($item['url'] ?? '') === $clientsUrl);
                 if (! $hasClientsLink) {
                     $siteMenu->push([
                         'label' => 'عملاؤنا',
@@ -153,9 +154,14 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('admin.*', function ($view) {
-            $adminUser = Auth::user() ?? User::query()->first();
+            if (!Auth::check()) {
+                return;
+            }
+
+            $adminUser = Auth::user();
             // إبقاء خيار الإعدادات كمكوّن مستقبلي فقط دون تفعيل فعلي داخل النماذج حاليا.
-            $enableMultilingual = false;
+            $enableMultilingual = $enableMultilingual = Setting::where('key', 'enable_multilingual')
+    ->value('value') ?? false;
             $notificationFingerprint = function ($notification) {
                 return ($notification->data['contact_id'] ?? $notification->id)
                     . '|' . ($notification->type ?? '')

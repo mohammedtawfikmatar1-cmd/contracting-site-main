@@ -1,93 +1,99 @@
 <?php
 
-/**
- * الغرض من الملف:
- * تمثيل طلبات التواصل الواردة من نماذج الموقع الأمامي.
- *
- * التبعية:
- * App\Models\Contact ضمن نماذج قاعدة البيانات.
- *
- * المكونات الأساسية:
- * - Scopes لتصفية الطلبات حسب النوع والحالة.
- * - Accessor لملف السيرة الذاتية.
- *
- * خريطة تدفق البيانات:
- * الزائر يرسل الطلب من نموذج الواجهة، فيُخزّن هنا ويظهر للإدارة
- * في قسم "طلبات التواصل" أو "طلبات التوظيف" بحسب نوع الطلب.
- */
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Contact extends Model
 {
     use HasFactory;
 
-    /**
-     * أنواع الطلبات بالعربي (قيم التخزين في قاعدة البيانات).
-     * نُبقي التوافق مع القيم القديمة (general/service/career) عبر accessors/scopes.
-     */
+    // الثوابت الخاصة بأنواع الطلبات باللغة العربية
     public const TYPE_GENERAL_AR = 'تواصل عام';
     public const TYPE_SERVICE_AR = 'طلب خدمة';
     public const TYPE_CAREER_AR = 'طلب توظيف';
     public const TYPE_TENDER_AR = 'عرض طلب';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * الحقول القابلة للتعبئة (Mass Assignment).
+     * تم تحديث المصفوفة لتشمل id العميل بدلاً من بياناته المباشرة.
      */
     protected $fillable = [
-        'full_name',
-        'phone',
-        'email',
+        'customer_id',
         'request_type',
         'service_requested',
-        'cv_file',
         'message',
         'status',
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * تحويل أنواع البيانات تلقائياً.
      */
     protected $casts = [
         'status' => 'string',
     ];
 
     /**
-     * Scope a query to only include pending contacts.
+     * تعريف علاقة "ينتمي إلى" (BelongsTo) مع موديل العميل (Customer).
+     * تسمح بالوصول إلى بيانات العميل الذي قام بإنشاء هذا الطلب.
+     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+    /**
+     * جلب اسم العميل وكأنه حقل في جدول Contact
+     */
+    public function getFullNameAttribute()
+    {
+        return $this->customer ? $this->customer->full_name : 'N/A';
+    }
+
+    /**
+     * جلب بريد العميل وكأنه حقل في جدول Contact
+     */
+    public function getEmailAttribute()
+    {
+        return $this->customer ? $this->customer->email : 'N/A';
+    }
+
+    /**
+     * جلب هاتف العميل وكأنه حقل في جدول Contact
+     */
+    public function getPhoneAttribute()
+    {
+        return $this->customer ? $this->customer->phone : 'N/A';
+    }
+    /**
+     * نطاق استعلام (Scope) لجلب الطلبات التي حالتها "قيد الانتظار" فقط.
      */
     public function scopePending($query)
     {
-        // الطلبات الجديدة التي لم يبدأ التعامل معها بعد.
         return $query->where('status', 'pending');
     }
 
     /**
-     * Scope a query to only include career-related requests.
+     * نطاق استعلام (Scope) لفلترة الطلبات من نوع "طلب توظيف".
+     * يبحث عن القيم بالإنجليزية أو العربية.
      */
     public function scopeCareers($query)
     {
-        // تصفية طلبات التوظيف فقط.
         return $query->whereIn('request_type', ['career', self::TYPE_CAREER_AR]);
     }
 
     /**
-     * Scope a query to only include service-related requests.
+     * نطاق استعلام (Scope) لفلترة الطلبات من نوع "طلب خدمة".
+     * يبحث عن القيم بالإنجليزية أو العربية.
      */
     public function scopeServiceRequests($query)
     {
-        // تصفية الطلبات المرتبطة بطلب خدمة من الزائر.
         return $query->whereIn('request_type', ['service', self::TYPE_SERVICE_AR]);
     }
 
     /**
-     * اسم نوع الطلب للعرض في لوحة التحكم عربي)  
+     * سمة (Accessor) لتحويل كود نوع الطلب إلى نص مقروء باللغة العربية.
+     * مثال: تحول 'service' إلى 'طلب خدمة'.
      */
     public function getRequestTypeLabelAttribute(): string
     {
@@ -105,46 +111,35 @@ class Contact extends Model
     }
 
     /**
-     * Get the full URL for the CV file.
-     *
-     * @return string|null
+     * سمة (Accessor) لجلب رابط السيرة الذاتية الخاص بالعميل المرتبط بهذا الطلب.
+     * تستخدم للحفاظ على توافق الكود في حال تم طلب ملف السيرة الذاتية مباشرة من موديل Contact.
      */
     public function getCvFileUrlAttribute()
     {
-        // إنشاء رابط تحميل موحد عبر /media لتفادي مشاكل Apache و storage:link.
-        return $this->cv_file ? route('media.file', ['path' => ltrim((string) $this->cv_file, '/')]) : null;
+        return $this->customer ? $this->customer->cv_file_url : null;
     }
 
     /**
-     * Mark the contact request as in progress.
-     *
-     * @return bool
+     * تحديث حالة الطلب لتصبح "قيد التنفيذ".
      */
     public function markAsInProgress()
     {
-        // تحديث حالة الطلب عند بدء المعالجة من الإدارة.
         return $this->update(['status' => 'in_progress']);
     }
 
     /**
-     * Mark the contact request as completed.
-     *
-     * @return bool
+     * تحديث حالة الطلب لتصبح "مكتمل".
      */
     public function markAsCompleted()
     {
-        // تحديث حالة الطلب بعد الانتهاء من معالجته.
         return $this->update(['status' => 'completed']);
     }
 
     /**
-     * Check if the request is a career application.
-     *
-     * @return bool
+     * دالة تحقق (Boolean) لمعرفة ما إذا كان الطلب الحالي هو طلب توظيف.
      */
     public function isCareerApplication()
     {
-        // فحص سريع لتحديد ما إذا كان الطلب مرتبطا بالتوظيف.
         return $this->request_type === 'career';
     }
 }

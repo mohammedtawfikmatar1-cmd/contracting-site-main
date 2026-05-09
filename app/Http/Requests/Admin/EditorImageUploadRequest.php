@@ -15,7 +15,7 @@ class EditorImageUploadRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // المسار محمي داخل middleware('auth') في routes/web.php
+        // المسار محمي داخل middleware('auth ') في routes/web.php
         return true;
     }
 

@@ -182,7 +182,7 @@
       // دعم المحررات داخل تبويبات Bootstrap: تهيئة عند إظهار التبويب.
       $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
         $('.js-editor').each(function () { initSummernote($(this)); });
-      });
+      }) ;
     });
   })(jQuery);
 </script>

@@ -325,13 +325,13 @@
               </div>
             </div>
 
-            <!-- <div class="form-group">
+             <div class="form-group">
               <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" id="enable_multilingual" name="enable_multilingual" value="1" {{ old('enable_multilingual', $settings['enable_multilingual'] ?? false) ? 'checked' : '' }}>
                 <label class="custom-control-label" for="enable_multilingual">تفعيل دعم اللغتين (عربي/إنجليزي)</label>
               </div>
               <small class="text-muted d-block mt-1">عند الإيقاف ستختفي حقول اللغة الإنجليزية من لوحة التحكم ويختفي زر تبديل اللغة من الواجهة.</small>
-            </div> -->
+            </div> 
 
             <hr>
 

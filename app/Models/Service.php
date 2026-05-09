@@ -30,7 +30,7 @@ class Service extends Model
 
     public array $translatable = [
         'title',
-        'description',
+        'description', 
         'overview',
     ];
 

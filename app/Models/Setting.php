@@ -124,7 +124,6 @@ class Setting extends Model
             Cache::forget("settings:value:{$key}");
             Cache::forget('site:settings:all');
         } catch (\Throwable $e) {
-            // في حال عدم توفر كاش فعّال، لا نكسر سير العمل.
         }
     }
 

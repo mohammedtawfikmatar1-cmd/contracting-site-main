@@ -16,6 +16,7 @@
  * --------
  * تظهر الأخبار اليدوية + الأخبار الناتجة تلقائيًا عن مشروع/مناقصة/وظيفة (انظر NewsAutomationService).
  */
+
 namespace App\Http\Controllers;
 
 use App\Models\Client;
@@ -38,10 +39,10 @@ class SiteController extends Controller
     public function home()
     {
         // كاش قصير للصفحة الرئيسية لتخفيف ضغط الاستعلامات المتكررة.
-        $services = Cache::remember('site:home:services', now()->addMinutes(5), fn () => Service::query()->published()->limit(8)->get());
-        $projects = Cache::remember('site:home:projects', now()->addMinutes(5), fn () => Project::query()->published()->latest()->limit(6)->get());
+        $services = Cache::remember('site:home:services', now()->addMinutes(5), fn() => Service::query()->published()->limit(8)->get());
+        $projects = Cache::remember('site:home:projects', now()->addMinutes(5), fn() => Project::query()->published()->latest()->limit(6)->get());
         // الأخبار: تشمل المنشورة يدويًا والمزامَنة تلقائيًا (نفس جدول news)
-        $news = Cache::remember('site:home:news', now()->addMinutes(2), fn () => News::query()->published()->latest('published_at')->limit(3)->get());
+        $news = Cache::remember('site:home:news', now()->addMinutes(2), fn() => News::query()->published()->latest('published_at')->limit(3)->get());
 
         $homeClients = Cache::remember('site:home:clients', now()->addMinutes(10), function () {
             if (! Schema::hasTable((new Client())->getTable())) {
@@ -50,7 +51,7 @@ class SiteController extends Controller
 
             return Client::query()
                 ->published()
-                ->whereHas('projects', fn ($q) => $q->published())
+                ->whereHas('projects', fn($q) => $q->published())
                 ->orderBy('sort_order')
                 ->orderBy('id')
                 ->get();
@@ -71,18 +72,18 @@ class SiteController extends Controller
      */
     public function clients()
     {
-        if (! (bool) Setting::getValue('clients_page_enabled', false)) {
-            abort(404);
-        }
+        // if (! (bool) Setting::getValue('clients_page_enabled', false)) {
+        //     abort(404);
+        // }
 
         if (! Schema::hasTable((new Client())->getTable())) {
             abort(404);
         }
 
-        $clients = Cache::remember('site:clients:index', now()->addMinutes(5), fn () => Client::query()
+        $clients = Cache::remember('site:clients:index', now()->addMinutes(5), fn() => Client::query()
             ->published()
-            ->whereHas('projects', fn ($q) => $q->published())
-            ->with(['projects' => fn ($q) => $q->published()->latest()->limit(12)])
+            ->whereHas('projects', fn($q) => $q->published())
+            ->with(['projects' => fn($q) => $q->published()->latest()->limit(12)])
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get());
@@ -100,7 +101,6 @@ class SiteController extends Controller
     public function about()
     {
         return view('site.about', [
-            'settings' => $this->siteSettings(),
             'stats' => $this->mainStats(),
         ]);
     }
@@ -110,7 +110,7 @@ class SiteController extends Controller
      */
     public function services()
     {
-        $services = Cache::remember('site:services:index', now()->addMinutes(5), fn () => Service::query()->published()->get());
+        $services = Cache::remember('site:services:index', now()->addMinutes(5), fn() => Service::query()->published()->get());
 
         return view('site.services', compact('services'));
     }
@@ -121,8 +121,8 @@ class SiteController extends Controller
      */
     public function serviceDetails(string $slug)
     {
-        $service = Cache::remember("site:services:{$slug}", now()->addMinutes(5), fn () => Service::query()->where('slug', $slug)->firstOrFail());
-        $relatedProjects = Cache::remember("site:services:{$slug}:projects", now()->addMinutes(5), fn () => Project::query()
+        $service = Cache::remember("site:services:{$slug}", now()->addMinutes(5), fn() => Service::query()->where('slug', $slug)->firstOrFail());
+        $relatedProjects = Cache::remember("site:services:{$slug}:projects", now()->addMinutes(5), fn() => Project::query()
             ->where('service_id', $service->id)
             ->published()
             ->latest()
@@ -138,20 +138,19 @@ class SiteController extends Controller
     public function projects()
     {
         $page = (int) request('page', 1);
-        $projects = Cache::remember("site:projects:index:p{$page}", now()->addMinutes(2), fn () => Project::query()->published()->latest()->paginate(9));
+        $projects = Cache::remember("site:projects:index:p{$page}", now()->addMinutes(5), fn() => Project::query()->published()->latest()->paginate(9));
 
-        return view('site.projects', compact('projects'));
-    }
+     }
 
     /**
-     * صفحة تفاصيل مشروع واحد مع اقتراح مشاريع مشابهة من نفس الخدمة.
+     * صفحة تفاصيل مشروع واحد مع zاقتراح مشاريع مشابهة من نفس الخدمة.
      */
     public function projectDetails(string $slug)
     {
-        $project = Cache::remember("site:projects:{$slug}", now()->addMinutes(5), fn () => Project::query()->with('service')->where('slug', $slug)->firstOrFail());
-        $relatedProjects = Cache::remember("site:projects:{$slug}:related", now()->addMinutes(5), fn () => Project::query()
+        $project = Cache::remember("site:projects:{$slug}", now()->addMinutes(5), fn() => Project::query()->with('service')->where('slug', $slug)->firstOrFail());
+        $relatedProjects = Cache::remember("site:projects:{$slug}:related", now()->addMinutes(5), fn() => Project::query()
             ->where('id', '!=', $project->id)
-            ->when($project->service_id, fn ($q) => $q->where('service_id', $project->service_id))
+            ->when($project->service_id, fn($q) => $q->where('service_id', $project->service_id))
             ->published()
             ->latest()
             ->limit(3)
@@ -166,7 +165,7 @@ class SiteController extends Controller
     public function news()
     {
         $page = (int) request('page', 1);
-        $news = Cache::remember("site:news:index:p{$page}", now()->addMinutes(2), fn () => News::query()->published()->latest('published_at')->paginate(9));
+        $news = Cache::remember("site:news:index:p{$page}", now()->addMinutes(2), fn() => News::query()->published()->latest('published_at')->paginate(9));
 
         return view('site.news', compact('news'));
     }
@@ -176,10 +175,10 @@ class SiteController extends Controller
      */
     public function newsDetails(string $slug)
     {
-        $newsItem = Cache::remember("site:news:{$slug}", now()->addMinutes(5), fn () => News::query()->where('slug', $slug)->firstOrFail());
-        $relatedNews = Cache::remember("site:news:{$slug}:related", now()->addMinutes(5), fn () => News::query()
+        $newsItem = Cache::remember("site:news:{$slug}", now()->addMinutes(5), fn() => News::query()->where('slug', $slug)->firstOrFail());
+        $relatedNews = Cache::remember("site:news:{$slug}:related", now()->addMinutes(5), fn() => News::query()
             ->where('id', '!=', $newsItem->id)
-            ->when($newsItem->category, fn ($q) => $q->where('category', $newsItem->category))
+            ->when($newsItem->category, fn($q) => $q->where('category', $newsItem->category))
             ->published()
             ->latest('published_at')
             ->limit(3)
@@ -194,7 +193,7 @@ class SiteController extends Controller
     public function tenders()
     {
         $page = (int) request('page', 1);
-        $tenders = Cache::remember("site:tenders:index:p{$page}", now()->addMinutes(2), fn () => Tender::query()->published()->latest('closing_date')->paginate(10));
+        $tenders = Cache::remember("site:tenders:index:p{$page}", now()->addMinutes(2), fn() => Tender::query()->published()->latest('closing_date')->paginate(10));
 
         return view('site.tenders', compact('tenders'));
     }
@@ -216,7 +215,7 @@ class SiteController extends Controller
     public function careers()
     {
         $page = (int) request('page', 1);
-        $jobs = Cache::remember("site:careers:index:p{$page}", now()->addMinutes(2), fn () => Job::query()->published()->paginate(10));
+        $jobs = Cache::remember("site:careers:index:p{$page}", now()->addMinutes(2), fn() => Job::query()->published()->paginate(10));
 
         return view('site.careers', compact('jobs'));
     }
@@ -239,7 +238,7 @@ class SiteController extends Controller
     {
         return view('site.contact', [
             'settings' => $this->siteSettings(),
-            'services' => Cache::remember('site:contact:services', now()->addMinutes(10), fn () => Service::query()->published()->orderBy('title')->get()),
+            'services' => Cache::remember('site:contact:services', now()->addMinutes(10), fn() => Service::query()->published()->orderBy('title')->get()),
         ]);
     }
 
@@ -275,7 +274,7 @@ class SiteController extends Controller
 
         $services = Service::query()
             ->published()
-            ->when($like !== null, fn ($query) => $query->where(function ($sub) use ($like) {
+            ->when($like !== null, fn($query) => $query->where(function ($sub) use ($like) {
                 $sub->where('title', 'like', $like)->orWhere('description', 'like', $like);
             }))
             ->limit(8)
@@ -283,7 +282,7 @@ class SiteController extends Controller
 
         $projects = Project::query()
             ->published()
-            ->when($like !== null, fn ($query) => $query->where(function ($sub) use ($like) {
+            ->when($like !== null, fn($query) => $query->where(function ($sub) use ($like) {
                 $sub->where('title', 'like', $like)->orWhere('description', 'like', $like);
             }))
             ->limit(8)
@@ -291,7 +290,7 @@ class SiteController extends Controller
 
         $news = News::query()
             ->published()
-            ->when($like !== null, fn ($query) => $query->where(function ($sub) use ($like) {
+            ->when($like !== null, fn($query) => $query->where(function ($sub) use ($like) {
                 $sub->where('title', 'like', $like)->orWhere('content', 'like', $like);
             }))
             ->limit(8)
@@ -299,7 +298,7 @@ class SiteController extends Controller
 
         $jobs = Job::query()
             ->published()
-            ->when($like !== null, fn ($query) => $query->where(function ($sub) use ($like) {
+            ->when($like !== null, fn($query) => $query->where(function ($sub) use ($like) {
                 $sub->where('title', 'like', $like)->orWhere('description', 'like', $like);
             }))
             ->limit(8)
@@ -307,7 +306,7 @@ class SiteController extends Controller
 
         $tenders = Tender::query()
             ->published()
-            ->when($like !== null, fn ($query) => $query->where(function ($sub) use ($like) {
+            ->when($like !== null, fn($query) => $query->where(function ($sub) use ($like) {
                 $sub->where('title', 'like', $like)->orWhere('description', 'like', $like);
             }))
             ->limit(8)
@@ -315,7 +314,7 @@ class SiteController extends Controller
 
         $pages = \App\Models\Page::query()
             ->published()
-            ->when($like !== null, fn ($query) => $query->where(function ($sub) use ($like) {
+            ->when($like !== null, fn($query) => $query->where(function ($sub) use ($like) {
                 $sub->where('title', 'like', $like)->orWhere('content', 'like', $like);
             }))
             ->limit(8)
@@ -382,19 +381,19 @@ class SiteController extends Controller
         ]);
 
         $urls = $urls
-            ->merge(Service::query()->published()->get()->map(fn ($service) => [
+            ->merge(Service::query()->published()->get()->map(fn($service) => [
                 'loc' => route('services.details', $service->slug),
                 'lastmod' => optional($service->updated_at)->toDateString() ?? now()->toDateString(),
                 'changefreq' => 'weekly',
                 'priority' => '0.8',
             ]))
-            ->merge(Project::query()->published()->get()->map(fn ($project) => [
+            ->merge(Project::query()->published()->get()->map(fn($project) => [
                 'loc' => route('projects.details', $project->slug),
                 'lastmod' => optional($project->updated_at)->toDateString() ?? now()->toDateString(),
                 'changefreq' => 'weekly',
                 'priority' => '0.8',
             ]))
-            ->merge(News::query()->published()->get()->map(fn ($newsItem) => [
+            ->merge(News::query()->published()->get()->map(fn($newsItem) => [
                 'loc' => route('news.details', $newsItem->slug),
                 'lastmod' => optional($newsItem->updated_at)->toDateString() ?? now()->toDateString(),
                 'changefreq' => 'daily',
@@ -402,7 +401,7 @@ class SiteController extends Controller
             ]));
 
         if (Schema::hasTable('pages')) {
-            $urls = $urls->merge(\App\Models\Page::query()->published()->get()->map(fn ($page) => [
+            $urls = $urls->merge(\App\Models\Page::query()->published()->get()->map(fn($page) => [
                 'loc' => route('pages.show', $page->slug),
                 'lastmod' => optional($page->updated_at)->toDateString() ?? now()->toDateString(),
                 'changefreq' => 'monthly',
@@ -444,13 +443,13 @@ class SiteController extends Controller
     private function siteSettings(): Collection
     {
         // جدول settings: إعدادات عامة (هوية، ألوان، نصوص) تُعرض في القوالب عبر $siteSettings في الـ composer
-        return Cache::remember('site:settings:all', now()->addMinutes(10), fn () => Setting::query()->get()->mapWithKeys(fn ($setting) => [$setting->key => $setting->parseValue()]));
+        return Cache::remember('site:settings:all', now()->addMinutes(10), fn() => Setting::query()->get()->mapWithKeys(fn($setting) => [$setting->key => $setting->parseValue()]));
     }
 
     private function mainStats(): array
     {
         // إحصاءات تظهر في صفحات تعريفية، وتعتمد على البيانات المخزنة فعليا في لوحة التحكم.
-        return Cache::remember('site:stats:main', now()->addMinutes(10), fn () => [
+        return Cache::remember('site:stats:main', now()->addMinutes(10), fn() => [
             'projects' => Project::count(),
             'services' => Service::count(),
             'years' => (int) date('Y') - 2009,

@@ -16,6 +16,7 @@
  * البيانات التي تُدار هنا تظهر مباشرة في صفحة الخدمات بالواجهة،
  * وتُستخدم أيضا كمرجع لربط المشاريع وتصنيفها.
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Events\ServiceSavedForNews;
@@ -34,7 +35,7 @@ class ServiceController extends Controller
     {
         $q = trim((string) request('q', ''));
         $services = Service::query()
-            ->when($q !== '', fn ($query) => $query->where(function ($sub) use ($q) {
+            ->when($q !== '', fn($query) => $query->where(function ($sub) use ($q) {
                 $sub->where('title', 'like', "%{$q}%")
                     ->orWhere('slug', 'like', "%{$q}%")
                     ->orWhere('description', 'like', "%{$q}%");
@@ -127,16 +128,29 @@ class ServiceController extends Controller
     private function normalizeTranslatables(array $validated, array $fields): array
     {
         foreach ($fields as $field) {
-            if (! array_key_exists($field, $validated)) {
+
+            if (!array_key_exists($field, $validated)) {
                 continue;
             }
 
-            if (is_array($validated[$field])) {
-                $validated[$field] = array_filter($validated[$field], fn ($v) => $v !== null && $v !== '');
+            $value = $validated[$field];
+
+            // إذا كان مصفوفة (ترجمات متعددة)
+            if (is_array($value)) {
+
+                $validated[$field] = array_filter(
+                    $value,
+                    fn($v) => $v !== null && $v !== ''
+                );
+
                 continue;
             }
 
-            $validated[$field] = ['ar' => $validated[$field]];
+            // إذا كان نص عادي → عربي افتراضي
+            $validated[$field] = [
+                'ar' => $value,
+                'en' => null,
+            ];
         }
 
         return $validated;

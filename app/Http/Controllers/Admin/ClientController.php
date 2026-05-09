@@ -80,7 +80,7 @@ class ClientController extends Controller
         $validated = $request->validated();
         $validated['is_published'] = $request->boolean('is_published');
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
-
+        //تنظيف project_ids من القيم المتكررة
         $projectIds = array_values(array_unique(array_map('intval', $validated['project_ids'] ?? [])));
         unset($validated['project_ids']);
 
