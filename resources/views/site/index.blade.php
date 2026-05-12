@@ -67,7 +67,7 @@
         </div>
         <div class="proj-grid">
             <!-- بداية حلقة المشاريع: $projects قادمة من SiteController@home (مُدارة من لوحة التحكم: المشاريع) -->
-            @forelse($projects as $project)
+            @forelse($projects ?? [] as $project)
                 <a class="proj-card reveal" href="{{ route('projects.details', $project->slug) }}">
                     <div class="proj-img">
                         <img src="{{ $project->image_url ?: asset('imag/m1.jpg') }}" alt="{{ $project->title }}">
