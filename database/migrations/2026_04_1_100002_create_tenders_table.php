@@ -27,7 +27,6 @@ return new class extends Migration
     {
         Schema::create("tenders", function (Blueprint $table) {
             $table->id(); // المعرف الفريد للمناقصة.
-            $table->foreignId('project_id')->nullable()->constrained()->nullOnDelete(); // ربط اختياري بمشروع؛ عند حذف المشروع تصبح القيمة null.
             $table->string("title"); // عنوان المناقصة.
             $table->string("slug")->unique(); // رابط نصي فريد للمناقصة.
             $table->longText("description"); // تفاصيل نطاق العمل.

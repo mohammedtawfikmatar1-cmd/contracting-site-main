@@ -134,8 +134,5 @@ class Project extends Model
      * العلاقة: المشروع قد يحتوي عدة مناقصات (One to Many).
      * بيانات المناقصات تُدار من لوحة التحكم وتنعكس في صفحة المناقصات.
      */
-    public function tenders()
-    {
-        return $this->hasMany(Tender::class);
-    }
+
 }

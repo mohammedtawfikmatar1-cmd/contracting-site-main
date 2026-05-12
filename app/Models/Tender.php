@@ -126,8 +126,5 @@ class Tender extends Model
      * العلاقة: كل مناقصة قد تنتمي إلى مشروع واحد (Many to One).
      * إذا كانت null فهي مناقصة عامة غير مرتبطة بمشروع محدد.
      */
-    public function project()
-    {
-        return $this->belongsTo(Project::class);
-    }
+
 }
