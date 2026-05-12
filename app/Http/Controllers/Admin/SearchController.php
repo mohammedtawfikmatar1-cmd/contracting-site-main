@@ -90,10 +90,16 @@ class SearchController extends Controller
             ->get();
 
         $contacts = Contact::query()
+            ->with('customer')
             ->when($like !== null, fn ($query) => $query->where(function ($sub) use ($like) {
-                $sub->where('full_name', 'like', $like)
-                    ->orWhere('email', 'like', $like)
-                    ->orWhere('message', 'like', $like);
+                $sub->where('message', 'like', $like)
+                    ->orWhere('request_type', 'like', $like)
+                    ->orWhere('service_requested', 'like', $like)
+                    ->orWhereHas('customer', function ($customer) use ($like) {
+                        $customer->where('full_name', 'like', $like)
+                            ->orWhere('email', 'like', $like)
+                            ->orWhere('phone', 'like', $like);
+                    });
             }))
             ->latest()
             ->limit(6)

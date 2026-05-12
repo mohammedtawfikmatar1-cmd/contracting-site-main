@@ -139,6 +139,7 @@ class SiteController extends Controller
     {
         $page = (int) request('page', 1);
         $projects = Cache::remember("site:projects:index:p{$page}", now()->addMinutes(5), fn() => Project::query()->published()->latest()->paginate(9));
+        return view('site.index', compact('projects'));
 
      }
 

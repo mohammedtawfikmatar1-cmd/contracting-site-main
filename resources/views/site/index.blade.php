@@ -43,7 +43,8 @@
         </div>
         <div class="svc-grid">
             <!-- بداية حلقة الخدمات: $services قادمة من SiteController@home (مُدارة من لوحة التحكم: الخدمات) -->
-            @forelse($services as $service)
+            
+            @forelse($services ?? [] as $service)
                 <a class="svc-card reveal" href="{{ route('services.details', $service->slug) }}">
                     <div class="svc-icon"><i class="{{ $service->icon ?: 'fas fa-tools' }}"></i></div>
                     <h3>{{ $service->title }}</h3>
@@ -100,7 +101,7 @@
                 <div class="clients-marquee-wrap">
                     <div class="clients-marquee-track">
                         <div class="clients-marquee-group">
-                            @foreach($homeClients as $client)
+                            @forelse($homeClients ?? [] as $client)
                                 @php
                                     $href = $clientsPageOn
                                         ? route('clients').'#c-'.$client->slug
@@ -129,7 +130,7 @@
         </div>
         <div class="news-grid">
             <!-- بداية حلقة الأخبار: $news قادمة من SiteController@home (مُدارة من لوحة التحكم: الأخبار) -->
-            @forelse($news as $item)
+            @forelse($news?? [] as $item)
                 <article class="news-card reveal">
                     <a class="news-card__media" href="{{ route('news.details', $item->slug) }}" aria-hidden="true" tabindex="-1">
                         <div class="news-image">

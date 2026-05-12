@@ -45,7 +45,7 @@ class DashboardController extends Controller
             'jobs' => Job::count(),
         ];
 
-        $latestContacts = Contact::latest()->limit(5)->get();
+        $latestContacts = Contact::with('customer')->latest()->limit(5)->get();
         $latestProjects = Project::latest()->limit(5)->get();
 
         return view('admin.dashboard', compact('stats', 'latestContacts', 'latestProjects'));

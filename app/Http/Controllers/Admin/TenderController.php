@@ -26,7 +26,7 @@ use App\Models\Tender;
 class TenderController extends Controller
 {
     /**
-     * عرض قائمة المناقصات مع إمكانية البحث النصي.
+     * عرض قائمة المناقصات مع إمكانية  البحث النصي.
      */
     public function index()
     {

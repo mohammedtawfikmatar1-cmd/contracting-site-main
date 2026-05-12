@@ -22,7 +22,7 @@ class EditorImageUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => ['required', 'image', 'max:4096'],
+            'image' => ['required', 'image'],
             'context' => ['nullable', 'string', 'max:64', 'regex:/^[a-z0-9_-]+$/i'],
         ];
     }

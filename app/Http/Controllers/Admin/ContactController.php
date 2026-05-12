@@ -32,11 +32,16 @@ class ContactController extends Controller
     {
         $q = trim((string) $request->query('q', ''));
         $contacts = Contact::query()
+            ->with('customer')
             ->when($q !== '', fn ($query) => $query->where(function ($sub) use ($q) {
-                $sub->where('full_name', 'like', "%{$q}%")
-                    ->orWhere('email', 'like', "%{$q}%")
-                    ->orWhere('phone', 'like', "%{$q}%")
-                    ->orWhere('message', 'like', "%{$q}%");
+                $sub->where('message', 'like', "%{$q}%")
+                    ->orWhere('request_type', 'like', "%{$q}%")
+                    ->orWhere('service_requested', 'like', "%{$q}%")
+                    ->orWhereHas('customer', function ($customer) use ($q) {
+                        $customer->where('full_name', 'like', "%{$q}%")
+                            ->orWhere('email', 'like', "%{$q}%")
+                            ->orWhere('phone', 'like', "%{$q}%");
+                    });
             }))
             ->latest()
             ->paginate(20)
@@ -50,6 +55,8 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
+        $contact->loadMissing('customer');
+
         // عند فتح الرسالة من لوحة التحكم نعتبر الإشعارات المرتبطة بها مقروءة للمستخدم الحالي.
         $this->markRelatedNotificationsAsRead($contact);
 
