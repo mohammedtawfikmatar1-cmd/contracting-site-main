@@ -119,13 +119,13 @@
                         </div>
                         <div class="form-group">
                             <label for="email">البريد الإلكتروني</label>
-                            <input type="email" id="email" name="email" class="form-control">
+                            <input type="email" id="email" name="email" class="form-control" required>
                             <input type="hidden" name="request_type" value="service">
                             <input type="hidden" name="service_requested" value="Project: {{ $project->title }}">
                         </div>
                         <div class="form-group">
                             <label for="message">تفاصيل إضافية</label>
-                            <textarea id="message" name="message" class="form-control" placeholder="اشرح لنا المزيد عن طلبك..."></textarea>
+                            <textarea id="message" name="message" class="form-control" placeholder="اشرح لنا المزيد عن طلبك..." required></textarea>
                         </div>
                         <button type="submit" class="cta-primary" style="width: 100%; justify-content: center;">
                             <span>إرسال الطلب</span>

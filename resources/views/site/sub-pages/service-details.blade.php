@@ -112,7 +112,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="message">تفاصيل إضافية</label>
-                                <textarea id="message" name="message" class="form-control" placeholder="اشرح لنا المزيد عن طلبك..."></textarea>
+                                <textarea id="message" name="message" class="form-control" placeholder="اشرح لنا المزيد عن طلبك..." required></textarea>
                             </div>
                             <button type="submit" class="cta-primary" style="width: 100%; justify-content: center;">
                                 <span>إرسال الطلب</span>

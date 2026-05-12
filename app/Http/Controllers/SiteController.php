@@ -72,9 +72,9 @@ class SiteController extends Controller
      */
     public function clients()
     {
-        // if (! (bool) Setting::getValue('clients_page_enabled', false)) {
-        //     abort(404);
-        // }
+        if (! (bool) Setting::getValue('clients_page_enabled', false)) {
+            abort(404);
+        }
 
         if (! Schema::hasTable((new Client())->getTable())) {
             abort(404);
@@ -139,7 +139,7 @@ class SiteController extends Controller
     {
         $page = (int) request('page', 1);
         $projects = Cache::remember("site:projects:index:p{$page}", now()->addMinutes(5), fn() => Project::query()->published()->latest()->paginate(9));
-        return view('site.index', compact('projects'));
+        return view('site.projects ', compact('projects'));
 
      }
 

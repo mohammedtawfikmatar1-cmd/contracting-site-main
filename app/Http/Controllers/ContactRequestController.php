@@ -76,11 +76,11 @@ class ContactRequestController extends Controller
         $validated = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:100'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
             'message' => ['required', 'string'],
         ]);
 
-        $email = $validated['email'] ?? 'unknown@example.com';
+        $email = $validated['email'];
 
         // إيجاد العميل أو إنشائه
         $customer = Customer::firstOrCreate(
