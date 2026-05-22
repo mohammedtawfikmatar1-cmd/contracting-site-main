@@ -32,6 +32,7 @@ use App\Models\Client;
 use App\Models\Page;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\SiteCache;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
@@ -77,17 +78,17 @@ class AppServiceProvider extends ServiceProvider
         View::composer('site.*', function ($view) {
             $settings = collect();
             if (Schema::hasTable((new Setting())->getTable())) {
-                $settings = Setting::query()
+                $settings = SiteCache::remember('site:settings:all', fn() => Setting::query()
                     ->get()
-                    ->mapWithKeys(fn($setting) => [$setting->key => $setting->parseValue()]);
+                    ->mapWithKeys(fn($setting) => [$setting->key => $setting->parseValue()]));
             }
 
             $sitePages = collect();
             if (Schema::hasTable((new Page())->getTable())) {
-                $sitePages = Page::query()
+                $sitePages = SiteCache::remember('site:pages:menu', fn() => Page::query()
                     ->published()
                     ->orderBy('id')
-                    ->get(['id', 'title', 'slug']);
+                    ->get(['id', 'title', 'slug']));
             }
 
             $clientsPageEnabled = (bool) ($settings->get('clients_page_enabled', false));

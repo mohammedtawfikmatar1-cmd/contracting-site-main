@@ -18,6 +18,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasUniqueSlug;
+use App\Models\Concerns\ClearsSiteCache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +26,7 @@ class Job extends Model
 {
     use HasFactory;
     use HasUniqueSlug;
+    use ClearsSiteCache;
 
     // ربط هذا الموديل بجدول الوظائف الفعلي في قاعدة البيانات.
     protected $table = 'job_posts';

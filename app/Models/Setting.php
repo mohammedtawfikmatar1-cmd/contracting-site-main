@@ -19,6 +19,7 @@
  */
 namespace App\Models;
 
+use App\Services\SiteCache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -64,11 +65,10 @@ class Setting extends Model
             return $default;
         }
 
-        // تحسين الأداء: كاش للإعدادات الأكثر استخداماً في الواجهة.
-        // مدة قصيرة كافية لتسريع الموقع وتجنب بقاء بيانات قديمة فترة طويلة.
+        // كاش مستمر للإعدادات؛ يتم تفريغه عند أي تعديل من لوحة التحكم.
         $cacheKey = "settings:value:{$key}";
 
-        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($key, $default) {
+        return SiteCache::remember($cacheKey, function () use ($key, $default) {
             $setting = self::query()->where('key', $key)->first();
             if (! $setting) {
                 return $default;
@@ -101,7 +101,7 @@ class Setting extends Model
             ]
         );
 
-        // تفريغ الكاش لهذا المفتاح + تفريغ كاش تجميعة إعدادات الموقع إن وُجد.
+        // تفريغ الكاش القديم حتى يعاد بناء إعدادات الواجهة من القيمة الجديدة.
         self::clearCacheForKey($key);
 
         return $setting;
@@ -123,6 +123,7 @@ class Setting extends Model
         try {
             Cache::forget("settings:value:{$key}");
             Cache::forget('site:settings:all');
+            SiteCache::flush();
         } catch (\Throwable $e) {
         }
     }

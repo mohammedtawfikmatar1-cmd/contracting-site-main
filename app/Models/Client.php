@@ -18,6 +18,7 @@
  */
 namespace App\Models;
 
+use App\Models\Concerns\ClearsSiteCache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -25,6 +26,7 @@ use Illuminate\Support\Str;
 class Client extends Model
 {
     use HasFactory;
+    use ClearsSiteCache;
 
     protected $fillable = [
         'name',
