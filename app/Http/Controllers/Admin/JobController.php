@@ -22,6 +22,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreJobRequest;
 use App\Http\Requests\Admin\UpdateJobRequest;
 use App\Models\Job;
+use App\Services\EditorImageCleaner;
 
 class JobController extends Controller
 {
@@ -87,12 +88,14 @@ class JobController extends Controller
      */
     public function update(UpdateJobRequest $request, Job $job)
     {
+        $oldDescription = $job->getRawOriginal('description');
         $validated = $request->validated();
         $validated['is_active'] = $request->boolean('is_active');
         $validated['requirements'] = $this->toArrayFromLines($request->input('requirements'));
         $validated['skills'] = $this->toArrayFromLines($request->input('skills'));
 
         $job->update($validated);
+        app(EditorImageCleaner::class)->deleteRemovedImages($oldDescription, $validated['description'] ?? null);
 
         // تحديث الخبر التلقائي أو إزالته إذا أصبحت الوظيفة غير مفعّلة
         event(new JobSavedForNews($job));
@@ -105,6 +108,7 @@ class JobController extends Controller
      */
     public function destroy(Job $job)
     {
+        app(EditorImageCleaner::class)->deleteImagesFromContent($job->getRawOriginal('description'));
         $job->delete();
 
         return redirect()->route('admin.jobs.index')->with('success', 'تم حذف الوظيفة بنجاح.');

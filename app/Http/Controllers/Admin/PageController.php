@@ -21,6 +21,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StorePageRequest;
 use App\Http\Requests\Admin\UpdatePageRequest;
 use App\Models\Page;
+use App\Services\EditorImageCleaner;
 
 class PageController extends Controller
 {
@@ -80,6 +81,7 @@ class PageController extends Controller
      */
     public function update(UpdatePageRequest $request, Page $page)
     {
+        $oldContent = $page->getRawOriginal('content');
         $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'content']);
         $validated['is_published'] = $request->boolean('is_published');
@@ -87,6 +89,7 @@ class PageController extends Controller
         $validated['template'] = null;
 
         $page->update($validated);
+        app(EditorImageCleaner::class)->deleteRemovedImages($oldContent, $validated['content'] ?? null);
 
         return redirect()->route('admin.pages.index')->with('success', 'تم تحديث الصفحة بنجاح.');
     }
@@ -96,6 +99,7 @@ class PageController extends Controller
      */
     public function destroy(Page $page)
     {
+        app(EditorImageCleaner::class)->deleteImagesFromContent($page->getRawOriginal('content'));
         $page->delete();
 
         return redirect()->route('admin.pages.index')->with('success', 'تم حذف الصفحة بنجاح.');

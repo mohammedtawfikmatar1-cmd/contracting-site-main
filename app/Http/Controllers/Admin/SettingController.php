@@ -24,6 +24,7 @@ use App\Http\Requests\Admin\SaveBrandingRequest;
 use App\Http\Requests\Admin\StoreSettingRequest;
 use App\Http\Requests\Admin\UpdateSettingRequest;
 use App\Models\Setting;
+use App\Services\EditorImageCleaner;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -61,6 +62,7 @@ class SettingController extends Controller
      */
     public function update(UpdateSettingRequest $request, Setting $setting)
     {
+        $oldValue = $setting->value;
         $validated = $request->validated();
 
         if ($validated['type'] === 'boolean') {
@@ -69,6 +71,7 @@ class SettingController extends Controller
         }
 
         $setting->update($validated);
+        app(EditorImageCleaner::class)->deleteRemovedImages($oldValue, $validated['value'] ?? null);
 
         return redirect()->route('admin.settings.index')->with('success', 'تم تحديث الإعداد بنجاح.');
     }
@@ -78,6 +81,7 @@ class SettingController extends Controller
      */
     public function destroy(Setting $setting)
     {
+        app(EditorImageCleaner::class)->deleteImagesFromContent($setting->value);
         $setting->delete();
 
         return redirect()->route('admin.settings.index')->with('success', 'تم حذف الإعداد بنجاح.');
@@ -113,10 +117,15 @@ class SettingController extends Controller
     public function saveAboutPage(SaveAboutPageRequest $request)
     {
         $validated = $request->validated();
+        $editorImages = app(EditorImageCleaner::class);
+        $oldAboutText1 = Setting::query()->where('key', 'about_text_1')->value('value');
+        $oldAboutText2 = Setting::query()->where('key', 'about_text_2')->value('value');
 
         Setting::setValue('about_title', $validated['about_title'] ?? null, 'text');
         Setting::setValue('about_text_1', $validated['about_text_1'] ?? null, 'longtext');
         Setting::setValue('about_text_2', $validated['about_text_2'] ?? null, 'longtext');
+        $editorImages->deleteRemovedImages($oldAboutText1, $validated['about_text_1'] ?? null);
+        $editorImages->deleteRemovedImages($oldAboutText2, $validated['about_text_2'] ?? null);
 
         if ($request->hasFile('about_main_image')) {
             $existing = Setting::query()->where('key', 'about_main_image')->first();

@@ -23,6 +23,7 @@ use App\Http\Requests\Admin\UpdateClientRequest;
 use App\Models\Client;
 use App\Models\Project;
 use App\Models\Setting;
+use App\Services\EditorImageCleaner;
 use Illuminate\Support\Facades\Storage;
 
 class ClientController extends Controller
@@ -121,6 +122,7 @@ class ClientController extends Controller
      */
     public function update(UpdateClientRequest $request, Client $client)
     {
+        $oldDescription = $client->getRawOriginal('description');
         $validated = $request->validated();
         $validated['is_published'] = $request->boolean('is_published');
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
@@ -148,6 +150,7 @@ class ClientController extends Controller
         }
 
         $client->update($validated);
+        app(EditorImageCleaner::class)->deleteRemovedImages($oldDescription, $validated['description'] ?? null);
         $this->syncClientProjects($client, $projectIds);
 
         return redirect()->route('admin.clients.index')->with('success', 'تم تحديث العميل بنجاح.');
@@ -158,6 +161,8 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
+        app(EditorImageCleaner::class)->deleteImagesFromContent($client->getRawOriginal('description'));
+
         Project::query()->where('client_id', $client->id)->update(['client_id' => null]);
 
         if ($client->logo) {

@@ -22,6 +22,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreNewsRequest;
 use App\Http\Requests\Admin\UpdateNewsRequest;
 use App\Models\News;
+use App\Services\EditorImageCleaner;
 use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
@@ -95,6 +96,7 @@ class NewsController extends Controller
      */
     public function update(UpdateNewsRequest $request, News $news)
     {
+        $oldContent = $news->getRawOriginal('content');
         $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'content', 'category']);
         $validated['is_published'] = $request->boolean('is_published');
@@ -109,6 +111,7 @@ class NewsController extends Controller
         }
 
         $news->update($validated);
+        app(EditorImageCleaner::class)->deleteRemovedImages($oldContent, $validated['content'] ?? null);
 
         return redirect()->route('admin.news.index')->with('success', 'تم تحديث الخبر بنجاح.');
     }
@@ -118,6 +121,8 @@ class NewsController extends Controller
      */
     public function destroy(News $news)
     {
+        app(EditorImageCleaner::class)->deleteImagesFromContent($news->getRawOriginal('content'));
+
         if ($news->image) {
             Storage::disk('public')->delete($news->image);
         }

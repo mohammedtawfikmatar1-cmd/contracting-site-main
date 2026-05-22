@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\ContactRequestController;
+use App\Http\Middleware\ClearSiteCacheAfterAdminMutation;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -122,12 +123,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'store'])->name('login.store');
     Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth', ClearSiteCacheAfterAdminMutation::class])->group(function () {
         // لوحة القيادة: ملخص إحصائي لبيانات النظام القادمة من الأقسام المختلفة.
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
         // رفع صور المحرر (Summernote): رفع فوري وإرجاع URL لتجنب Base64 داخل قاعدة البيانات.
         Route::post('/editor/upload', [EditorUploadController::class, 'store'])->name('editor.upload');
+        Route::delete('/editor/image', [EditorUploadController::class, 'destroy'])->name('editor.image.destroy');
 
         // الإعدادات العامة + الهوية البصرية: تتحكم في عناصر ثابتة تظهر في الواجهة.
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

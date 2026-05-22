@@ -24,6 +24,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreServiceRequest;
 use App\Http\Requests\Admin\UpdateServiceRequest;
 use App\Models\Service;
+use App\Services\EditorImageCleaner;
 use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
@@ -89,6 +90,7 @@ class ServiceController extends Controller
      */
     public function update(UpdateServiceRequest $request, Service $service)
     {
+        $oldDescription = $service->getRawOriginal('description');
         $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'overview', 'description']);
         $validated['is_published'] = $request->boolean('is_published');
@@ -102,6 +104,7 @@ class ServiceController extends Controller
         }
 
         $service->update($validated);
+        app(EditorImageCleaner::class)->deleteRemovedImages($oldDescription, $validated['description'] ?? null);
         $service->refresh();
         event(new ServiceSavedForNews($service));
 
@@ -114,6 +117,8 @@ class ServiceController extends Controller
      */
     public function destroy(Service $service)
     {
+        app(EditorImageCleaner::class)->deleteImagesFromContent($service->getRawOriginal('description'));
+
         if ($service->image) {
             Storage::disk('public')->delete($service->image);
         }

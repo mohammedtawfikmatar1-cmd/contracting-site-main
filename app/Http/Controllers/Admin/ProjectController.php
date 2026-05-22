@@ -25,6 +25,7 @@ use App\Http\Requests\Admin\UpdateProjectRequest;
 use App\Models\Client;
 use App\Models\Project;
 use App\Models\Service;
+use App\Services\EditorImageCleaner;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -113,6 +114,7 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
+        $oldDescription = $project->getRawOriginal('description');
         $validated = $request->validated();
         $validated = $this->normalizeTranslatables($validated, ['title', 'description', 'category', 'location']);
         $validated['is_published'] = $request->boolean('is_published');
@@ -126,6 +128,7 @@ class ProjectController extends Controller
         }
 
         $project->update($validated);
+        app(EditorImageCleaner::class)->deleteRemovedImages($oldDescription, $validated['description'] ?? null);
 
         // بعد التعديل نعيد مزامنة الخبر التلقائي (مثلاً إذا تغيّر العنوان أو أُلغي النشر)
         event(new ProjectSavedForNews($project));
@@ -139,6 +142,8 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        app(EditorImageCleaner::class)->deleteImagesFromContent($project->getRawOriginal('description'));
+
         if ($project->image) {
             Storage::disk('public')->delete($project->image);
         }

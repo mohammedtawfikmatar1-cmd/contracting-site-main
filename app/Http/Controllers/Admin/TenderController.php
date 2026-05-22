@@ -22,6 +22,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreTenderRequest;
 use App\Http\Requests\Admin\UpdateTenderRequest;
 use App\Models\Tender;
+use App\Services\EditorImageCleaner;
 
 class TenderController extends Controller
 {
@@ -84,10 +85,12 @@ class TenderController extends Controller
      */
     public function update(UpdateTenderRequest $request, Tender $tender)
     {
+        $oldDescription = $tender->getRawOriginal('description');
         $validated = $request->validated();
         $validated['is_published'] = $request->boolean('is_published');
 
         $tender->update($validated);
+        app(EditorImageCleaner::class)->deleteRemovedImages($oldDescription, $validated['description'] ?? null);
 
         // إعادة مزامنة الخبر التلقائي بعد أي تعديل على المناقصة أو حالة النشر
         event(new TenderSavedForNews($tender));
@@ -100,6 +103,7 @@ class TenderController extends Controller
      */
     public function destroy(Tender $tender)
     {
+        app(EditorImageCleaner::class)->deleteImagesFromContent($tender->getRawOriginal('description'));
         $tender->delete();
 
         return redirect()->route('admin.tenders.index')->with('success', 'تم حذف المناقصة بنجاح.');

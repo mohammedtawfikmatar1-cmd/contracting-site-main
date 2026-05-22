@@ -2,10 +2,10 @@
 
 /**
  * الغرض من الملف:
- * توحيد والتحكم في قواعد رفع صور محرر النصوص (Editor) عبر FormRequest.
+ * توحيد والتحكم في قواعد رفع وسائط محرر النصوص (Editor) عبر FormRequest.
  *
  * ملاحظة:
- * نسمح فقط بأنواع الصور الشائعة وبحجم مناسب للويب حتى لا يتحول التخزين العام إلى مستودع ضخم.
+ * نسمح بالصور والفيديوهات الشائعة حتى لا يحفظ المحرر Base64 أو روابط خارجية داخل المحتوى.
  */
 namespace App\Http\Requests\Admin;
 
@@ -22,9 +22,9 @@ class EditorImageUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => ['required', 'image'],
+            'image' => ['nullable', 'required_without:video', 'image', 'max:8192'],
+            'video' => ['nullable', 'required_without:image', 'file', 'mimetypes:video/mp4,video/webm,video/ogg,video/quicktime', 'max:102400'],
             'context' => ['nullable', 'string', 'max:64', 'regex:/^[a-z0-9_-]+$/i'],
         ];
     }
 }
-
