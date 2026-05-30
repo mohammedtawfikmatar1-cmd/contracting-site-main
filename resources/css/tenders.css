@@ -9,7 +9,7 @@
 }
 
 .tenders-hero::before {
-    background: radial-gradient(circle at 80% 20%, rgba(255, 122, 26, 0.15), transparent 50%);
+    background: radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--orange) 15%, transparent), transparent 50%);
     content: "";
     inset: 0;
     position: absolute;
@@ -56,7 +56,7 @@
 
 .guideline-card {
     background: var(--sf1);
-    border: 1px solid rgba(13, 15, 20, 0.08);
+    border: 1px solid color-mix(in srgb, var(--site-border) 8%, transparent);
     border-radius: var(--r-xl);
     padding: clamp(28px, 4vw, 40px);
     position: relative;
@@ -64,13 +64,13 @@
 }
 
 .guideline-card:hover {
-    border-color: rgba(255, 122, 26, 0.22);
+    border-color: color-mix(in srgb, var(--orange) 22%, transparent);
     box-shadow: var(--sh-lg);
     transform: translateY(-8px);
 }
 
 .gc-num {
-    color: rgba(255, 122, 26, 0.1);
+    color: color-mix(in srgb, var(--orange) 10%, transparent);
     font-size: clamp(36px, 4vw, 52px);
     font-weight: 900;
     position: absolute;
@@ -81,7 +81,7 @@
 }
 
 .guideline-card:hover .gc-num {
-    color: rgba(255, 122, 26, 0.2);
+    color: color-mix(in srgb, var(--orange) 20%, transparent);
 }
 
 .guideline-card h3 {
@@ -118,15 +118,15 @@
 
 .tender-card {
     background: linear-gradient(160deg, var(--d600), var(--d700));
-    border: 1px solid rgba(255, 122, 26, 0.15);
+    border: 1px solid color-mix(in srgb, var(--orange) 15%, transparent);
     border-radius: var(--r-2xl);
     padding: clamp(28px, 4vw, 40px);
     transition: transform var(--tb), box-shadow var(--tb), border-color var(--tb);
 }
 
 .tender-card:hover {
-    border-color: rgba(255, 122, 26, 0.35);
-    box-shadow: 0 20px 56px rgba(255, 122, 26, 0.15);
+    border-color: color-mix(in srgb, var(--orange) 35%, transparent);
+    box-shadow: 0 20px 56px color-mix(in srgb, var(--orange) 15%, transparent);
     transform: translateY(-4px);
 }
 
@@ -147,8 +147,8 @@
 }
 
 .tender-id {
-    background: rgba(255, 122, 26, 0.12);
-    border: 1px solid rgba(255, 122, 26, 0.25);
+    background: color-mix(in srgb, var(--orange) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--orange) 25%, transparent);
     border-radius: var(--r-md);
     color: var(--orange);
     display: inline-block;
@@ -170,15 +170,15 @@
 }
 
 .tender-status.active {
-    background: rgba(76, 175, 80, 0.15);
-    border: 1px solid rgba(76, 175, 80, 0.3);
-    color: #4caf50;
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    color: var(--accent);
 }
 
 .tender-status.closing {
-    background: rgba(255, 193, 7, 0.15);
-    border: 1px solid rgba(255, 193, 7, 0.3);
-    color: #ffc107;
+    background: color-mix(in srgb, var(--secondary) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--secondary) 30%, transparent);
+    color: var(--secondary);
 }
 
 .tender-details {
@@ -187,7 +187,7 @@
     gap: var(--s5);
     margin-bottom: var(--s6);
     padding-bottom: var(--s6);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid color-mix(in srgb, var(--site-inverse-text) 8%, transparent);
 }
 
 .detail-row {
@@ -221,7 +221,7 @@
 }
 
 .tender-requirements {
-    background: rgba(255, 122, 26, 0.08);
+    background: color-mix(in srgb, var(--orange) 8%, transparent);
     border-left: 3px solid var(--orange);
     border-radius: var(--r-md);
     margin-bottom: var(--s6);
@@ -278,23 +278,23 @@
 
 .tender-apply {
     background: linear-gradient(135deg, var(--orange-light), var(--orange-dark));
-    color: #fff;
+    color: var(--site-inverse-text);
     box-shadow: 0 8px 24px var(--orange-glow);
 }
 
 .tender-apply:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(255, 122, 26, 0.35);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--orange) 35%, transparent);
 }
 
 .tender-info-btn {
-    background: rgba(255, 122, 26, 0.15);
-    border: 1px solid rgba(255, 122, 26, 0.3);
+    background: color-mix(in srgb, var(--orange) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--orange) 30%, transparent);
     color: var(--orange);
 }
 
 .tender-info-btn:hover {
-    background: rgba(255, 122, 26, 0.25);
+    background: color-mix(in srgb, var(--orange) 25%, transparent);
 }
 
 /* SUBMISSION PROCESS SECTION */
@@ -330,7 +330,7 @@
 
 .step {
     background: var(--sf1);
-    border: 1px solid rgba(13, 15, 20, 0.08);
+    border: 1px solid color-mix(in srgb, var(--site-border) 8%, transparent);
     border-radius: var(--r-xl);
     padding: clamp(28px, 3vw, 36px);
     text-align: center;
@@ -347,7 +347,7 @@
 .step-num {
     background: linear-gradient(135deg, var(--orange-light), var(--orange-dark));
     border-radius: 50%;
-    color: #fff;
+    color: var(--site-inverse-text);
     display: grid;
     font-size: 20px;
     font-weight: 900;
@@ -379,7 +379,7 @@
 }
 
 .tenders-cta::before {
-    background: radial-gradient(circle at 20% 80%, rgba(255, 122, 26, 0.12), transparent 50%);
+    background: radial-gradient(circle at 20% 80%, color-mix(in srgb, var(--orange) 12%, transparent), transparent 50%);
     content: "";
     inset: 0;
     position: absolute;

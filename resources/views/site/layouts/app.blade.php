@@ -154,6 +154,16 @@
         $headerTextColor = $normalizeColor($siteSettings['header_text_color'] ?? null, '#f8fafc');
         $footerTextColor = $normalizeColor($siteSettings['footer_text_color'] ?? null, '#f8fafc');
         $contentTextColor = $normalizeColor($siteSettings['content_text_color'] ?? null, '#f8fafc');
+        $surfaceBgColor = $normalizeColor($siteSettings['surface_bg_color'] ?? null, '#ffffff');
+        $surfaceAltBgColor = $normalizeColor($siteSettings['surface_alt_bg_color'] ?? null, '#f6f7fb');
+        $surfaceTextColor = $normalizeColor($siteSettings['surface_text_color'] ?? null, '#0d0f14');
+        $surfaceMutedTextColor = $normalizeColor($siteSettings['surface_muted_text_color'] ?? null, '#6b7591');
+        $borderColor = $normalizeColor($siteSettings['border_color'] ?? null, '#e5e7eb');
+        $inverseTextColor = $normalizeColor($siteSettings['inverse_text_color'] ?? null, '#ffffff');
+        $overlayColor = $normalizeColor($siteSettings['overlay_color'] ?? null, '#07080b');
+        $successColor = $normalizeColor($siteSettings['success_color'] ?? null, '#16a34a');
+        $warningColor = $normalizeColor($siteSettings['warning_color'] ?? null, '#d97706');
+        $dangerColor = $normalizeColor($siteSettings['danger_color'] ?? null, '#dc2626');
     @endphp
     <style>
         :root {
@@ -167,16 +177,51 @@
             --site-header-text: {{ $headerTextColor }};
             --site-footer-text: {{ $footerTextColor }};
             --site-content-text: {{ $contentTextColor }};
+            --site-surface-bg: {{ $surfaceBgColor }};
+            --site-surface-alt-bg: {{ $surfaceAltBgColor }};
+            --site-surface-text: {{ $surfaceTextColor }};
+            --site-surface-muted: {{ $surfaceMutedTextColor }};
+            --site-border: {{ $borderColor }};
+            --site-inverse-text: {{ $inverseTextColor }};
+            --site-overlay: {{ $overlayColor }};
+            --site-success: {{ $successColor }};
+            --site-warning: {{ $warningColor }};
+            --site-danger: {{ $dangerColor }};
 
-            /* ربط رموز التصميم الحالية باللون الرئيسي من لوحة التحكم */
+            /* ربط رموز التصميم الحالية بألوان لوحة التحكم */
             --orange: var(--theme-primary);
             --orange-light: color-mix(in srgb, var(--theme-primary) 78%, white);
             --orange-dark: color-mix(in srgb, var(--theme-primary) 78%, black);
             --orange-glow: color-mix(in srgb, var(--theme-primary) 22%, transparent);
             --orange-subtle: color-mix(in srgb, var(--theme-primary) 10%, transparent);
-            --tw: var(--site-header-text);
-            --tm: color-mix(in srgb, var(--site-header-text) 78%, transparent);
-            --ts: color-mix(in srgb, var(--site-header-text) 54%, transparent);
+
+            --secondary: var(--theme-secondary);
+            --secondary-light: color-mix(in srgb, var(--theme-secondary) 78%, white);
+            --secondary-dark: color-mix(in srgb, var(--theme-secondary) 78%, black);
+            --secondary-glow: color-mix(in srgb, var(--theme-secondary) 22%, transparent);
+            --secondary-subtle: color-mix(in srgb, var(--theme-secondary) 10%, transparent);
+
+            --accent: var(--theme-accent);
+            --accent-light: color-mix(in srgb, var(--theme-accent) 78%, white);
+            --accent-dark: color-mix(in srgb, var(--theme-accent) 78%, black);
+            --accent-glow: color-mix(in srgb, var(--theme-accent) 22%, transparent);
+            --accent-subtle: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+
+            --d900: color-mix(in srgb, var(--site-body-bg) 88%, var(--site-overlay));
+            --d800: var(--site-body-bg);
+            --d700: color-mix(in srgb, var(--site-body-bg) 88%, var(--site-content-text) 12%);
+            --d600: color-mix(in srgb, var(--site-body-bg) 78%, var(--site-content-text) 22%);
+            --d500: color-mix(in srgb, var(--site-body-bg) 68%, var(--site-content-text) 32%);
+            --d400: color-mix(in srgb, var(--site-body-bg) 55%, var(--site-content-text) 45%);
+            --d300: color-mix(in srgb, var(--site-body-bg) 42%, var(--site-content-text) 58%);
+            --sf1: var(--site-surface-bg);
+            --sf2: var(--site-surface-alt-bg);
+            --tw: var(--site-content-text);
+            --tm: color-mix(in srgb, var(--site-content-text) 78%, transparent);
+            --ts: color-mix(in srgb, var(--site-content-text) 54%, transparent);
+            --ink: var(--site-surface-text);
+            --ink-m: color-mix(in srgb, var(--site-surface-text) 78%, var(--site-surface-muted));
+            --ink-s: var(--site-surface-muted);
         }
 
         body {
@@ -185,15 +230,18 @@
 
         main.site-main {
             color: var(--site-content-text);
-            --ink: var(--site-content-text);
-            --ink-m: color-mix(in srgb, var(--site-content-text) 78%, var(--site-body-bg));
-            --ink-s: color-mix(in srgb, var(--site-content-text) 58%, var(--site-body-bg));
+            --tw: var(--site-content-text);
+            --tm: color-mix(in srgb, var(--site-content-text) 78%, transparent);
+            --ts: color-mix(in srgb, var(--site-content-text) 54%, transparent);
+            --ink: var(--site-surface-text);
+            --ink-m: color-mix(in srgb, var(--site-surface-text) 78%, var(--site-surface-muted));
+            --ink-s: var(--site-surface-muted);
         }
 
         .admin-preview-toolbar {
-            background: linear-gradient(90deg, rgba(14, 24, 45, 0.96), rgba(16, 36, 62, 0.96));
-            color: #e5edf8;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+            background: color-mix(in srgb, var(--site-header-bg) 94%, var(--site-overlay));
+            color: var(--site-header-text);
+            border-bottom: 1px solid color-mix(in srgb, var(--site-header-text) 14%, transparent);
             position: sticky;
             top: 0;
             z-index: 1200;
@@ -217,17 +265,17 @@
         }
 
         .admin-preview-toolbar a {
-            color: #fff;
+            color: var(--site-header-text);
             text-decoration: none;
             font-weight: 700;
-            border: 1px solid rgba(255, 255, 255, 0.22);
+            border: 1px solid color-mix(in srgb, var(--site-header-text) 22%, transparent);
             border-radius: 999px;
             padding: 6px 10px;
-            background: rgba(255, 255, 255, 0.08);
+            background: color-mix(in srgb, var(--site-header-text) 8%, transparent);
         }
 
         .admin-preview-toolbar a:hover {
-            background: rgba(255, 255, 255, 0.18);
+            background: color-mix(in srgb, var(--site-header-text) 18%, transparent);
         }
 
         .admin-preview-chip {
@@ -236,9 +284,9 @@
             gap: 8px;
             border-radius: 999px;
             padding: 6px 10px;
-            background: rgba(255, 193, 7, 0.18);
-            color: #ffdd8a;
-            border: 1px solid rgba(255, 193, 7, 0.35);
+            background: color-mix(in srgb, var(--site-warning) 18%, transparent);
+            color: color-mix(in srgb, var(--site-warning) 72%, var(--site-header-text));
+            border: 1px solid color-mix(in srgb, var(--site-warning) 35%, transparent);
             font-weight: 800;
         }
 
@@ -302,9 +350,9 @@
         @if($isAdminPreview && $missingBrandingKeys->isNotEmpty())
             <div class="container" style="margin-top: 14px;">
                 <div style="
-                    background: linear-gradient(90deg, rgba(255,193,7,0.14), rgba(255,193,7,0.08));
-                    border: 1px solid rgba(255, 193, 7, 0.35);
-                    color: #6b5000;
+                    background: linear-gradient(90deg, color-mix(in srgb, var(--site-warning) 14%, transparent), color-mix(in srgb, var(--site-warning) 8%, transparent));
+                    border: 1px solid color-mix(in srgb, var(--site-warning) 35%, transparent);
+                    color: color-mix(in srgb, var(--site-warning) 72%, var(--site-surface-text));
                     padding: 12px 14px;
                     border-radius: 12px;
                     display: flex;
@@ -323,15 +371,15 @@
                         white-space:nowrap;
                         padding: 8px 10px;
                         border-radius: 10px;
-                        background: rgba(255, 193, 7, 0.22);
-                        border: 1px solid rgba(255, 193, 7, 0.45);
+                        background: color-mix(in srgb, var(--site-warning) 22%, transparent);
+                        border: 1px solid color-mix(in srgb, var(--site-warning) 45%, transparent);
                         color: inherit;
                         font-weight: 800;
                        ">
                         فتح الإعدادات
                     </a>
                 </div>
-                <div style="margin-top:8px;color:#6b7280;font-size:13px;">
+                <div style="margin-top:8px;color:var(--site-surface-muted);font-size:13px;">
                     الحقول الناقصة:
                     {{ $missingBrandingKeys->map(fn ($k) => $brandingKeyLabels[$k] ?? $k)->implode('، ') }}
                 </div>
@@ -341,14 +389,14 @@
         <!-- بداية رسائل الفلاش (نجاح/أخطاء) القادمة من عمليات POST مثل نماذج التواصل -->
         @if(session('success'))
             <div class="container" style="margin-top: 20px;">
-                <div style="background:#1f7a1f;color:#fff;padding:12px 16px;border-radius:8px;">
+                <div style="background:var(--site-success);color:var(--site-inverse-text);padding:12px 16px;border-radius:8px;">
                     {{ session('success') }}
                 </div>
             </div>
         @endif
         @if($errors->any())
             <div class="container" style="margin-top: 20px;">
-                <div style="background:#8b1d1d;color:#fff;padding:12px 16px;border-radius:8px;">
+                <div style="background:var(--site-danger);color:var(--site-inverse-text);padding:12px 16px;border-radius:8px;">
                     {{ $errors->first() }}
                 </div>
             </div>

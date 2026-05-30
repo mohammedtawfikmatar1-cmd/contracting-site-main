@@ -13,7 +13,7 @@
     justify-content: center;
     text-align: center;
     background:
-        linear-gradient(rgba(7, 8, 11, 0.6), rgba(7, 8, 11, 0.9)),
+        linear-gradient(color-mix(in srgb, var(--site-overlay) 60%, transparent), color-mix(in srgb, var(--site-overlay) 90%, transparent)),
         var(--hero-bg-image, url('https://images.unsplash.com/photo-1503387762-592dee58c460?auto=format&fit=crop&q=80&w=2070')) center/cover;
 }
 
@@ -24,7 +24,7 @@ body.has-admin-toolbar .project-hero {
 .project-hero h1 {
     font-size: var(--t-3xl);
     font-weight: 900;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    text-shadow: 0 4px 20px color-mix(in srgb, var(--site-overlay) 50%, transparent);
 }
 
 .project-meta-bar {
@@ -55,7 +55,7 @@ body.has-admin-toolbar .project-hero {
 
 .meta-item strong {
     font-size: var(--t-md);
-    color: #fff;
+    color: var(--site-inverse-text);
 }
 
 .challenge-solution-grid {
@@ -72,8 +72,8 @@ body.has-admin-toolbar .project-hero {
 }
 
 .challenge-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--site-inverse-text) 3%, transparent);
+    border: 1px solid color-mix(in srgb, var(--site-inverse-text) 10%, transparent);
 }
 
 .solution-card {
@@ -88,7 +88,7 @@ body.has-admin-toolbar .project-hero {
     gap: var(--s3);
 }
 
-.challenge-card h3 { color: #ff4444; }
+.challenge-card h3 { color: var(--secondary); }
 .solution-card h3 { color: var(--orange); }
 
 @media (max-width: 768px) {

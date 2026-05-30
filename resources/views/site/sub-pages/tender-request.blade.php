@@ -39,7 +39,7 @@
         }
         .tender-info h3 { color: var(--orange); margin-bottom: var(--s3); }
         .tender-meta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); color: var(--tm); }
-        .tender-meta span strong { color: #fff; }
+        .tender-meta span strong { color: var(--site-inverse-text); }
     </style>
 @endsection
 

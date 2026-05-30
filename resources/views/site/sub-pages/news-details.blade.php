@@ -47,7 +47,7 @@
     @vite(['resources/css/news.css', 'resources/css/service-details.css'])
     <style>
         .news-article-content {
-            color: rgba(255, 255, 255, 0.88);
+            color: var(--tm);
             line-height: 1.85;
             font-size: var(--t-md);
         }
@@ -58,7 +58,7 @@
             text-underline-offset: 3px;
         }
         .news-article-content h2, .news-article-content h3 {
-            color: rgba(255, 255, 255, 0.96);
+            color: var(--tw);
             margin: var(--s6) 0 var(--s4);
         }
         .news-article-content p {
@@ -69,12 +69,12 @@
             margin: var(--s6) 0;
             width: 100%;
             height: auto;
-            border: 1px solid rgba(255, 122, 26, 0.1);
+            border: 1px solid color-mix(in srgb, var(--orange) 10%, transparent);
         }
         .share-article {
             margin-top: var(--s8);
             padding-top: var(--s6);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid color-mix(in srgb, var(--tw) 10%, transparent);
             display: flex;
             align-items: center;
             gap: var(--s4);
@@ -91,7 +91,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
+            background: color-mix(in srgb, var(--tw) 5%, transparent);
             display: grid;
             place-items: center;
             color: var(--ts);
@@ -180,7 +180,7 @@
                 <aside class="request-sidebar reveal-up" style="--delay: 200ms">
                     <div class="request-card" style="margin-top: var(--s6); background: linear-gradient(135deg, var(--orange-light), var(--orange-dark));">
                         <h3 style="color: var(--tw);">هل لديك استفسار؟</h3>
-                        <p style="color: rgba(255,255,255,0.9); font-size: var(--t-sm); margin-bottom: var(--s5);">يمكنك التواصل معنا مباشرة لأي استفسار.</p>
+                        <p style="color: color-mix(in srgb, var(--tw) 90%, transparent); font-size: var(--t-sm); margin-bottom: var(--s5);">يمكنك التواصل معنا مباشرة لأي استفسار.</p>
                         <a href="{{ route('contact') }}" class="cta-primary" style="width: 100%; justify-content: center; background: var(--tw); color: var(--orange-dark);">
                             <span>تواصل معنا</span>
                             <span class="cta-ico"><i class="fas fa-headset"></i></span>

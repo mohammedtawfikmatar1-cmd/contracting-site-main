@@ -13,7 +13,7 @@
             margin-bottom: var(--s6);
         }
         .type-option {
-            border: 2px solid #eee;
+            border: 2px solid var(--site-border);
             padding: var(--s4);
             border-radius: var(--r-md);
             text-align: center;
@@ -56,8 +56,8 @@
             align-items: center;
             gap: 10px;
             padding: 12px;
-            background: #f8f9fa;
-            border: 2px dashed #ddd;
+            background: var(--site-surface-alt-bg);
+            border: 2px dashed var(--site-border);
             border-radius: var(--r-md);
             cursor: pointer;
             transition: all 0.3s;
@@ -181,7 +181,7 @@
 
                 <div class="fg" id="service_select_group" style="display: none; margin-bottom: 15px;">
                   <label for="service">الخدمة المطلوبة</label>
-                  <select id="service" name="service" style="width: 100%; padding: 12px; border-radius: var(--r-md); border: 1px solid #ddd;">
+                  <select id="service" name="service" style="width: 100%; padding: 12px; border-radius: var(--r-md); border: 1px solid var(--site-border);">
                     <!-- بداية خيارات الخدمات: $services قادمة من SiteController@contact (مُدارة من لوحة التحكم: الخدمات) -->
                     @forelse($services as $service)
                         <option value="{{ $service->title }}">{{ $service->title }}</option>

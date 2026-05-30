@@ -33,7 +33,7 @@
 
         <!-- بداية أقسام النتائج (كل قسم يمثل كيانا مُدارًا من لوحة التحكم) -->
         @foreach($sections as $sectionName => $items)
-            <div class="card" style="margin-bottom:20px;padding:16px;border:1px solid #eee;border-radius:10px;">
+            <div class="card" style="margin-bottom:20px;padding:16px;border:1px solid var(--site-border);border-radius:10px;">
                 <h3 style="margin-bottom:12px;">{{ $sectionName }} ({{ $items->count() }})</h3>
                 @if($items->isEmpty())
                     <p class="text-muted">لا نتائج.</p>

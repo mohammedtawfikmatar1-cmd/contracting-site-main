@@ -172,24 +172,37 @@ class SettingController extends Controller
         $structurePreset = $validated['structure_preset'] ?? 'custom';
         Setting::setValue('structure_preset', $structurePreset, 'text');
 
+        $structureColorKeys = [
+            'body_bg_color',
+            'footer_bg_color',
+            'header_bg_color',
+            'header_scrolled_bg_color',
+            'header_text_color',
+            'footer_text_color',
+            'content_text_color',
+            'surface_bg_color',
+            'surface_alt_bg_color',
+            'surface_text_color',
+            'surface_muted_text_color',
+            'border_color',
+            'inverse_text_color',
+            'overlay_color',
+            'success_color',
+            'warning_color',
+            'danger_color',
+        ];
+
         $structurePresets = $this->structurePresetsForView();
         if ($structurePreset !== 'custom' && isset($structurePresets[$structurePreset])) {
             $preset = $structurePresets[$structurePreset];
-            Setting::setValue('body_bg_color', $preset['body_bg'], 'color');
-            Setting::setValue('footer_bg_color', $preset['footer_bg'], 'color');
-            Setting::setValue('header_bg_color', $preset['header_bg'], 'color');
-            Setting::setValue('header_scrolled_bg_color', $preset['header_scrolled_bg'], 'color');
-            Setting::setValue('header_text_color', $preset['header_text'], 'color');
-            Setting::setValue('footer_text_color', $preset['footer_text'], 'color');
-            Setting::setValue('content_text_color', $preset['content_text'], 'color');
+            foreach ($structureColorKeys as $key) {
+                $presetKey = str_replace('_color', '', $key);
+                Setting::setValue($key, $preset[$presetKey] ?? null, 'color');
+            }
         } else {
-            Setting::setValue('body_bg_color', $validated['body_bg_color'] ?? null, 'color');
-            Setting::setValue('footer_bg_color', $validated['footer_bg_color'] ?? null, 'color');
-            Setting::setValue('header_bg_color', $validated['header_bg_color'] ?? null, 'color');
-            Setting::setValue('header_scrolled_bg_color', $validated['header_scrolled_bg_color'] ?? null, 'color');
-            Setting::setValue('header_text_color', $validated['header_text_color'] ?? null, 'color');
-            Setting::setValue('footer_text_color', $validated['footer_text_color'] ?? null, 'color');
-            Setting::setValue('content_text_color', $validated['content_text_color'] ?? null, 'color');
+            foreach ($structureColorKeys as $key) {
+                Setting::setValue($key, $validated[$key] ?? null, 'color');
+            }
         }
 
         Setting::setValue('company_name', $validated['company_name'] ?? null, 'text');
@@ -263,7 +276,7 @@ class SettingController extends Controller
     /**
      * لوحات جاهزة لألوان الهيكل والنصوص لتسهيل الاختيار دون الحاجة لتنسيق يدوي.
      *
-     * @return array<string, array{label: string, body_bg: string, footer_bg: string, header_bg: string, header_scrolled_bg: string, header_text: string, footer_text: string, content_text: string}>
+     * @return array<string, array<string, string>>
      */
     protected function structurePresetsForView(): array
     {
@@ -277,6 +290,16 @@ class SettingController extends Controller
                 'header_text' => '#f8fafc',
                 'footer_text' => '#f8fafc',
                 'content_text' => '#f3f4f6',
+                'surface_bg' => '#ffffff',
+                'surface_alt_bg' => '#f6f7fb',
+                'surface_text' => '#0d0f14',
+                'surface_muted_text' => '#6b7591',
+                'border' => '#e5e7eb',
+                'inverse_text' => '#ffffff',
+                'overlay' => '#07080b',
+                'success' => '#16a34a',
+                'warning' => '#d97706',
+                'danger' => '#dc2626',
             ],
             'structure_marine' => [
                 'label' => 'متناسق مع البحري الاحترافي',
@@ -287,6 +310,16 @@ class SettingController extends Controller
                 'header_text' => '#ecfeff',
                 'footer_text' => '#f0fdfa',
                 'content_text' => '#e0f2fe',
+                'surface_bg' => '#f8fafc',
+                'surface_alt_bg' => '#e0f2fe',
+                'surface_text' => '#082f49',
+                'surface_muted_text' => '#475569',
+                'border' => '#bae6fd',
+                'inverse_text' => '#ffffff',
+                'overlay' => '#082f49',
+                'success' => '#14b8a6',
+                'warning' => '#d97706',
+                'danger' => '#dc2626',
             ],
             'structure_mineral' => [
                 'label' => 'متناسق بدقة مع المعدني العصري',
@@ -297,6 +330,16 @@ class SettingController extends Controller
                 'header_text' => '#f8fafc',
                 'footer_text' => '#e2e8f0',
                 'content_text' => '#f8fafc',
+                'surface_bg' => '#f8fafc',
+                'surface_alt_bg' => '#e2e8f0',
+                'surface_text' => '#0f172a',
+                'surface_muted_text' => '#475569',
+                'border' => '#cbd5e1',
+                'inverse_text' => '#ffffff',
+                'overlay' => '#0f172a',
+                'success' => '#22c55e',
+                'warning' => '#f59e0b',
+                'danger' => '#ef4444',
             ],
         ];
     }

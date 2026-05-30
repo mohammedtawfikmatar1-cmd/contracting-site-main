@@ -9,7 +9,7 @@
 }
 
 .news-hero::before {
-    background: radial-gradient(circle at 80% 20%, rgba(255, 122, 26, 0.15), transparent 50%);
+    background: radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--orange) 15%, transparent), transparent 50%);
     content: "";
     inset: 0;
     position: absolute;
@@ -55,7 +55,7 @@
 
 .news-card {
     background: linear-gradient(160deg, var(--d600), var(--d700));
-    border: 1px solid rgba(255, 122, 26, 0.12);
+    border: 1px solid color-mix(in srgb, var(--orange) 12%, transparent);
     border-radius: var(--r-2xl);
     overflow: hidden;
     transition: transform var(--tb), box-shadow var(--tb), border-color var(--tb);
@@ -69,8 +69,8 @@
 }
 
 .news-card:hover {
-    border-color: rgba(255, 122, 26, 0.35);
-    box-shadow: 0 20px 56px rgba(255, 122, 26, 0.15);
+    border-color: color-mix(in srgb, var(--orange) 35%, transparent);
+    box-shadow: 0 20px 56px color-mix(in srgb, var(--orange) 15%, transparent);
     transform: translateY(-8px);
 }
 
@@ -96,7 +96,7 @@
 }
 
 .news-date {
-    background: rgba(0, 0, 0, 0.6);
+    background: color-mix(in srgb, var(--site-overlay) 60%, transparent);
     bottom: var(--s4);
     color: var(--tw);
     font-size: var(--t-xs);
@@ -122,8 +122,8 @@
 }
 
 .news-category {
-    background: rgba(255, 122, 26, 0.15);
-    border: 1px solid rgba(255, 122, 26, 0.3);
+    background: color-mix(in srgb, var(--orange) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--orange) 30%, transparent);
     border-radius: var(--r-pill);
     color: var(--orange);
     font-size: var(--t-xs);
@@ -152,7 +152,7 @@
 /* تباين أوضح للنصوص على البطاقات الداكنة (تعديل لون النص فقط) */
 .news-card h3,
 .news-card h3 a {
-    color: rgba(255, 255, 255, 0.96);
+    color: color-mix(in srgb, var(--site-inverse-text) 96%, transparent);
     text-decoration: none;
 }
 
@@ -161,7 +161,7 @@
 }
 
 .news-excerpt {
-    color: rgba(255, 255, 255, 0.86);
+    color: color-mix(in srgb, var(--site-inverse-text) 86%, transparent);
     font-size: var(--t-sm);
     line-height: 1.65;
     margin-bottom: var(--s5);
@@ -191,8 +191,8 @@
 }
 
 .tag {
-    background: rgba(255, 122, 26, 0.08);
-    border: 1px solid rgba(255, 122, 26, 0.15);
+    background: color-mix(in srgb, var(--orange) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--orange) 15%, transparent);
     border-radius: var(--r-pill);
     color: var(--orange);
     font-size: var(--t-xs);
@@ -221,7 +221,7 @@
 }
 
 .newsletter::before {
-    background: radial-gradient(circle at 80% 20%, rgba(255, 122, 26, 0.15), transparent 50%);
+    background: radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--orange) 15%, transparent), transparent 50%);
     content: "";
     inset: 0;
     position: absolute;
@@ -253,8 +253,8 @@
 .nl-form {
     display: flex;
     gap: var(--s3);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: color-mix(in srgb, var(--site-inverse-text) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--site-inverse-text) 12%, transparent);
     border-radius: var(--r-lg);
     padding: 6px;
     backdrop-filter: blur(10px);
@@ -278,7 +278,7 @@
     background: linear-gradient(135deg, var(--orange-light), var(--orange-dark));
     border: none;
     border-radius: var(--r-md);
-    color: #fff;
+    color: var(--site-inverse-text);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -292,7 +292,7 @@
 
 .btn-subscribe:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(255, 122, 26, 0.35);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--orange) 35%, transparent);
 }
 
 /* CATEGORIES SECTION */
@@ -316,7 +316,7 @@
 
 .category-card {
     background: var(--sf1);
-    border: 1px solid rgba(13, 15, 20, 0.08);
+    border: 1px solid color-mix(in srgb, var(--site-border) 8%, transparent);
     border-radius: var(--r-xl);
     padding: clamp(24px, 3vw, 32px);
     text-align: center;
@@ -329,14 +329,14 @@
 }
 
 .category-card:hover {
-    border-color: rgba(255, 122, 26, 0.22);
+    border-color: color-mix(in srgb, var(--orange) 22%, transparent);
     box-shadow: var(--sh-lg);
     transform: translateY(-6px);
 }
 
 .cat-icon {
-    background: linear-gradient(135deg, rgba(255, 122, 26, 0.15), rgba(255, 122, 26, 0.05));
-    border: 1px solid rgba(255, 122, 26, 0.18);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--orange) 15%, transparent), color-mix(in srgb, var(--orange) 5%, transparent));
+    border: 1px solid color-mix(in srgb, var(--orange) 18%, transparent);
     border-radius: 14px;
     display: grid;
     height: 56px;

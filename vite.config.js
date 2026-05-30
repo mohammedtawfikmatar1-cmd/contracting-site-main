@@ -15,7 +15,6 @@ export default defineConfig({
                 'resources/css/footer.css',
                 'resources/js/app.js', 
                 'resources/js/bootstrap.js', 
-                'resources/css/service-construction.css',
                 'resources/css/about.css',
                 'resources/css/careers.css',
                 'resources/css/contact.css',
@@ -24,7 +23,6 @@ export default defineConfig({
                 'resources/css/login.css',
                 'resources/css/news.css',
                 'resources/css/projects.css',
-                'resources/css/services.css',
                 'resources/css/tenders.css',
                 'resources/css/service-details.css',
                 'resources/css/project-details.css'
@@ -39,4 +37,3 @@ export default defineConfig({
         },
     },
 });
-

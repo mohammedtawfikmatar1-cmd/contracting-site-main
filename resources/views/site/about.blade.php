@@ -36,10 +36,10 @@
                             justify-content: center;
                             text-align: center;
                             padding: 18px;
-                            border: 1px dashed rgba(255,255,255,.35);
+                            border: 1px dashed color-mix(in srgb, var(--site-inverse-text) 35%, transparent);
                             border-radius: 16px;
-                            color: rgba(255,255,255,.88);
-                            background: rgba(255,255,255,.04);
+                            color: color-mix(in srgb, var(--site-inverse-text) 88%, transparent);
+                            background: color-mix(in srgb, var(--site-inverse-text) 4%, transparent);
                             font-weight: 700;
                             line-height: 1.8;
                         ">

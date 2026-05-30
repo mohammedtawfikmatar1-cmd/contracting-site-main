@@ -26,8 +26,8 @@
                         align-items:center;
                         justify-content:center;
                         min-height:120px;
-                        border:1px dashed rgba(255,255,255,.35);
-                        color:rgba(255,255,255,.8);
+                        border:1px dashed color-mix(in srgb, var(--site-inverse-text) 35%, transparent);
+                        color:color-mix(in srgb, var(--site-inverse-text) 80%, transparent);
                         font-size:13px;
                         text-align:center;
                         padding:10px;

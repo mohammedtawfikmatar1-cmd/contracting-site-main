@@ -17,8 +17,8 @@
             <path d="M16 30v-9h8v9" stroke="white" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
             <defs>
               <linearGradient id="hg" x1="0" y1="0" x2="40" y2="40">
-                <stop stop-color="#ff7a1a"/>
-                <stop offset="1" stop-color="#b34500"/>
+                <stop stop-color="var(--orange)"/>
+                <stop offset="1" stop-color="var(--orange-dark)"/>
               </linearGradient>
             </defs>
           </svg>
