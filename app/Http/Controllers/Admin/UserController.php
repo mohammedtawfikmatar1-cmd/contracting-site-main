@@ -15,11 +15,14 @@
  * هذا المتحكم لا يغيّر محتوى الموقع مباشرة، لكنه يحدد من يملك صلاحية
  * إدارة البيانات التي تظهر في الواجهة الأمامية.
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -88,9 +91,29 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
+        $passwordChanged = isset($validated['password']);
+
         $user->update($validated);
 
-        return redirect()->route('admin.users.index')->with('success', 'تم تحديث المستخدم بنجاح.');
+        if ($passwordChanged) {
+
+            // إلغاء remember me
+            $user->update([
+                'remember_token' => Str::random(60)
+            ]);
+
+            // حذف جميع جلسات المستخدم
+            $currentSessionId = session()->getId();
+
+            DB::table('sessions')
+                ->where('user_id', $user->id)
+                ->where('id', '!=', $currentSessionId)
+                ->delete();
+        }
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'تم تحديث المستخدم بنجاح.');
     }
 
     /**
@@ -103,4 +126,3 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'تم حذف المستخدم بنجاح.');
     }
 }
-
